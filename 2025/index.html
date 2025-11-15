@@ -284,8 +284,8 @@ function loadLayer(file, paneName, intoLayer){
         style: f => ({
           fillColor: getColorFromIndex(f.properties.count_index),
           color: "#222",
-          weight: 1.0,
-          fillOpacity: 0.35
+          weight: 0.75,
+          fillOpacity: 0.25
         }),
 
         onEachFeature: (f, layer) => {
