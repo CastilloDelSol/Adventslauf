@@ -234,7 +234,7 @@ const map = L.map('map', {
 });
 
 const lightTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(map);
-const darkTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:19});
+const darkTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{maxZoom:19});
 
 let dark = false;
 
@@ -300,7 +300,7 @@ function loadLayer(file, paneName, intoLayer){
 loadLayer("hexagons_r7.geojson", "hex7", layer7);
 loadLayer("hexagons_r8.geojson", "hex8", layer8);
 
-layer8.addTo(map);
+//layer8.addTo(map);
 layer7.addTo(map);
 
 /* ---------------------- BUTTON LOGIC ---------------------- */
