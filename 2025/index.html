@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>Hexagon-Heatmap – Ratzeburger Adventslauf 2025</title>
+  <title>Teilnehmer Hexagon-Heatmap ### Ratzeburger Adventslauf 2025</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -214,17 +214,17 @@ function openPrivacy(){ document.getElementById("privacyBox").style.display="blo
 function closePrivacy(){ document.getElementById("privacyBox").style.display="none"; }
 
 /* ---------------------- LOAD BUCKETS.JSON (NEW) ---------------------- */
-let BUCKETS = []; // NEW
+let BUCKETS = [];
 
-fetch("buckets.json")     // NEW
-  .then(r => r.json())    // NEW
-  .then(data => {         // NEW
+fetch("buckets.json")
+  .then(r => r.json())
+  .then(data => {
     BUCKETS = data.buckets;
-    initMap();            // NEW - map starts AFTER buckets loaded
+    initMap();
   });
 
 /* ---------------------- MAP + LAYERS (wrapped into function) ---------------------- */
-function initMap(){     /* NEW wrapper so buckets load first */
+function initMap(){
 
 const map = L.map('map', {
   preferCanvas: true,
@@ -263,11 +263,11 @@ map.getPane('hex7').style.zIndex = 420;
 
 /* ---------------------- COLOR + LABEL FROM BUCKETS.JSON (NEW) ---------------------- */
 
-function getColorFromIndex(idx){           // NEW
+function getColorFromIndex(idx){
   return BUCKETS[idx].color;
 }
 
-function getLabelFromIndex(idx){           // NEW
+function getLabelFromIndex(idx){
   return BUCKETS[idx].label;
 }
 
@@ -284,15 +284,15 @@ function loadLayer(file, paneName, intoLayer){
         pane: paneName,
 
         style: f => ({
-          fillColor: getColorFromIndex(f.properties.count_index),  // NEW
+          fillColor: getColorFromIndex(f.properties.count_index),
           color: "#222",
-          weight: 1.2,
-          fillOpacity: 0.45
+          weight: 1.0,
+          fillOpacity: 0.35
         }),
 
         onEachFeature: (f, layer) => {
           layer.bindTooltip(
-            "Anmeldungen: " + getLabelFromIndex(f.properties.count_index), // NEW
+            "Anmeldungen: " + getLabelFromIndex(f.properties.count_index),
             { sticky:true }
           );
         }
