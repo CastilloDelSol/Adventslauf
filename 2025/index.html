@@ -156,8 +156,8 @@ body, .legend, .stats-box, .leaflet-container {
 <!-- RIGHT BUTTON PANEL -->
 <div class="right-buttons">
   <div id="btnDark" class="map-button">Dark Mode</div>
-  <div id="btnR7" class="map-button active">Auflösung 7</div>
-  <div id="btnR8" class="map-button active">Auflösung 8</div>
+  <div id="btnR7" class="map-button">Auflösung 7</div>
+  <div id="btnR8" class="map-button">Auflösung 8</div>
 </div>
 
 <!-- STATS BOX -->
@@ -300,8 +300,10 @@ function loadLayer(file, paneName, intoLayer){
 loadLayer("hexagons_r7.geojson", "hex7", layer7);
 loadLayer("hexagons_r8.geojson", "hex8", layer8);
 
-//layer8.addTo(map);
-layer7.addTo(map);
+btnR7.classList.add("active");   // r7 ON
+btnR8.classList.remove("active"); // r8 OFF
+
+layer7.addTo(map);  // show r7
 
 /* ---------------------- BUTTON LOGIC ---------------------- */
 btnR7.onclick = () => {
