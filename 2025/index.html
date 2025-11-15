@@ -233,8 +233,6 @@ const map = L.map('map', {
   zoom: 10
 });
 
-window._map = map; // OPTIONAL debugging
-
 const lightTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
   maxZoom:19
 }).addTo(map);
