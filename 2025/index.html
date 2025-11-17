@@ -156,9 +156,9 @@ body, .legend, .stats-box, .leaflet-container {
 <!-- RIGHT BUTTON PANEL -->
 <div class="right-buttons">
   <div id="btnDark" class="map-button">Dark Mode</div>
-  <div id="btnR7" class="map-button">Auflösung 6</div>
-  <div id="btnR8" class="map-button">Auflösung 7</div>
+  <div id="btnRes" class="map-button">Grobe Auflösung (r6)</div>
 </div>
+
 
 <!-- STATS BOX -->
 <div id="stats" class="stats-box">Lade Statistik…</div>
@@ -250,11 +250,11 @@ btnDark.onclick = () => {
 };
 
 /* ---------------------- PANES ---------------------- */
-map.createPane('hex7');
-map.getPane('hex7').style.zIndex = 410;
-
 map.createPane('hex6');
-map.getPane('hex6').style.zIndex = 420;
+map.getPane('hex6').style.zIndex = 410;
+
+map.createPane('hex7');
+map.getPane('hex7').style.zIndex = 420;
 
 /* ---------------------- COLOR + LABEL FROM BUCKETS.JSON (NEW) ---------------------- */
 
@@ -300,29 +300,23 @@ function loadLayer(file, paneName, intoLayer){
 loadLayer("hexagons_r6.geojson", "hex6", layer6);
 loadLayer("hexagons_r7.geojson", "hex7", layer7);
 
-btnR6.classList.add("active");   // r7 ON
-btnR7.classList.remove("active"); // r8 OFF
-
-layer6.addTo(map);  // show r7
+let coarse = true;   // r6 = coarse grid
+layer6.addTo(map);
 
 /* ---------------------- BUTTON LOGIC ---------------------- */
-btnR6.onclick = () => {
-  if(map.hasLayer(layer6)){
+btnRes.onclick = () => {
+  if (coarse) {
+    // switch to fine (r7)
     map.removeLayer(layer6);
-    btnR6.classList.remove("active");
-  } else {
-    layer6.addTo(map);
-    btnR6.classList.add("active");
-  }
-};
-
-btnR7.onclick = () => {
-  if(map.hasLayer(layer7)){
-    map.removeLayer(layer7);
-    btnR7.classList.remove("active");
-  } else {
     layer7.addTo(map);
-    btnR7.classList.add("active");
+    btnRes.innerHTML = "Grobe Auflösung (r6)";
+    coarse = false;
+  } else {
+    // switch to coarse (r6)
+    map.removeLayer(layer7);
+    layer6.addTo(map);
+    btnRes.innerHTML = "Feine Auflösung (r7)";
+    coarse = true;
   }
 };
 
