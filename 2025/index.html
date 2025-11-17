@@ -156,8 +156,8 @@ body, .legend, .stats-box, .leaflet-container {
 <!-- RIGHT BUTTON PANEL -->
 <div class="right-buttons">
   <div id="btnDark" class="map-button">Dark Mode</div>
-  <div id="btnR7" class="map-button">Auflösung 7</div>
-  <div id="btnR8" class="map-button">Auflösung 8</div>
+  <div id="btnR7" class="map-button">Auflösung 6</div>
+  <div id="btnR8" class="map-button">Auflösung 7</div>
 </div>
 
 <!-- STATS BOX -->
@@ -182,7 +182,7 @@ body, .legend, .stats-box, .leaflet-container {
     Statt einzelner Punkte werden alle Werte in sogenannte 
     <b><a href="https://h3geo.org/" target="_blank">H3-Hexagon-Zellen</a></b> 
     umgerechnet. Diese Flächen besitzen je nach Auflösung
-    eine Größe von ca. 0,7 km² (r8) bis etwa 5 km² (r7).
+    eine Größe von ca. 5,1km² (r7) bis etwa 36,1km² (r6).
   </p>
 
   <p>
@@ -230,7 +230,7 @@ const map = L.map('map', {
   preferCanvas: true,
   inertia: false,
   center: [53.699327, 10.774143],
-  zoom: 10
+  zoom: 11
 });
 
 const lightTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(map);
@@ -250,11 +250,11 @@ btnDark.onclick = () => {
 };
 
 /* ---------------------- PANES ---------------------- */
-map.createPane('hex8');
-map.getPane('hex8').style.zIndex = 410;
-
 map.createPane('hex7');
-map.getPane('hex7').style.zIndex = 420;
+map.getPane('hex7').style.zIndex = 410;
+
+map.createPane('hex6');
+map.getPane('hex6').style.zIndex = 420;
 
 /* ---------------------- COLOR + LABEL FROM BUCKETS.JSON (NEW) ---------------------- */
 
@@ -267,8 +267,8 @@ function getLabelFromIndex(idx){
 }
 
 /* ---------------------- LAYER LOAD ---------------------- */
+const layer6 = L.layerGroup();
 const layer7 = L.layerGroup();
-const layer8 = L.layerGroup();
 
 function loadLayer(file, paneName, intoLayer){
   fetch(file)
@@ -297,15 +297,25 @@ function loadLayer(file, paneName, intoLayer){
     });
 }
 
-loadLayer("hexagons_r6.geojson", "hex7", layer7);
-loadLayer("hexagons_r7.geojson", "hex8", layer8);
+loadLayer("hexagons_r6.geojson", "hex6", layer6);
+loadLayer("hexagons_r7.geojson", "hex7", layer7);
 
-btnR7.classList.add("active");   // r7 ON
-btnR8.classList.remove("active"); // r8 OFF
+btnR6.classList.add("active");   // r7 ON
+btnR7.classList.remove("active"); // r8 OFF
 
-layer7.addTo(map);  // show r7
+layer6.addTo(map);  // show r7
 
 /* ---------------------- BUTTON LOGIC ---------------------- */
+btnR6.onclick = () => {
+  if(map.hasLayer(layer6)){
+    map.removeLayer(layer6);
+    btnR6.classList.remove("active");
+  } else {
+    layer6.addTo(map);
+    btnR6.classList.add("active");
+  }
+};
+
 btnR7.onclick = () => {
   if(map.hasLayer(layer7)){
     map.removeLayer(layer7);
@@ -313,16 +323,6 @@ btnR7.onclick = () => {
   } else {
     layer7.addTo(map);
     btnR7.classList.add("active");
-  }
-};
-
-btnR8.onclick = () => {
-  if(map.hasLayer(layer8)){
-    map.removeLayer(layer8);
-    btnR8.classList.remove("active");
-  } else {
-    layer8.addTo(map);
-    btnR8.classList.add("active");
   }
 };
 
