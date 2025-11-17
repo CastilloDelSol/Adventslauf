@@ -155,7 +155,7 @@ body, .legend, .stats-box, .leaflet-container {
 
 <!-- RIGHT BUTTON PANEL -->
 <div class="right-buttons">
-  <div id="btnDark" class="map-button">Dark Mode</div>
+  <div id="btnMapType" class="map-button">CARTO Light Grey</div>
   <div id="btnRes" class="map-button">Grobe Auflösung (r6)</div>
 </div>
 
@@ -233,19 +233,19 @@ const map = L.map('map', {
   zoom: 9
 });
 
-const lightTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(map);
-const darkTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{maxZoom:19});
+const osmTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(map);
+const lowContrastTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:19});
 
-let dark = false;
+let lowContrast = false;
 
 /* ---------------------- DARK MODE ---------------------- */
-btnDark.onclick = () => {
-  if(!dark){
-    map.removeLayer(lightTiles); darkTiles.addTo(map);
-    dark = true; btnDark.innerHTML="Light Mode";
+btnMapType.onclick = () => {
+  if(!lowContrast){
+    map.removeLayer(osmTiles); lowContrastTiles.addTo(map);
+    lowContrast = true; btnMapType.innerHTML="OSM Standard";
   } else {
-    map.removeLayer(darkTiles); lightTiles.addTo(map);
-    dark = false; btnDark.innerHTML="Dark Mode";
+    map.removeLayer(lowContrastTiles); osmTiles.addTo(map);
+    lowContrast = false; btnMapType.innerHTML="CARTO Light Grey";
   }
 };
 
