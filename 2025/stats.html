@@ -1,1001 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Participant Distance Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<meta charset="UTF-8" />
+<title>Distance Statistics Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    :root {
-      --primary: #845ec2;
-      --primary-soft: #a178df;
-      --primary-light: #be93fd;
-      --primary-pale: #dcb0ff;
-      --primary-pale2: #faccff;
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
 
-      --accent-pink: #ff6f91;
-      --accent-orange: #ff9671;
-      --accent-yellow: #ffc75f;
-      --accent-emerald: #00c9a3;
-      --accent-teal: #008e9b;
-      --accent-blue1: #2c73d2;
-      --accent-blue2: #0081cf;
-      --accent-blue3: #0089ba;
-      --accent-blue4: #008f7a;
+<style>
+/* ---------- Dark Serious Palette ---------- */
+:root {
+  --primary: #4F46E5;
+  --secondary: #0EA5E9;
+  --accent1: #10B981;
+  --accent2: #F59E0B;
+  --accent3: #EF4444;
 
-      --bg: #050509;
-      --bg-alt: #0b0b12;
-      --bg-elevated: #171723;
-      --bg-elevated-2: #1f1f2e;
-      --chip-bg: #4b4453;
+  --bg: #0D1117;
+  --bg-elevated: #161B22;
+  --card: #1F242C;
 
-      --border-subtle: #2c2c3a;
+  --text-main: #E6EDF3;
+  --text-muted: #9BA5B4;
 
-      --text-main: #f7f5ff;
-      --text-muted: #b0a8b9;
-      --text-soft: #c9c2d8;
+  --border: #30363D;
+  --radius: 14px;
+}
 
-      --shadow-soft: 0 18px 35px rgba(0, 0, 0, 0.55);
-      --radius-lg: 18px;
-      --radius-xl: 22px;
-    }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--bg);
+  color: var(--text-main);
+  padding: 25px;
+  display: flex;
+  justify-content: center;
+}
 
-    body {
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-      background: radial-gradient(circle at top, #171723 0, var(--bg) 55%);
-      color: var(--text-main);
-      min-height: 100vh;
-      padding: 24px;
-      display: flex;
-      justify-content: center;
-    }
+.page {
+  width: 100%;
+  max-width: 1200px;
+}
 
-    .page {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto 40px;
-    }
+h1 {
+  margin-bottom: 8px;
+  font-size: 26px;
+  font-weight: 600;
+}
 
-    header {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      margin-bottom: 28px;
-    }
+.subtitle {
+  color: var(--text-muted);
+  margin-bottom: 22px;
+}
 
-    .title-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
+.card {
+  background: var(--card);
+  padding: 18px 22px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+}
 
-    h1 {
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+.card-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--secondary);
+}
 
-    h1 span.badge {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--primary), var(--accent-teal));
-      color: #fff;
-    }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12,1fr);
+  gap: 20px;
+}
 
-    .subtitle {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
+.stat-box {
+  background: var(--bg-elevated);
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
 
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+.stat-value {
+  font-size: 28px;
+  font-weight: 600;
+}
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      border-radius: 999px;
-      background: rgba(75, 68, 83, 0.8);
-      font-size: 12px;
-      color: var(--text-soft);
-    }
+.stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
 
-    .pill-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--accent-pink));
-    }
+canvas { width: 100% !important; height: 280px !important; }
+.small canvas { height: 220px !important; }
 
-    /* Layout */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      gap: 18px;
-      margin-bottom: 22px;
-    }
+.list-row {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: 14px;
+}
 
-    .card {
-      background: radial-gradient(circle at top left, #222135 0, var(--bg-elevated) 55%);
-      border-radius: var(--radius-lg);
-      padding: 16px 18px;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(132, 94, 194, 0.35);
-      backdrop-filter: blur(12px);
-    }
+hr { border: none; border-bottom: 1px solid var(--border); margin: 20px 0; }
+</style>
 
-    .card-muted {
-      border-color: var(--border-subtle);
-      background: linear-gradient(145deg, var(--bg-elevated), var(--bg-elevated-2));
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      gap: 6px;
-    }
-
-    .card-title {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--primary-light);
-    }
-
-    .card-subtitle {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .chip {
-      font-size: 11px;
-      padding: 3px 9px;
-      border-radius: 999px;
-      background: rgba(0, 137, 155, 0.16);
-      color: var(--accent-teal);
-      border: 1px solid rgba(0, 143, 122, 0.5);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 600;
-    }
-
-    .metric-main {
-      font-size: 26px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .metric-label {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .metric-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-top: 8px;
-      font-size: 12px;
-    }
-
-    .metric-pill {
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(36, 36, 55, 0.9);
-      color: var(--text-soft);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .metric-pill strong {
-      color: var(--primary-pale);
-      font-weight: 600;
-    }
-
-    /* Charts */
-
-    canvas {
-      width: 100% !important;
-      height: 260px !important;
-    }
-
-    .small-chart canvas {
-      height: 180px !important;
-    }
-
-    /* Lists */
-
-    .list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .list-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      font-size: 12px;
-      color: var(--text-soft);
-    }
-
-    .list-item-label {
-      flex: 0 0 45%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .list-item-bar {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .bar-track {
-      flex: 1;
-      position: relative;
-      height: 7px;
-      border-radius: 999px;
-      background: rgba(75, 68, 83, 0.7);
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--primary), var(--accent-teal));
-    }
-
-    .list-item-value {
-      min-width: 56px;
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .section-title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin: 10px 0;
-    }
-
-    .section-title {
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .section-subtitle {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .tag {
-      font-size: 11px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: rgba(0, 129, 207, 0.12);
-      color: var(--accent-blue2);
-      border: 1px solid rgba(0, 129, 207, 0.4);
-    }
-
-    /* Table */
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    th,
-    td {
-      padding: 6px 4px;
-      text-align: left;
-      font-variant-numeric: tabular-nums;
-    }
-
-    thead {
-      background: rgba(36, 36, 55, 0.95);
-    }
-
-    tbody tr:nth-child(odd) {
-      background: rgba(15, 16, 28, 0.9);
-    }
-
-    tbody tr:nth-child(even) {
-      background: rgba(15, 16, 28, 0.65);
-    }
-
-    th {
-      font-weight: 600;
-      color: var(--text-soft);
-    }
-
-    td {
-      color: var(--text-soft);
-    }
-
-    .pill-percentile {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: rgba(132, 94, 194, 0.12);
-      border: 1px solid rgba(132, 94, 194, 0.45);
-      font-size: 11px;
-      color: var(--primary-pale);
-    }
-
-    .pill-percentile span.key {
-      color: var(--text-muted);
-    }
-
-    .muted {
-      color: var(--text-muted);
-    }
-
-    .stacked-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .stacked-badge span.dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--primary);
-    }
-
-    @media (max-width: 960px) {
-      body {
-        padding: 16px;
-      }
-      canvas {
-        height: 230px !important;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .title-row {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .grid {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 540px) {
-      .grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
-      canvas {
-        height: 200px !important;
-      }
-    }
-  </style>
 </head>
-
 <body>
 <div class="page">
-  <header>
-    <div class="title-row">
-      <div>
-        <h1>
-          Distance Insights
-          <span class="badge">Live Snapshot</span>
-        </h1>
-        <p class="subtitle">
-          Overview of participant distances, directions and locations based on uploaded statistics.
-        </p>
-      </div>
-      <div class="pill-row">
-        <div class="pill">
-          <span class="pill-dot"></span>
-          <span>Dark mode · Palette driven</span>
-        </div>
-        <div class="pill">
-          <span class="pill-dot" style="background: linear-gradient(135deg,var(--accent-pink),var(--accent-yellow));"></span>
-          <span>Interactive charts with Chart.js</span>
-        </div>
-      </div>
-    </div>
-  </header>
 
-  <!-- Top summary -->
-  <section class="grid">
-    <div class="card" style="grid-column: span 4;">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Participants</div>
-          <div class="card-subtitle">Total counted in this dataset</div>
-        </div>
-        <div class="chip">Core metric</div>
-      </div>
-      <div class="metric-main" id="totalParticipants">–</div>
-      <div class="metric-label">
-        Across all distances and locations.
-      </div>
-    </div>
+<h1>Distance Statistics Dashboard</h1>
+<div class="subtitle">Loaded from <code>statistics.json</code> — serious analytics mode.</div>
 
-    <div class="card card-muted" style="grid-column: span 4;">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Distance overview</div>
-          <div class="card-subtitle">Min · Median · Mean · Max (km)</div>
-        </div>
-      </div>
-      <div class="metric-row" id="distanceOverview">
-        <!-- filled by JS -->
-      </div>
-    </div>
 
-    <div class="card card-muted" style="grid-column: span 4;">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Percentile landmarks</div>
-          <div class="card-subtitle">Quick checkpoints in the distance distribution</div>
-        </div>
-      </div>
-      <div class="metric-row">
-        <div class="metric-pill"><strong id="p25">–</strong><span>25% of participants</span></div>
-        <div class="metric-pill"><strong id="p50">–</strong><span>50% (median)</span></div>
-        <div class="metric-pill"><strong id="p75">–</strong><span>75% of participants</span></div>
-      </div>
-    </div>
-  </section>
+<!-- Summary -->
+<div class="grid">
 
-  <!-- Distance distribution -->
-  <section>
-    <div class="section-title-row">
-      <div>
-        <div class="section-title">Distance distribution</div>
-        <div class="section-subtitle">How far participants are travelling, from short hops to long journeys.</div>
-      </div>
-      <div class="stacked-badge">
-        <span class="dot" style="background: var(--primary);"></span>km-based aggregations
-      </div>
-    </div>
+  <div class="stat-box" style="grid-column: span 3;">
+    <div class="stat-value" id="totalParticipants">–</div>
+    <div class="stat-label">Participants</div>
+  </div>
 
-    <div class="grid">
-      <div class="card card-muted small-chart" style="grid-column: span 6;">
-        <div class="card-header">
-          <div class="card-title">Percentiles (km)</div>
-          <div class="card-subtitle">Smooth view of the distance profile across all participants.</div>
-        </div>
-        <canvas id="percentileChart"></canvas>
-      </div>
+  <div class="stat-box" style="grid-column: span 3;">
+    <div class="stat-value" id="distanceMin">–</div>
+    <div class="stat-label">Minimum distance (km)</div>
+  </div>
 
-      <div class="card card-muted small-chart" style="grid-column: span 6;">
-        <div class="card-header">
-          <div class="card-title">Distance buckets</div>
-          <div class="card-subtitle">Grouped distances with participant counts.</div>
-        </div>
-        <canvas id="bucketChart"></canvas>
-      </div>
-    </div>
-  </section>
+  <div class="stat-box" style="grid-column: span 3;">
+    <div class="stat-value" id="distanceMedian">–</div>
+    <div class="stat-label">Median distance (km)</div>
+  </div>
 
-  <!-- Direction / wind rose -->
-  <section>
-    <div class="section-title-row">
-      <div>
-        <div class="section-title">Direction &amp; wind profile</div>
-        <div class="section-subtitle">Where people are coming from, directionally speaking.</div>
-      </div>
-      <span class="tag">Compass-based</span>
-    </div>
+  <div class="stat-box" style="grid-column: span 3;">
+    <div class="stat-value" id="distanceMax">–</div>
+    <div class="stat-label">Maximum distance (km)</div>
+  </div>
 
-    <div class="grid">
-      <div class="card card-muted small-chart" style="grid-column: span 4;">
-        <div class="card-header">
-          <div class="card-title">Wind rose</div>
-          <div class="card-subtitle">Participants per compass direction.</div>
-        </div>
-        <canvas id="windRoseChart"></canvas>
-      </div>
+</div>
 
-      <div class="card card-muted small-chart" style="grid-column: span 8;">
-        <div class="card-header">
-          <div class="card-title">Direction × distance buckets</div>
-          <div class="card-subtitle">Stacked view of distance buckets by direction.</div>
-        </div>
-        <canvas id="directionBucketsChart"></canvas>
-      </div>
-    </div>
-  </section>
+<hr>
 
-  <!-- Locations -->
-  <section>
-    <div class="section-title-row">
-      <div>
-        <div class="section-title">Where participants are located</div>
-        <div class="section-subtitle">Countries, German federal states and counties.</div>
-      </div>
-    </div>
+<!-- DISTRIBUTION FUNCTION -->
+<div class="card">
+  <div class="card-title">Distance Distribution Function (Empirical CDF)</div>
+  <canvas id="cdfChart"></canvas>
+</div>
 
-    <div class="grid">
-      <div class="card card-muted" style="grid-column: span 4;">
-        <div class="card-header">
-          <div class="card-title">Countries</div>
-          <div class="card-subtitle">Top countries by participant count.</div>
-        </div>
-        <div class="list" id="countryList"></div>
-      </div>
+<!-- PDF -->
+<div class="card">
+  <div class="card-title">Distance Density Function (Approx. PDF)</div>
+  <canvas id="pdfChart"></canvas>
+</div>
 
-      <div class="card card-muted" style="grid-column: span 4;">
-        <div class="card-header">
-          <div class="card-title">German states (Bundesländer)</div>
-          <div class="card-subtitle">Breakdown within Germany.</div>
-        </div>
-        <div class="list" id="stateList"></div>
-      </div>
+<!-- BUCKETS -->
+<div class="card">
+  <div class="card-title">Distance Buckets</div>
+  <canvas id="bucketChart"></canvas>
+</div>
 
-      <div class="card card-muted" style="grid-column: span 4;">
-        <div class="card-header">
-          <div class="card-title">Counties (Kreise)</div>
-          <div class="card-subtitle">Most represented counties.</div>
-        </div>
-        <div class="list" id="kreisList"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Hexagons -->
-  <section>
-    <div class="section-title-row">
-      <div>
-        <div class="section-title">Top hexagon clusters (H3 r7)</div>
-        <div class="section-subtitle">Highest participant concentrations using hexagonal indexing.</div>
-      </div>
-    </div>
-    <div class="card card-muted">
-      <table>
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>H3 index</th>
-            <th>Participants</th>
-          </tr>
-        </thead>
-        <tbody id="hexagonTableBody">
-        </tbody>
-      </table>
-    </div>
-  </section>
 </div>
 
 <script>
-  // The JSON data provided
-  const rawData = {
-    "total_participants": 2998,
-    "distance_min_km": 0.1,
-    "distance_max_km": 2166.0,
-    "distance_avg_km": 49.5,
-    "distance_median_km": 30.4,
-    "percentiles_km": {
-      "0%": 0.092,
-      "5%": 1.479,
-      "10%": 2.224,
-      "15%": 8.511,
-      "20%": 11.232,
-      "25%": 15.167,
-      "30%": 18.001,
-      "35%": 19.459,
-      "40%": 21.65,
-      "45%": 26.029,
-      "50%": 30.371,
-      "55%": 39.922,
-      "60%": 43.733,
-      "65%": 49.066,
-      "70%": 52.082,
-      "75%": 55.274,
-      "80%": 59.102,
-      "85%": 67.216,
-      "90%": 85.866,
-      "95%": 147.194,
-      "100%": 2165.954
-    },
-    "distance_buckets": {
-      "<10 km": 500,
-      "10-25 km": 822,
-      "25-50 km": 668,
-      "50-100 km": 789,
-      "100-250 km": 153,
-      ">250 km": 66
-    },
-    "wind_rose": {
-      "N": 163,
-      "NNE": 59,
-      "NE": 49,
-      "ENE": 66,
-      "E": 113,
-      "ESE": 66,
-      "SE": 87,
-      "SSE": 47,
-      "S": 73,
-      "SSW": 159,
-      "SW": 288,
-      "WSW": 659,
-      "W": 329,
-      "WNW": 181,
-      "NW": 136,
-      "NNW": 523
-    },
-    "directional_distance_buckets": {
-      "N": {"<10 km": 8,"10-25 km": 113,"25-50 km": 23,"50-100 km": 18,"100-250 km": 0,">250 km": 1},
-      "NNE": {"<10 km": 27,"10-25 km": 12,"25-50 km": 14,"50-100 km": 6,"100-250 km": 0,">250 km": 0},
-      "NE": {"<10 km": 36,"10-25 km": 3,"25-50 km": 4,"50-100 km": 6,"100-250 km": 0,">250 km": 0},
-      "ENE": {"<10 km": 5,"10-25 km": 4,"25-50 km": 8,"50-100 km": 34,"100-250 km": 15,">250 km": 0},
-      "E": {"<10 km": 76,"10-25 km": 3,"25-50 km": 32,"50-100 km": 1,"100-250 km": 1,">250 km": 0},
-      "ESE": {"<10 km": 42,"10-25 km": 1,"25-50 km": 11,"50-100 km": 4,"100-250 km": 5,">250 km": 3},
-      "SE": {"<10 km": 34,"10-25 km": 2,"25-50 km": 4,"50-100 km": 2,"100-250 km": 42,">250 km": 3},
-      "SSE": {"<10 km": 22,"10-25 km": 19,"25-50 km": 1,"50-100 km": 1,"100-250 km": 0,">250 km": 4},
-      "S": {"<10 km": 40,"10-25 km": 8,"25-50 km": 0,"50-100 km": 7,"100-250 km": 7,">250 km": 11},
-      "SSW": {"<10 km": 8,"10-25 km": 45,"25-50 km": 32,"50-100 km": 46,"100-250 km": 11,">250 km": 17},
-      "SW": {"<10 km": 20,"10-25 km": 113,"25-50 km": 86,"50-100 km": 35,"100-250 km": 9,">250 km": 25},
-      "WSW": {"<10 km": 53,"10-25 km": 18,"25-50 km": 197,"50-100 km": 368,"100-250 km": 22,">250 km": 1},
-      "W": {"<10 km": 47,"10-25 km": 14,"25-50 km": 147,"50-100 km": 116,"100-250 km": 4,">250 km": 1},
-      "WNW": {"<10 km": 39,"10-25 km": 18,"25-50 km": 64,"50-100 km": 44,"100-250 km": 16,">250 km": 0},
-      "NW": {"<10 km": 5,"10-25 km": 59,"25-50 km": 23,"50-100 km": 30,"100-250 km": 19,">250 km": 0},
-      "NNW": {"<10 km": 38,"10-25 km": 390,"25-50 km": 22,"50-100 km": 71,"100-250 km": 2,">250 km": 0}
-    },
-    "land_buckets": {
-      "Deutschland": 2990,"Netherlands": 2,"Switzerland": 2,"Algeria": 2,"Norway": 1,"Poland": 1
-    },
-    "bundesland_buckets": {
-      "[BW] Baden-Württemberg": 0,"[BY] Bayern": 11,"[BE] Berlin": 30,"[BB] Brandenburg": 16,"[HB] Bremen": 13,
-      "[HH] Hamburg": 631,"[HE] Hessen": 11,"[MV] Mecklenburg-Vorpommern": 210,"[NI] Niedersachsen": 168,
-      "[NW] Nordrhein-Westfalen": 27,"[RP] Rheinland-Pfalz": 1,"[SL] Saarland": 0,"[SN] Sachsen": 2,
-      "[ST] Sachsen-Anhalt": 1,"[SH] Schleswig-Holstein": 1868,"[TH] Thüringen": 1
-    },
-    "kreis_buckets": {
-      "Herzogtum Lauenburg": 865,"Hamburg": 631,"Lübeck": 453,"Stormarn": 164,"Ostholstein": 114,"Nordwestmecklenburg": 92,
-      "Segeberg": 74,"Harburg": 56,"Lüneburg": 53,"Rostock": 49,"Kiel": 40,"Pinneberg": 34,"Rendsburg-Eckernförde": 34,
-      "Schwerin": 34,"Steinburg": 32,"Berlin": 30,"Ludwigslust-Parchim": 30,"Plön": 20,"Dithmarschen": 15,"Bremen": 11,
-      "Stade": 11,"Schleswig-Flensburg": 9,"Verden": 8,"Uelzen": 8,"Flensburg": 7,"Frankfurt am Main": 6,
-      "Region Hannover": 6,"Neumünster": 6,"München": 5,"Braunschweig": 5,"Potsdam": 5,"Göttingen": 4,
-      "Hochsauerlandkreis": 4,"Heidekreis": 4,"Münster": 4,"Wuppertal": 4,"Dortmund": 3,"Märkisch-Oderland": 3,
-      "Vorpommern-Greifswald": 3,"Oldenburg": 3,"Oberhavel": 2,"Mecklenburgische Seenplatte": 2,"Dahme-Spreewald": 2,
-      "Freising": 2,"Barnim": 2,"Düsseldorf": 2,"Bremerhaven": 2,"Rotenburg/Wümme": 2,"Darmstadt": 2,"Köln": 2,"Würzburg": 2,
-      "Kaufbeuren": 1,"Bielefeld": 1,"Bonn": 1,"Emden": 1,"Lahn-Dill-Kreis": 1,"Kassel": 1,"Peine": 1,"Celle": 1,"Northeim": 1,
-      "Leer": 1,"Berchtesgadener Land": 1,"Jena": 1,"Sächsische Schweiz-Osterzgebirge": 1,"Paderborn": 1,"Aurich": 1,
-      "Leverkusen": 1,"Marburg-Biedenkopf": 1,"Essen/Ruhr": 1,"Wittenberg": 1,"Nordfriesland": 1,"Bochum": 1,"Herford": 1,
-      "Cottbus": 1,"Leipzig": 1,"Teltow-Fläming": 1,"Bad Dürkheim": 1,"Steinfurt": 1,"Nienburg/Weser": 1,"Salzgitter": 1
-    },
-    "top3_hexagons_r7": [
-      {"h3_id": "871f02990ffffff","count": 99},
-      {"h3_id": "871f02c63ffffff","count": 97},
-      {"h3_id": "871f02c0bffffff","count": 96}
-    ]
-  };
+// Auto-run
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("./statistics.json")
+    .then(r => r.json())
+    .then(data => initDashboard(data))
+    .catch(err => alert("Could not load statistics.json! " + err));
+});
 
-  const palette = [
-    "#845EC2", "#2C73D2", "#0081CF", "#0089BA", "#008E9B", "#008F7A",
-    "#FF6F91", "#FF9671", "#FFC75F", "#F9F871"
-  ];
+function initDashboard(data) {
+  /* ---- Fill summary ---- */
+  document.getElementById("totalParticipants").textContent =
+    data.total_participants.toLocaleString("de-DE");
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const data = rawData;
-    // Top metrics
-    document.getElementById("totalParticipants").textContent =
-      data.total_participants.toLocaleString("de-DE");
+  document.getElementById("distanceMin").textContent =
+    data.distance_min_km.toFixed(1);
 
-    const distOverview = document.getElementById("distanceOverview");
-    distOverview.innerHTML = `
-      <div class="metric-pill"><strong>${data.distance_min_km.toFixed(1)}</strong><span>Min</span></div>
-      <div class="metric-pill"><strong>${data.distance_median_km.toFixed(1)}</strong><span>Median</span></div>
-      <div class="metric-pill"><strong>${data.distance_avg_km.toFixed(1)}</strong><span>Mean</span></div>
-      <div class="metric-pill"><strong>${data.distance_max_km.toFixed(0)}</strong><span>Max</span></div>
-    `;
+  document.getElementById("distanceMedian").textContent =
+    data.distance_median_km.toFixed(1);
 
-    const p25 = data.percentiles_km["25%"];
-    const p50 = data.percentiles_km["50%"];
-    const p75 = data.percentiles_km["75%"];
-    document.getElementById("p25").textContent = p25.toFixed(1) + " km";
-    document.getElementById("p50").textContent = p50.toFixed(1) + " km";
-    document.getElementById("p75").textContent = p75.toFixed(1) + " km";
+  document.getElementById("distanceMax").textContent =
+    data.distance_max_km.toFixed(0);
 
-    renderPercentileChart(data.percentiles_km);
-    renderBucketChart(data.distance_buckets);
-    renderWindRoseChart(data.wind_rose);
-    renderDirectionalBucketChart(data.directional_distance_buckets);
+  /* ---- Build CDF from percentiles ---- */
+  const percentileEntries = Object.entries(data.percentiles_km)
+    .sort((a,b) => parseFloat(a[0]) - parseFloat(b[0]));
 
-    renderBucketLists(
-      "countryList",
-      data.land_buckets,
-      data.total_participants,
-      "country"
-    );
-    renderBucketLists(
-      "stateList",
-      data.bundesland_buckets,
-      data.total_participants,
-      "state"
-    );
-    renderBucketLists(
-      "kreisList",
-      data.kreis_buckets,
-      data.total_participants,
-      "county",
-      15
-    );
+  const cdfX = percentileEntries.map(e => e[1]);
+  const cdfY = percentileEntries.map(e => parseFloat(e[0]) / 100);
 
-    renderHexagonTable(data.top3_hexagons_r7);
+  renderCDF(cdfX, cdfY);
+  renderPDF(cdfX, cdfY);
+  renderBucketChart(data.distance_buckets);
+}
+
+/* --------------------------------------------------------
+   EMPIRICAL CDF
+---------------------------------------------------------*/
+function renderCDF(xVals, yVals) {
+  new Chart(document.getElementById("cdfChart"), {
+    type: "line",
+    data: {
+      labels: xVals,
+      datasets: [{
+        label: "CDF",
+        data: yVals,
+        borderColor: "#4F46E5",
+        backgroundColor: "rgba(79,70,229,0.15)",
+        fill: true,
+        tension: 0.25,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      scales: {
+        x: {
+          title: { display: true, text: "Distance (km)" },
+          ticks: { color: "#9BA5B4" }
+        },
+        y: {
+          title: { display: true, text: "Cumulative probability" },
+          min: 0,
+          max: 1,
+          ticks: { color: "#9BA5B4" }
+        }
+      },
+      plugins: { legend: { display: false } }
+    }
   });
+}
 
-  /* ----- Charts ----- */
+/* --------------------------------------------------------
+   APPROXIMATE PDF (numerical derivative of CDF)
+---------------------------------------------------------*/
+function renderPDF(xVals, yVals) {
+  let pdfX = [];
+  let pdfY = [];
 
-  function renderPercentileChart(percentiles) {
-    const ctx = document.getElementById("percentileChart");
-    const entries = Object.entries(percentiles).sort((a, b) => {
-      const pa = parseFloat(a[0]);
-      const pb = parseFloat(b[0]);
-      return pa - pb;
-    });
-    const labels = entries.map(([k]) => k);
-    const values = entries.map(([, v]) => v);
+  for (let i = 1; i < xVals.length; i++) {
+    let dx = xVals[i] - xVals[i-1];
+    let dy = yVals[i] - yVals[i-1];
+    if (dx > 0) {
+      pdfX.push((xVals[i] + xVals[i-1]) / 2);
+      pdfY.push(dy / dx);
+    }
+  }
 
-    new Chart(ctx, {
-      type: "line",
-      data: {
-        labels,
-        datasets: [
-          {
-            label: "Distance (km)",
-            data: values,
-            borderColor: palette[0],
-            pointBackgroundColor: palette[2],
-            pointRadius: 3,
-            borderWidth: 2.5,
-            tension: 0.35,
-            fill: true,
-            backgroundColor: "rgba(132,94,194,0.12)"
-          }
-        ]
-      },
-      options: {
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: ctx => `${ctx.parsed.y.toFixed(1)} km`
-            }
-          }
+  new Chart(document.getElementById("pdfChart"), {
+    type: "line",
+    data: {
+      labels: pdfX,
+      datasets: [{
+        label: "PDF",
+        data: pdfY,
+        borderColor: "#0EA5E9",
+        backgroundColor: "rgba(14,165,233,0.15)",
+        fill: true,
+        tension: 0.3,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      scales: {
+        x: {
+          title: { display: true, text: "Distance (km)" },
+          ticks: { color: "#9BA5B4" }
         },
-        scales: {
-          x: {
-            ticks: { color: "#B0A8B9", maxRotation: 0 },
-            grid: { display: false }
-          },
-          y: {
-            ticks: {
-              color: "#B0A8B9"
-            },
-            grid: {
-              color: "rgba(75,68,83,0.5)"
-            }
-          }
+        y: {
+          title: { display: true, text: "Density" },
+          ticks: { color: "#9BA5B4" }
+        }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+/* --------------------------------------------------------
+   BUCKET CHART
+---------------------------------------------------------*/
+function renderBucketChart(buckets) {
+  const labels = Object.keys(buckets);
+  const values = Object.values(buckets);
+
+  new Chart(document.getElementById("bucketChart"), {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label: "Participants",
+        data: values,
+        backgroundColor: "#10B981"
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false }},
+      scales: {
+        x: {
+          ticks: { color: "#9BA5B4" }
+        },
+        y: {
+          ticks: { color: "#9BA5B4" }
         }
       }
-    });
-  }
-
-  function renderBucketChart(buckets) {
-    const ctx = document.getElementById("bucketChart");
-    const labels = Object.keys(buckets);
-    const values = Object.values(buckets);
-
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels,
-        datasets: [
-          {
-            label: "Participants",
-            data: values,
-            backgroundColor: labels.map((_, i) => palette[i % palette.length])
-          }
-        ]
-      },
-      options: {
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: ctx => `${ctx.parsed.y.toLocaleString("de-DE")} participants`
-            }
-          }
-        },
-        scales: {
-          x: {
-            ticks: { color: "#B0A8B9" },
-            grid: { display: false }
-          },
-          y: {
-            ticks: { color: "#B0A8B9" },
-            grid: { color: "rgba(75,68,83,0.5)" }
-          }
-        }
-      }
-    });
-  }
-
-  function renderWindRoseChart(windRose) {
-    const ctx = document.getElementById("windRoseChart");
-    const labels = Object.keys(windRose);
-    const values = Object.values(windRose);
-
-    new Chart(ctx, {
-      type: "polarArea",
-      data: {
-        labels,
-        datasets: [
-          {
-            data: values,
-            backgroundColor: labels.map((_, i) => palette[i % palette.length]),
-            borderWidth: 0
-          }
-        ]
-      },
-      options: {
-        plugins: {
-          legend: {
-            labels: {
-              color: "#B0A8B9",
-              boxWidth: 10
-            }
-          },
-          tooltip: {
-            callbacks: {
-              label: ctx => `${ctx.label}: ${ctx.parsed.toLocaleString("de-DE")}`
-            }
-          }
-        },
-        scales: {
-          r: {
-            grid: { color: "rgba(75,68,83,0.6)" },
-            ticks: { color: "#B0A8B9" }
-          }
-        }
-      }
-    });
-  }
-
-  function renderDirectionalBucketChart(dirBuckets) {
-    const ctx = document.getElementById("directionBucketsChart");
-    const directionsOrder = [
-      "N","NNE","NE","ENE","E","ESE","SE","SSE",
-      "S","SSW","SW","WSW","W","WNW","NW","NNW"
-    ];
-    const bucketLabels = Object.keys(rawData.distance_buckets);
-
-    const datasets = bucketLabels.map((bucket, idx) => ({
-      label: bucket,
-      data: directionsOrder.map(dir => dirBuckets[dir][bucket]),
-      backgroundColor: palette[idx % palette.length],
-      stack: "dist"
-    }));
-
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: directionsOrder,
-        datasets
-      },
-      options: {
-        plugins: {
-          legend: {
-            labels: { color: "#B0A8B9" }
-          },
-          tooltip: {
-            callbacks: {
-              label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString("de-DE")}`
-            }
-          }
-        },
-        responsive: true,
-        scales: {
-          x: {
-            stacked: true,
-            ticks: { color: "#B0A8B9", maxRotation: 0 },
-            grid: { display: false }
-          },
-          y: {
-            stacked: true,
-            ticks: { color: "#B0A8B9" },
-            grid: { color: "rgba(75,68,83,0.5)" }
-          }
-        }
-      }
-    });
-  }
-
-  /* ----- Lists & table ----- */
-
-  function renderBucketLists(containerId, buckets, totalParticipants, kind, limit) {
-    const container = document.getElementById(containerId);
-    const entries = Object.entries(buckets)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, limit || Object.keys(buckets).length);
-
-    const maxVal = Math.max(...entries.map(([, v]) => v));
-
-    entries.forEach(([label, value]) => {
-      const pct = totalParticipants > 0 ? (value / totalParticipants) * 100 : 0;
-      const widthPct = maxVal > 0 ? (value / maxVal) * 100 : 0;
-
-      const row = document.createElement("div");
-      row.className = "list-item";
-      row.innerHTML = `
-        <div class="list-item-label">${label}</div>
-        <div class="list-item-bar">
-          <div class="bar-track">
-            <div class="bar-fill" style="width:${widthPct.toFixed(1)}%;"></div>
-          </div>
-          <div class="list-item-value">
-            ${value.toLocaleString("de-DE")}
-            <div class="muted" style="font-size:10px;">${pct.toFixed(1)}%</div>
-          </div>
-        </div>
-      `;
-      container.appendChild(row);
-    });
-  }
-
-  function renderHexagonTable(hexagons) {
-    const body = document.getElementById("hexagonTableBody");
-    hexagons
-      .sort((a, b) => b.count - a.count)
-      .forEach((h, idx) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${idx + 1}</td>
-          <td><code>${h.h3_id}</code></td>
-          <td>${h.count.toLocaleString("de-DE")}</td>
-        `;
-        body.appendChild(tr);
-      });
-  }
+    }
+  });
+}
 </script>
+
 </body>
 </html>
