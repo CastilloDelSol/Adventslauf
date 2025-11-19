@@ -5,7 +5,7 @@
 <title>Distance Statistics Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Chart.js -->
+<!-- CHART.JS (old source you wanted back) -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -124,100 +124,69 @@ canvas {
 </div>
 
 <script>
-// FORMAT NUMBER: decimal comma, no thousands
-function formatNumber(value) {
-  return String(value).replace(".", ",");
-}
+// comma decimal only
+function formatNumber(val) { return String(val).replace(".", ","); }
 
 document.addEventListener("DOMContentLoaded", () => {
   fetch("./statistics.json")
     .then(r => r.json())
-    .then(data => buildDashboard(data))
-    .catch(err => console.error("Could not load statistics.json", err));
+    .then(buildDashboard)
+    .catch(err => console.error("Load error", err));
 });
 
 function buildDashboard(data) {
+  // Top
+  document.getElementById("totalParticipants").textContent = data.total_participants;
+  document.getElementById("distanceMin").textContent = formatNumber(data.distance_min_km.toFixed(2));
+  document.getElementById("distanceAvg").textContent = formatNumber(data.distance_avg_km.toFixed(2));
+  document.getElementById("distanceMedian").textContent = formatNumber(data.distance_median_km.toFixed(2));
+  document.getElementById("distanceMax").textContent = formatNumber(data.distance_max_km.toFixed(2));
 
-  // ---- TOP VALUES ----
-  document.getElementById("totalParticipants").textContent =
-    String(data.total_participants);
-
-  document.getElementById("distanceMin").textContent =
-    formatNumber(data.distance_min_km.toFixed(2));
-
-  document.getElementById("distanceAvg").textContent =
-    formatNumber(data.distance_avg_km.toFixed(2));
-
-  document.getElementById("distanceMedian").textContent =
-    formatNumber(data.distance_median_km.toFixed(2));
-
-  document.getElementById("distanceMax").textContent =
-    formatNumber(data.distance_max_km.toFixed(2));
-
-
-  // ---- Extract percentiles ----
+  // Percentiles
   const entries = Object.entries(data.percentiles_km)
-    .sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]));
+      .sort((a,b)=>parseFloat(a[0])-parseFloat(b[0]));
 
-  const percentiles = entries.map(e => parseFloat(e[0])); // 0–100
-  const distances = entries.map(e => e[1]);               // km values
+  const p = entries.map(e => parseFloat(e[0])); // 0..100
+  const d = entries.map(e => e[1]);             // km
 
-
-  // ---- Only show X-axis labels every 10% ----
-  const xTickCallback = (value, index, ticks) => {
-    return value % 10 === 0 ? value + "%" : "";
-  };
-
-
-  // ---- CHART ----
-  const ctx = document.getElementById("percentileChart");
-
-  new Chart(ctx, {
+  // Chart.js
+  new Chart(document.getElementById("percentileChart"), {
     type: "line",
     data: {
-      labels: percentiles,
+      labels: p,
       datasets: [{
         label: "Distanz [km]",
-        data: distances,
+        data: d,
         borderColor: "#0EA5E9",
-        backgroundColor: "rgba(14,165,233,0.12)",
-        borderWidth: 2.5,
-        pointRadius: 3,
-        tension: 0.15
+        backgroundColor: "rgba(14,165,233,0.10)",
+        pointRadius: 2,
+        borderWidth: 2,
+        tension: 0.12
       }]
     },
     options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: ctx => formatNumber(ctx.parsed.y.toFixed(2)) + " km"
-          }
-        }
-      },
+      plugins: { legend: { display: false }},
       scales: {
         x: {
           title: { display: true, text: "Perzentil [%]" },
           ticks: {
             color: "#9BA5B4",
-            callback: xTickCallback
+            callback: (value) => (value % 10 === 0 ? value + "%" : ""),
           },
-          grid: { color: "rgba(255,255,255,0.06)" }
+          grid: { color: "rgba(255,255,255,0.05)" }
         },
         y: {
           type: "logarithmic",
           title: { display: true, text: "Distanz [km]" },
           ticks: {
             color: "#9BA5B4",
-            callback: (value) => formatNumber(value)
+            callback: (val) => formatNumber(val)
           },
-          grid: { color: "rgba(255,255,255,0.06)" }
+          grid: { color: "rgba(255,255,255,0.05)" }
         }
       }
     }
   });
-
 }
 </script>
 
