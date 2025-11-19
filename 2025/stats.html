@@ -1,43 +1,45 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Distance Statistics Dashboard</title>
+<title>Distance Statistics</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-/* Dark serious theme */
 :root {
-  --bg: #0D1117;
-  --card: #1F242C;
+  --primary: #0EA5E9;
   --text: #E6EDF3;
   --muted: #9BA5B4;
-  --border: #30363D;
-  --primary: #0EA5E9;
+  --bg: #0D1117;
+  --card: #161B22;
+  --border: #2B313A;
   --radius: 14px;
 }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: Inter, sans-serif;
-  padding: 30px;
+  font-family: "Inter", sans-serif;
+  padding: 24px;
   display: flex;
   justify-content: center;
 }
 
 .page {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1200px;
 }
 
 h1 {
-  margin-bottom: 10px;
   font-size: 26px;
   font-weight: 600;
+  margin-bottom: 10px;
 }
 
 .subtitle {
@@ -47,20 +49,21 @@ h1 {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(12,1fr);
+  grid-template-columns: repeat(12, 1fr);
   gap: 20px;
 }
 
 .stat-box {
   background: var(--card);
-  padding: 18px 22px;
-  border-radius: var(--radius);
   border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
 }
 
 .stat-value {
   font-size: 28px;
   font-weight: 600;
+  line-height: 1.2;
 }
 
 .stat-label {
@@ -70,54 +73,54 @@ h1 {
 
 .card {
   background: var(--card);
-  padding: 22px;
-  border-radius: var(--radius);
   border: 1px solid var(--border);
-  margin-top: 30px;
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-top: 26px;
 }
 
 .card-title {
-  color: var(--primary);
   font-size: 15px;
   font-weight: 600;
-  margin-bottom: 14px;
+  color: var(--primary);
+  margin-bottom: 12px;
 }
 
-canvas { width: 100% !important; height: 380px !important; }
+canvas {
+  width: 100% !important;
+  height: 360px !important;
+}
+
 </style>
 </head>
-
 <body>
-<div class="page">
-<h1>Distance Statistics</h1>
-<div class="subtitle">Percentile distribution on logarithmic scale</div>
 
-<!-- Summary -->
+<div class="page">
+
+<h1>Distance Statistics</h1>
+<div class="subtitle">Percentile-based view of participant distances</div>
+
+<!-- TOP SUMMARY -->
 <div class="grid">
 
-  <div class="stat-box" style="grid-column: span 3;">
-    <div class="stat-value" id="total">–</div>
-    <div class="stat-label">Teilnehmer</div>
+  <div class="stat-box" style="grid-column: span 4;">
+    <div class="stat-value" id="totalParticipants">–</div>
+    <div class="stat-label">Participants</div>
   </div>
 
-  <div class="stat-box" style="grid-column: span 3;">
-    <div class="stat-value" id="min">–</div>
-    <div class="stat-label">Minimum (km)</div>
+  <div class="stat-box" style="grid-column: span 4;">
+    <div class="stat-value" id="distanceAvg">–</div>
+    <div class="stat-label">Average Distance (km)</div>
   </div>
 
-  <div class="stat-box" style="grid-column: span 3;">
-    <div class="stat-value" id="median">–</div>
-    <div class="stat-label">Median (km)</div>
-  </div>
-
-  <div class="stat-box" style="grid-column: span 3;">
-    <div class="stat-value" id="avg">–</div>
-    <div class="stat-label">Durchschnitt (km)</div>
+  <div class="stat-box" style="grid-column: span 4;">
+    <div class="stat-value" id="distanceMedian">–</div>
+    <div class="stat-label">Median Distance (km)</div>
   </div>
 
 </div>
 
-<!-- Percentile log chart -->
+<!-- CHART -->
 <div class="card">
   <div class="card-title">km</div>
   <canvas id="percentileChart"></canvas>
@@ -126,104 +129,88 @@ canvas { width: 100% !important; height: 380px !important; }
 </div>
 
 <script>
-// Format numbers with German style
-function fmt(n) {
-  return n.toLocaleString("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+// Format numbers WITHOUT thousand separators
+function noThousand(num) {
+  return String(num).replace(/\./g, "").replace(/,/g, ".");
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  fetch("./statistics.json")
-    .then(r => r.json())
-    .then(data => {
-      document.getElementById("total").textContent  = fmt(data.total_participants);
-      document.getElementById("min").textContent    = fmt(data.distance_min_km);
-      document.getElementById("median").textContent = fmt(data.distance_median_km);
-      document.getElementById("avg").textContent    = fmt(data.distance_avg_km);
+// Convert decimals to comma
+function germanDecimal(num) {
+  return num.toString().replace(".", ",");
+}
 
-      const percentiles = Object.entries(data.percentiles_km)
-        .sort((a,b) => parseFloat(a[0]) - parseFloat(b[0]));
+// Load JSON
+fetch("./statistics.json")
+  .then(r => r.json())
+  .then(data => render(data));
 
-      const x = percentiles.map(([p]) => parseFloat(p));
-      const y = percentiles.map(([_,v]) => v);
+function render(data) {
+  // Fill top boxes
+  document.getElementById("totalParticipants").textContent =
+    noThousand(data.total_participants);
 
-      new Chart(document.getElementById("percentileChart"), {
-          type: "line",
-          data: {
-              labels: percentilesX,   // [0,5,10,...,100]
-              datasets: [{
-                  label: "",
-                  data: percentilesY, // km values
-                  borderColor: "#0EA5E9",
-                  backgroundColor: "transparent",
-                  pointRadius: 4,
-                  pointBackgroundColor: "#0EA5E9",
-                  borderWidth: 2,
-                  tension: 0.15
-              }]
+  document.getElementById("distanceAvg").textContent =
+    germanDecimal(data.distance_avg_km.toFixed(1));
+
+  document.getElementById("distanceMedian").textContent =
+    germanDecimal(data.distance_median_km.toFixed(1));
+
+  // Prepare percentile data
+  const entries = Object.entries(data.percentiles_km)
+    .sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]));
+
+  const percentiles = entries.map(e => parseFloat(e[0]));
+  const distances = entries.map(e => e[1]);
+
+  // Draw chart
+  new Chart(document.getElementById("percentileChart"), {
+    type: "line",
+    data: {
+      labels: percentiles,
+      datasets: [{
+        label: "",
+        data: distances,
+        borderColor: "#0EA5E9",
+        backgroundColor: "rgba(14,165,233,0.10)",
+        borderWidth: 2,
+        pointRadius: 3,
+        tension: 0.1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: "Percentil [%]" },
+          ticks: {
+            color: "#9BA5B4",
+            autoSkip: true,
+            maxRotation: 0,
+            minRotation: 0
           },
-          options: {
-              plugins: {
-                  legend: { display: false },
-                  title: {
-                      display: true,
-                      text: "km",
-                      align: "start",
-                      color: "#0EA5E9",
-                      font: {
-                          size: 15,
-                          weight: "600"
-                      },
-                      padding: { bottom: 12 }
-                  },
-                  tooltip: {
-                      callbacks: {
-                          label: function(ctx) {
-                              const v = ctx.parsed.y;
-                              return formatNumber(v) + " km";
-                          }
-                      }
-                  }
-              },
-              scales: {
-                  x: {
-                      title: {
-                          display: true,
-                          text: "Percentil [%]",
-                          color: "#9BA5B4"
-                      },
-                      ticks: {
-                          color: "#9BA5B4",
-                          autoSkip: true,
-                          maxRotation: 0,
-                          minRotation: 0
-                      },
-                      grid: {
-                          color: "rgba(255,255,255,0.05)"
-                      }
-                  },
-                  y: {
-                      type: "logarithmic",
-                      title: {
-                          display: true,
-                          text: "Distanz [km]",
-                          color: "#9BA5B4"
-                      },
-                      ticks: {
-                          callback: function(v) {
-                              return formatNumber(v);
-                          },
-                          color: "#9BA5B4"
-                      },
-                      grid: {
-                          color: "rgba(255,255,255,0.08)",
-                          lineWidth: 0.7
-                      }
-                  }
-              }
+          grid: { color: "rgba(255,255,255,0.07)" }
+        },
+        y: {
+          type: "logarithmic",
+          title: { display: true, text: "Distanz [km]" },
+          ticks: {
+            color: "#9BA5B4",
+            callback: function(value) {
+              return noThousand(value);
+            }
+          },
+          grid: {
+            color: "rgba(255,255,255,0.07)",
+            lineWidth: 0.7
           }
-      });
-    });
-});
+        }
+      }
+    }
+  });
+}
 </script>
 
 </body>
