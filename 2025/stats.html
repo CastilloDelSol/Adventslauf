@@ -155,78 +155,69 @@ function buildDashboard(data) {
 const entries = Object.entries(data.percentiles_km)
   .sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]));
 
-const percentiles = entries.map(e => parseFloat(e[0])); // x-axis
-const distances   = entries.map(e => e[1]);             // y-axis
+const percentiles = entries.map(e => parseFloat(e[0]));
+const distances   = entries.map(e => e[1]);
 
-// ---- Improved log-scale ticks ----
-const yTickVals = [
-  0.1, 0.2, 0.5,
-  1, 2, 5,
-  10, 20, 50,
-  100, 200, 500,
-  1000, 2000
-];
+// ---- Main log ticks ----
+const mainTicks = [0.1, 1, 10, 100, 1000];
+const mainTickLabels = mainTicks.map(v => formatNumber(v));
 
-const yTickText = yTickVals.map(v => formatNumber(v));
+// ---- Minor ticks (no labels) ----
+// generate 0.2–0.9, 2–9, 20–90, …
+let minorTicks = [];
+for (let decade of [0.1, 1, 10, 100, 1000]) {
+  for (let m = 2; m <= 9; m++) {
+    minorTicks.push(decade * (m / 10));
+  }
+}
 
-// ---- Plot trace ----
 const trace = {
   x: percentiles,
   y: distances,
   mode: "lines+markers",
   line: { color: "#0EA5E9", width: 3 },
-  marker: { color: "#0EA5E9", size: 5 }
+  marker: { color: "#0EA5E9", size: 4 }
 };
 
-// ---- Improved layout ----
 const layout = {
-  title: "",
+  title: "Perzentilverteilung der Anreiseentfernungen",
+  titlefont: { color: "#E6EDF3", size: 18 },
   paper_bgcolor: "rgba(0,0,0,0)",
   plot_bgcolor: "rgba(0,0,0,0)",
-  margin: { t: 20, r: 20, b: 60, l: 80 },
+  margin: { t: 50, r: 20, b: 60, l: 80 },
 
-  // -------------------------------
-  // X-AXIS: 10% major ticks + 5% minor grid
-  // -------------------------------
   xaxis: {
     title: "Perzentil [%]",
-    color: "#E6EDF3",
-    tickfont: { size: 12 },
-    titlefont: { size: 14 },
+    tick0: 0,
+    dtick: 10,
+    tickfont: { size: 12, color: "#E6EDF3" },
+    titlefont: { size: 14, color: "#E6EDF3" },
     gridcolor: "rgba(140,140,140,0.22)",
-
-    tick0: 0,           // start at 0
-    dtick: 10,          // major ticks every 10%
-    showgrid: true,
-    zeroline: false,
-
-    // minor grid every 5%
     minor: {
       dtick: 5,
       showgrid: true,
-      gridcolor: "rgba(140,140,140,0.10)" // softer than main grid
+      gridcolor: "rgba(140,140,140,0.10)"
     }
   },
 
-  // -------------------------------
-  // Y-AXIS: clean log scale
-  // -------------------------------
   yaxis: {
-    title: "Distanz [km]",
+    title: "Anreise Entfernung [km]",
     type: "log",
-    color: "#E6EDF3",
-    tickvals: yTickVals,
-    ticktext: yTickText,
-    tickfont: { size: 12 },
-    titlefont: { size: 14 },
+    tickvals: mainTicks,
+    ticktext: mainTickLabels,
+    tickfont: { size: 12, color: "#E6EDF3" },
+    titlefont: { size: 14, color: "#E6EDF3" },
+
+    // main grid
     gridcolor: "rgba(140,140,140,0.22)",
     showgrid: true,
     zeroline: false,
 
-    // subtle minor log ticks between decades
+    // minor log grid lines
     minor: {
+      tickvals: minorTicks,
       showgrid: true,
-      gridcolor: "rgba(140,140,140,0.10)"
+      gridcolor: "rgba(140,140,140,0.08)"
     }
   },
 
@@ -237,6 +228,7 @@ Plotly.newPlot("percentilePlot", [trace], layout, {
   responsive: true,
   displayModeBar: false
 });
+
 }
 </script>
 
