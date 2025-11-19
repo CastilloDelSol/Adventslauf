@@ -111,9 +111,14 @@ h1 {
   </div>
 </div>
 
-<!-- CHART -->
+<!-- PERCENTILE CHART -->
 <div class="chart-card">
   <div id="percentilePlot" style="height: 600px;"></div>
+</div>
+
+<!-- HISTOGRAM CHART -->
+<div class="chart-card">
+  <div id="distanceHistogram" style="height: 500px;"></div>
 </div>
 
 </div>
@@ -122,7 +127,6 @@ h1 {
 // --- Custom formatter: comma decimal, NO thousand separators ---
 function formatNumber(value) {
   let s = String(value).replace(".", ",");
-  // remove any thousands separators
   return s.replace(/\./g, "");
 }
 
@@ -137,7 +141,7 @@ function buildDashboard(data) {
 
   // ---- TOP VALUES ----
   document.getElementById("totalParticipants").textContent =
-    String(data.total_participants); // EXACT, no formatting
+    String(data.total_participants);
 
   document.getElementById("distanceMin").textContent =
     formatNumber(data.distance_min_km.toFixed(2));
@@ -151,19 +155,24 @@ function buildDashboard(data) {
   document.getElementById("distanceMax").textContent =
     formatNumber(data.distance_max_km.toFixed(2));
 
-// ---- Percentile data ----
-const entries = Object.entries(data.percentiles_km)
+  buildPercentilePlot(data.percentiles_km);
+  buildHistogram(data.distance_histogram);
+}
+
+// ======================================================
+// =============== Percentile Plot ======================
+// ======================================================
+function buildPercentilePlot(percentileData) {
+
+const entries = Object.entries(percentileData)
   .sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]));
 
 const percentiles = entries.map(e => parseFloat(e[0]));
 const distances   = entries.map(e => e[1]);
 
-// ---- Main log ticks ----
 const mainTicks = [0.1, 1, 10, 100, 1000];
 const mainTickLabels = mainTicks.map(v => formatNumber(v));
 
-// ---- Minor ticks (no labels) ----
-// generate 0.2–0.9, 2–9, 20–90, …
 let minorTicks = [];
 for (let decade of [0.1, 1, 10, 100, 1000]) {
   for (let m = 2; m <= 9; m++) {
@@ -207,13 +216,9 @@ const layout = {
     ticktext: mainTickLabels,
     tickfont: { size: 12, color: "#E6EDF3" },
     titlefont: { size: 14, color: "#E6EDF3" },
-
-    // main grid
     gridcolor: "rgba(140,140,140,0.22)",
     showgrid: true,
     zeroline: false,
-
-    // minor log grid lines
     minor: {
       tickvals: minorTicks,
       showgrid: true,
@@ -228,8 +233,53 @@ Plotly.newPlot("percentilePlot", [trace], layout, {
   responsive: true,
   displayModeBar: false
 });
-
 }
+
+
+// ======================================================
+// ================= Histogram Plot =====================
+// ======================================================
+function buildHistogram(distance_histogram) {
+
+  const labels = distance_histogram.map(b => `${b.min}-${b.max}`);
+  const counts = distance_histogram.map(b => b.count);
+
+  const trace = {
+    x: labels,
+    y: counts,
+    type: "bar",
+    marker: { color: "#0EA5E9" }
+  };
+
+  const layout = {
+    title: "Histogramm der Anreiseentfernungen",
+    titlefont: { color: "#E6EDF3", size: 18 },
+    paper_bgcolor: "rgba(0,0,0,0)",
+    plot_bgcolor: "rgba(0,0,0,0)",
+    margin: { t: 50, r: 20, b: 120, l: 60 },
+
+    xaxis: {
+      title: "Distanzklasse [km]",
+      tickangle: -45,
+      tickfont: { color: "#E6EDF3" },
+      titlefont: { color: "#E6EDF3" },
+      gridcolor: "rgba(255,255,255,0.05)"
+    },
+
+    yaxis: {
+      title: "Teilnehmer",
+      tickfont: { color: "#E6EDF3" },
+      titlefont: { color: "#E6EDF3" },
+      gridcolor: "rgba(255,255,255,0.05)"
+    }
+  };
+
+  Plotly.newPlot("distanceHistogram", [trace], layout, {
+    responsive: true,
+    displayModeBar: false
+  });
+}
+
 </script>
 
 </body>
