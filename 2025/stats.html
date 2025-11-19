@@ -147,38 +147,80 @@ document.addEventListener("DOMContentLoaded", () => {
       const y = percentiles.map(([_,v]) => v);
 
       new Chart(document.getElementById("percentileChart"), {
-        type: "line",
-        data: {
-          labels: x,
-          datasets: [{
-            label: "Distanz",
-            data: y,
-            borderColor: "#0EA5E9",
-            borderWidth: 2,
-            pointRadius: 3,
-            pointBackgroundColor: "#0EA5E9",
-            tension: 0
-          }]
-        },
-        options: {
-          plugins: { legend: { display: false }},
-          scales: {
-            x: {
-              title: { display: true, text: "Percentil [%]" },
-              ticks: { color: "#9BA5B4" }
-            },
-            y: {
-              type: "logarithmic",
-              title: { display: true, text: "Distanz [km]" },
-              ticks: {
-                color: "#9BA5B4",
-                callback: v => fmt(v)
+          type: "line",
+          data: {
+              labels: percentilesX,   // [0,5,10,...,100]
+              datasets: [{
+                  label: "",
+                  data: percentilesY, // km values
+                  borderColor: "#0EA5E9",
+                  backgroundColor: "transparent",
+                  pointRadius: 4,
+                  pointBackgroundColor: "#0EA5E9",
+                  borderWidth: 2,
+                  tension: 0.15
+              }]
+          },
+          options: {
+              plugins: {
+                  legend: { display: false },
+                  title: {
+                      display: true,
+                      text: "km",
+                      align: "start",
+                      color: "#0EA5E9",
+                      font: {
+                          size: 15,
+                          weight: "600"
+                      },
+                      padding: { bottom: 12 }
+                  },
+                  tooltip: {
+                      callbacks: {
+                          label: function(ctx) {
+                              const v = ctx.parsed.y;
+                              return formatNumber(v) + " km";
+                          }
+                      }
+                  }
               },
-              min: 0.1,
-              max: 10000
-            }
+              scales: {
+                  x: {
+                      title: {
+                          display: true,
+                          text: "Percentil [%]",
+                          color: "#9BA5B4"
+                      },
+                      ticks: {
+                          color: "#9BA5B4",
+                          autoSkip: true,
+                          maxRotation: 0,
+                          minRotation: 0
+                      },
+                      grid: {
+                          color: "rgba(255,255,255,0.05)"
+                      }
+                  },
+                  y: {
+                      type: "logarithmic",
+                      title: {
+                          display: true,
+                          text: "Distanz [km]",
+                          color: "#9BA5B4"
+                      },
+                      ticks: {
+                          callback: function(v) {
+                              return formatNumber(v);
+                          },
+                          color: "#9BA5B4"
+                      },
+                      grid: {
+                          color: "rgba(255,255,255,0.08)",
+                          lineWidth: 0.7
+                      }
+                  }
+              }
           }
-        }
       });
     });
 });
