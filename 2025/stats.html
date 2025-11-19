@@ -1,45 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Distance Statistics Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Plotly -->
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+<style>
+:root {
+  --bg: #0D1117;
+  --card: #161B22;
+  --text: #E6EDF3;
+  --muted: #9BA5B4;
+  --border: #2D333B;
+  --accent: #0EA5E9;
+  --radius: 14px;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.page {
+  width: 100%;
+  max-width: 1200px;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  color: var(--muted);
+  margin-bottom: 25px;
+}
+
+.grid-5 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+}
+
+.box {
+  background: var(--card);
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.box-value {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.box-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.chart-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px;
+  border: 1px solid var(--border);
+  margin-top: 25px;
+}
+</style>
+</head>
+
+<body>
+<div class="page">
+
+<h1>Distance Statistics Dashboard</h1>
+<div class="subtitle">Percentil-Auswertung — Plotly, gestochen scharf</div>
+
+<!-- TOP BOXES -->
+<div class="grid-5">
+  <div class="box">
+    <div class="box-value" id="totalParticipants">–</div>
+    <div class="box-label">Teilnehmer</div>
+  </div>
+
+  <div class="box">
+    <div class="box-value" id="distanceMin">–</div>
+    <div class="box-label">Minimum (km)</div>
+  </div>
+
+  <div class="box">
+    <div class="box-value" id="distanceAvg">–</div>
+    <div class="box-label">Durchschnitt (km)</div>
+  </div>
+
+  <div class="box">
+    <div class="box-value" id="distanceMedian">–</div>
+    <div class="box-label">Median (km)</div>
+  </div>
+
+  <div class="box">
+    <div class="box-value" id="distanceMax">–</div>
+    <div class="box-label">Maximum (km)</div>
+  </div>
+</div>
+
+<!-- CHART -->
+<div class="chart-card">
+  <div id="percentilePlot" style="height: 420px;"></div>
+</div>
+
+</div>
+
 <script>
-// --- formatter: Komma als Dezimaltrenner ---
+// --- Custom formatter: comma decimal, NO thousand separators ---
 function formatNumber(value) {
-  return String(value).replace(".", ",");
+  let s = String(value).replace(".", ",");
+  // remove any thousands separators
+  return s.replace(/\./g, "");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   fetch("./statistics.json")
     .then(r => r.json())
-    .then(buildDashboard)
+    .then(data => buildDashboard(data))
     .catch(err => console.error("Could not load statistics.json", err));
 });
 
 function buildDashboard(data) {
 
-  // ---- TOP BOX VALUES ----
-  document.getElementById("totalParticipants").textContent = data.total_participants;
-  document.getElementById("distanceMin").textContent = formatNumber(data.distance_min_km.toFixed(2));
-  document.getElementById("distanceAvg").textContent = formatNumber(data.distance_avg_km.toFixed(2));
-  document.getElementById("distanceMedian").textContent = formatNumber(data.distance_median_km.toFixed(2));
-  document.getElementById("distanceMax").textContent = formatNumber(data.distance_max_km.toFixed(2));
+  // ---- TOP VALUES ----
+  document.getElementById("totalParticipants").textContent =
+    String(data.total_participants); // EXACT, no formatting
 
-  // ---- 1%-Perzentile ----
+  document.getElementById("distanceMin").textContent =
+    formatNumber(data.distance_min_km.toFixed(2));
+
+  document.getElementById("distanceAvg").textContent =
+    formatNumber(data.distance_avg_km.toFixed(2));
+
+  document.getElementById("distanceMedian").textContent =
+    formatNumber(data.distance_median_km.toFixed(2));
+
+  document.getElementById("distanceMax").textContent =
+    formatNumber(data.distance_max_km.toFixed(2));
+
+
+  // ---- Percentile data ----
   const entries = Object.entries(data.percentiles_km)
     .sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]));
 
-  const percentiles = entries.map(e => parseFloat(e[0])); // 0..100
-  const distances = entries.map(e => e[1]);               // km
+  const percentiles = entries.map(e => parseFloat(e[0])); // x-axis
+  const distances   = entries.map(e => e[1]);             // y-axis
 
-  // ----- X-axis tick labels: only 0,10,20,...100 -----
-  const xTicks = [];
-  const xTickLabels = [];
-  for (let p = 0; p <= 100; p += 1) {
-    xTicks.push(p);
-    xTickLabels.push(p % 10 === 0 ? p + "%" : "");
-  }
+  // Axis ticks like your screenshot:
+  const yTickVals = [0.1, 0.2, 0.4, 0.7, 1, 3, 7, 10, 30, 70, 100, 300, 700, 1000, 3000];
+  const yTickText = yTickVals.map(v => formatNumber(v));
 
-  // ----- Y-axis ticks (logarithmic, human) -----
-  const yTicks = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000];
-  const yTickLabels = yTicks.map(v => formatNumber(v));
-
-  // ----- TRACE -----
   const trace = {
     x: percentiles,
     y: distances,
@@ -48,32 +171,33 @@ function buildDashboard(data) {
     marker: { color: "#0EA5E9", size: 5 }
   };
 
-  // ----- LAYOUT -----
   const layout = {
+    title: "",
     paper_bgcolor: "rgba(0,0,0,0)",
     plot_bgcolor: "rgba(0,0,0,0)",
-    margin: { t: 15, r: 20, b: 60, l: 75 },
+    margin: { t: 20, r: 20, b: 60, l: 80 },
 
     xaxis: {
       title: "Perzentil [%]",
-      range: [0, 100],
-      tickvals: xTicks,
-      ticktext: xTickLabels,
-      tickfont: { color: "#E6EDF3", size: 12 },
-      titlefont: { color: "#E6EDF3", size: 14 },
+      color: "#E6EDF3",
+      tickfont: { size: 12 },
+      titlefont: { size: 14 },
+      gridcolor: "rgba(140,140,140,0.22)",
       showgrid: true,
-      gridcolor: "rgba(140,140,140,0.22)"
+      zeroline: false
     },
 
     yaxis: {
-      type: "log",
       title: "Distanz [km]",
-      tickvals: yTicks,
-      ticktext: yTickLabels,
-      tickfont: { color: "#E6EDF3", size: 12 },
-      titlefont: { color: "#E6EDF3", size: 14 },
+      type: "log",
+      color: "#E6EDF3",
+      tickvals: yTickVals,
+      ticktext: yTickText,
+      tickfont: { size: 12 },
+      titlefont: { size: 14 },
+      gridcolor: "rgba(140,140,140,0.22)",
       showgrid: true,
-      gridcolor: "rgba(140,140,140,0.22)"
+      zeroline: false
     },
 
     hovermode: "closest"
@@ -85,3 +209,6 @@ function buildDashboard(data) {
   });
 }
 </script>
+
+</body>
+</html>
