@@ -101,6 +101,11 @@ h1 {
   </div>
 
   <div class="box" style="grid-column: span 3;">
+    <div class="box-value" id="distanceMedian">–</div>
+    <div class="box-label">Median distance (km)</div>
+  </div>
+
+  <div class="box" style="grid-column: span 3;">
     <div class="box-value" id="distanceMax">–</div>
     <div class="box-label">Maximum distance (km)</div>
   </div>
@@ -140,6 +145,9 @@ function buildDashboard(data) {
 
   document.getElementById("distanceAvg").textContent =
     formatNumber(data.distance_avg_km.toFixed(2));
+
+  document.getElementById("distanceMdian").textContent =
+    formatNumber(data.distance_median_km.toFixed(2));
 
   document.getElementById("distanceMax").textContent =
     formatNumber(data.distance_max_km.toFixed(2));
