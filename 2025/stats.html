@@ -151,62 +151,92 @@ function buildDashboard(data) {
   document.getElementById("distanceMax").textContent =
     formatNumber(data.distance_max_km.toFixed(2));
 
+// ---- Percentile data ----
+const entries = Object.entries(data.percentiles_km)
+  .sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]));
 
-  // ---- Percentile data ----
-  const entries = Object.entries(data.percentiles_km)
-    .sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]));
+const percentiles = entries.map(e => parseFloat(e[0])); // x-axis
+const distances   = entries.map(e => e[1]);             // y-axis
 
-  const percentiles = entries.map(e => parseFloat(e[0])); // x-axis
-  const distances   = entries.map(e => e[1]);             // y-axis
+// ---- Improved log-scale ticks ----
+const yTickVals = [
+  0.1, 0.2, 0.5,
+  1, 2, 5,
+  10, 20, 50,
+  100, 200, 500,
+  1000, 2000
+];
 
-  // Axis ticks like your screenshot:
-  const yTickVals = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000];
-  const yTickText = yTickVals.map(v => formatNumber(v));
+const yTickText = yTickVals.map(v => formatNumber(v));
 
-  const trace = {
-    x: percentiles,
-    y: distances,
-    mode: "lines+markers",
-    line: { color: "#0EA5E9", width: 3 },
-    marker: { color: "#0EA5E9", size: 5 }
-  };
+// ---- Plot trace ----
+const trace = {
+  x: percentiles,
+  y: distances,
+  mode: "lines+markers",
+  line: { color: "#0EA5E9", width: 3 },
+  marker: { color: "#0EA5E9", size: 5 }
+};
 
-  const layout = {
-    title: "",
-    paper_bgcolor: "rgba(0,0,0,0)",
-    plot_bgcolor: "rgba(0,0,0,0)",
-    margin: { t: 20, r: 20, b: 60, l: 80 },
+// ---- Improved layout ----
+const layout = {
+  title: "",
+  paper_bgcolor: "rgba(0,0,0,0)",
+  plot_bgcolor: "rgba(0,0,0,0)",
+  margin: { t: 20, r: 20, b: 60, l: 80 },
 
-    xaxis: {
-      title: "Perzentil [%]",
-      color: "#E6EDF3",
-      tickfont: { size: 12 },
-      titlefont: { size: 14 },
-      gridcolor: "rgba(140,140,140,0.22)",
+  // -------------------------------
+  // X-AXIS: 10% major ticks + 5% minor grid
+  // -------------------------------
+  xaxis: {
+    title: "Perzentil [%]",
+    color: "#E6EDF3",
+    tickfont: { size: 12 },
+    titlefont: { size: 14 },
+    gridcolor: "rgba(140,140,140,0.22)",
+
+    tick0: 0,           // start at 0
+    dtick: 10,          // major ticks every 10%
+    showgrid: true,
+    zeroline: false,
+
+    // minor grid every 5%
+    minor: {
+      dtick: 5,
       showgrid: true,
-      zeroline: false
-    },
+      gridcolor: "rgba(140,140,140,0.10)" // softer than main grid
+    }
+  },
 
-    yaxis: {
-      title: "Distanz [km]",
-      type: "log",
-      color: "#E6EDF3",
-      tickvals: yTickVals,
-      ticktext: yTickText,
-      tickfont: { size: 12 },
-      titlefont: { size: 14 },
-      gridcolor: "rgba(140,140,140,0.22)",
+  // -------------------------------
+  // Y-AXIS: clean log scale
+  // -------------------------------
+  yaxis: {
+    title: "Distanz [km]",
+    type: "log",
+    color: "#E6EDF3",
+    tickvals: yTickVals,
+    ticktext: yTickText,
+    tickfont: { size: 12 },
+    titlefont: { size: 14 },
+    gridcolor: "rgba(140,140,140,0.22)",
+    showgrid: true,
+    zeroline: false,
+
+    // subtle minor log ticks between decades
+    minor: {
       showgrid: true,
-      zeroline: false
-    },
+      gridcolor: "rgba(140,140,140,0.10)"
+    }
+  },
 
-    hovermode: "closest"
-  };
+  hovermode: "closest"
+};
 
-  Plotly.newPlot("percentilePlot", [trace], layout, {
-    responsive: true,
-    displayModeBar: false
-  });
+Plotly.newPlot("percentilePlot", [trace], layout, {
+  responsive: true,
+  displayModeBar: false
+});
 }
 </script>
 
