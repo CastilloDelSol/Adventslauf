@@ -1,75 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>Distance Statistics Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-/* ---------- Dark Serious Palette ---------- */
+/* Dark serious theme */
 :root {
-  --primary: #4F46E5;
-  --secondary: #0EA5E9;
-  --accent1: #10B981;
-  --accent2: #F59E0B;
-  --accent3: #EF4444;
-
   --bg: #0D1117;
-  --bg-elevated: #161B22;
   --card: #1F242C;
-
-  --text-main: #E6EDF3;
-  --text-muted: #9BA5B4;
-
+  --text: #E6EDF3;
+  --muted: #9BA5B4;
   --border: #30363D;
+  --primary: #0EA5E9;
   --radius: 14px;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
-  font-family: "Inter", sans-serif;
   background: var(--bg);
-  color: var(--text-main);
-  padding: 25px;
+  color: var(--text);
+  font-family: Inter, sans-serif;
+  padding: 30px;
   display: flex;
   justify-content: center;
 }
 
 .page {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1100px;
 }
 
 h1 {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   font-size: 26px;
   font-weight: 600;
 }
 
 .subtitle {
-  color: var(--text-muted);
-  margin-bottom: 22px;
-}
-
-.card {
-  background: var(--card);
-  padding: 18px 22px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  margin-bottom: 20px;
-}
-
-.card-title {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: var(--secondary);
+  color: var(--muted);
+  margin-bottom: 25px;
 }
 
 .grid {
@@ -79,8 +52,8 @@ h1 {
 }
 
 .stat-box {
-  background: var(--bg-elevated);
-  padding: 16px 20px;
+  background: var(--card);
+  padding: 18px 22px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
 }
@@ -91,231 +64,124 @@ h1 {
 }
 
 .stat-label {
+  color: var(--muted);
   font-size: 13px;
-  color: var(--text-muted);
 }
 
-canvas { width: 100% !important; height: 280px !important; }
-.small canvas { height: 220px !important; }
-
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.card {
+  background: var(--card);
+  padding: 22px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-top: 30px;
 }
 
-.list-row {
-  display: flex;
-  justify-content: space-between;
-  color: var(--text-muted);
-  font-size: 14px;
+.card-title {
+  color: var(--primary);
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 14px;
 }
 
-hr { border: none; border-bottom: 1px solid var(--border); margin: 20px 0; }
+canvas { width: 100% !important; height: 380px !important; }
 </style>
-
 </head>
+
 <body>
 <div class="page">
-
-<h1>Distance Statistics Dashboard</h1>
-<div class="subtitle">Loaded from <code>statistics.json</code> — serious analytics mode.</div>
-
+<h1>Distance Statistics</h1>
+<div class="subtitle">Percentile distribution on logarithmic scale</div>
 
 <!-- Summary -->
 <div class="grid">
 
   <div class="stat-box" style="grid-column: span 3;">
-    <div class="stat-value" id="totalParticipants">–</div>
-    <div class="stat-label">Participants</div>
+    <div class="stat-value" id="total">–</div>
+    <div class="stat-label">Teilnehmer</div>
   </div>
 
   <div class="stat-box" style="grid-column: span 3;">
-    <div class="stat-value" id="distanceMin">–</div>
-    <div class="stat-label">Minimum distance (km)</div>
+    <div class="stat-value" id="min">–</div>
+    <div class="stat-label">Minimum (km)</div>
   </div>
 
   <div class="stat-box" style="grid-column: span 3;">
-    <div class="stat-value" id="distanceMedian">–</div>
-    <div class="stat-label">Median distance (km)</div>
+    <div class="stat-value" id="median">–</div>
+    <div class="stat-label">Median (km)</div>
   </div>
 
   <div class="stat-box" style="grid-column: span 3;">
-    <div class="stat-value" id="distanceMax">–</div>
-    <div class="stat-label">Maximum distance (km)</div>
+    <div class="stat-value" id="avg">–</div>
+    <div class="stat-label">Durchschnitt (km)</div>
   </div>
 
 </div>
 
-<hr>
-
-<!-- DISTRIBUTION FUNCTION -->
+<!-- Percentile log chart -->
 <div class="card">
-  <div class="card-title">Distance Distribution Function (Empirical CDF)</div>
-  <canvas id="cdfChart"></canvas>
-</div>
-
-<!-- PDF -->
-<div class="card">
-  <div class="card-title">Distance Density Function (Approx. PDF)</div>
-  <canvas id="pdfChart"></canvas>
-</div>
-
-<!-- BUCKETS -->
-<div class="card">
-  <div class="card-title">Distance Buckets</div>
-  <canvas id="bucketChart"></canvas>
+  <div class="card-title">km</div>
+  <canvas id="percentileChart"></canvas>
 </div>
 
 </div>
 
 <script>
-// Auto-run
+// Format numbers with German style
+function fmt(n) {
+  return n.toLocaleString("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   fetch("./statistics.json")
     .then(r => r.json())
-    .then(data => initDashboard(data))
-    .catch(err => alert("Could not load statistics.json! " + err));
+    .then(data => {
+      document.getElementById("total").textContent  = fmt(data.total_participants);
+      document.getElementById("min").textContent    = fmt(data.distance_min_km);
+      document.getElementById("median").textContent = fmt(data.distance_median_km);
+      document.getElementById("avg").textContent    = fmt(data.distance_avg_km);
+
+      const percentiles = Object.entries(data.percentiles_km)
+        .sort((a,b) => parseFloat(a[0]) - parseFloat(b[0]));
+
+      const x = percentiles.map(([p]) => parseFloat(p));
+      const y = percentiles.map(([_,v]) => v);
+
+      new Chart(document.getElementById("percentileChart"), {
+        type: "line",
+        data: {
+          labels: x,
+          datasets: [{
+            label: "Distanz",
+            data: y,
+            borderColor: "#0EA5E9",
+            borderWidth: 2,
+            pointRadius: 3,
+            pointBackgroundColor: "#0EA5E9",
+            tension: 0
+          }]
+        },
+        options: {
+          plugins: { legend: { display: false }},
+          scales: {
+            x: {
+              title: { display: true, text: "Percentil [%]" },
+              ticks: { color: "#9BA5B4" }
+            },
+            y: {
+              type: "logarithmic",
+              title: { display: true, text: "Distanz [km]" },
+              ticks: {
+                color: "#9BA5B4",
+                callback: v => fmt(v)
+              },
+              min: 0.1,
+              max: 10000
+            }
+          }
+        }
+      });
+    });
 });
-
-function initDashboard(data) {
-  /* ---- Fill summary ---- */
-  document.getElementById("totalParticipants").textContent =
-    data.total_participants.toLocaleString("de-DE");
-
-  document.getElementById("distanceMin").textContent =
-    data.distance_min_km.toFixed(1);
-
-  document.getElementById("distanceMedian").textContent =
-    data.distance_median_km.toFixed(1);
-
-  document.getElementById("distanceMax").textContent =
-    data.distance_max_km.toFixed(0);
-
-  /* ---- Build CDF from percentiles ---- */
-  const percentileEntries = Object.entries(data.percentiles_km)
-    .sort((a,b) => parseFloat(a[0]) - parseFloat(b[0]));
-
-  const cdfX = percentileEntries.map(e => e[1]);
-  const cdfY = percentileEntries.map(e => parseFloat(e[0]) / 100);
-
-  renderCDF(cdfX, cdfY);
-  renderPDF(cdfX, cdfY);
-  renderBucketChart(data.distance_buckets);
-}
-
-/* --------------------------------------------------------
-   EMPIRICAL CDF
----------------------------------------------------------*/
-function renderCDF(xVals, yVals) {
-  new Chart(document.getElementById("cdfChart"), {
-    type: "line",
-    data: {
-      labels: xVals,
-      datasets: [{
-        label: "CDF",
-        data: yVals,
-        borderColor: "#4F46E5",
-        backgroundColor: "rgba(79,70,229,0.15)",
-        fill: true,
-        tension: 0.25,
-        borderWidth: 2
-      }]
-    },
-    options: {
-      scales: {
-        x: {
-          title: { display: true, text: "Distance (km)" },
-          ticks: { color: "#9BA5B4" }
-        },
-        y: {
-          title: { display: true, text: "Cumulative probability" },
-          min: 0,
-          max: 1,
-          ticks: { color: "#9BA5B4" }
-        }
-      },
-      plugins: { legend: { display: false } }
-    }
-  });
-}
-
-/* --------------------------------------------------------
-   APPROXIMATE PDF (numerical derivative of CDF)
----------------------------------------------------------*/
-function renderPDF(xVals, yVals) {
-  let pdfX = [];
-  let pdfY = [];
-
-  for (let i = 1; i < xVals.length; i++) {
-    let dx = xVals[i] - xVals[i-1];
-    let dy = yVals[i] - yVals[i-1];
-    if (dx > 0) {
-      pdfX.push((xVals[i] + xVals[i-1]) / 2);
-      pdfY.push(dy / dx);
-    }
-  }
-
-  new Chart(document.getElementById("pdfChart"), {
-    type: "line",
-    data: {
-      labels: pdfX,
-      datasets: [{
-        label: "PDF",
-        data: pdfY,
-        borderColor: "#0EA5E9",
-        backgroundColor: "rgba(14,165,233,0.15)",
-        fill: true,
-        tension: 0.3,
-        borderWidth: 2
-      }]
-    },
-    options: {
-      scales: {
-        x: {
-          title: { display: true, text: "Distance (km)" },
-          ticks: { color: "#9BA5B4" }
-        },
-        y: {
-          title: { display: true, text: "Density" },
-          ticks: { color: "#9BA5B4" }
-        }
-      },
-      plugins: { legend: { display: false } }
-    }
-  });
-}
-
-/* --------------------------------------------------------
-   BUCKET CHART
----------------------------------------------------------*/
-function renderBucketChart(buckets) {
-  const labels = Object.keys(buckets);
-  const values = Object.values(buckets);
-
-  new Chart(document.getElementById("bucketChart"), {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [{
-        label: "Participants",
-        data: values,
-        backgroundColor: "#10B981"
-      }]
-    },
-    options: {
-      plugins: { legend: { display: false }},
-      scales: {
-        x: {
-          ticks: { color: "#9BA5B4" }
-        },
-        y: {
-          ticks: { color: "#9BA5B4" }
-        }
-      }
-    }
-  });
-}
 </script>
 
 </body>
