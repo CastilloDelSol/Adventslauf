@@ -145,6 +145,11 @@ body, .legend, .stats-box, .leaflet-container {
   font-size: 13px;
   font-weight: 500;
 }
+
+  /* ---- Fade-Effekt für Hexagon-Panes ---- */
+.leaflet-pane.fade-layer {
+  transition: opacity 0.45s ease-in-out;
+}
   
 </style>
 </head>
@@ -156,7 +161,7 @@ body, .legend, .stats-box, .leaflet-container {
 <!-- RIGHT BUTTON PANEL -->
 <div class="right-buttons">
   <div id="btnMapType" class="map-button">CARTO Light Grey</div>
-  <div id="btnRes" class="map-button">Grobe Auflösung (r6)</div>
+  <div id="btnRes" class="map-button">Feine Auflösung (r7)</div>
 </div>
 
 
@@ -256,6 +261,10 @@ map.getPane('hex6').style.zIndex = 410;
 map.createPane('hex7');
 map.getPane('hex7').style.zIndex = 420;
 
+map.getPane('hex6').classList.add("fade-layer");
+map.getPane('hex7').classList.add("fade-layer");
+
+
 /* ---------------------- COLOR + LABEL FROM BUCKETS.JSON (NEW) ---------------------- */
 
 function getColorFromIndex(idx){
@@ -310,27 +319,54 @@ btnRes.onclick = () => {
 
   if (coarse) {
     // --- Wechsel: r6 → r7 ---
-    map.removeLayer(layer6);
-    layer7.addTo(map);
 
-    // Pane 6 blockieren, Pane 7 aktivieren
-    pane6.style.pointerEvents = "none";
-    pane7.style.pointerEvents = "auto";
+    // altes Pane ausfaden
+    pane6.style.opacity = "0";
 
-    btnRes.innerHTML = "Grobe Auflösung (r6)";
-    coarse = false;
+    setTimeout(() => {
+      map.removeLayer(layer6);
+      layer7.addTo(map);
 
-  } else {
+      // Mausblockierung
+      pane6.style.pointerEvents = "none";
+      pane7.style.pointerEvents = "auto";
+
+      // neues Pane einfaden
+      pane7.style.opacity = "0";
+      requestAnimationFrame(() => {
+        pane7.style.opacity = "1";
+      });
+
+      btnRes.innerHTML = "Grobe Auflösung (r6)";
+      coarse = false;
+
+    }, 350); // fade-out time
+  }
+
+  else {
     // --- Wechsel: r7 → r6 ---
-    map.removeLayer(layer7);
-    layer6.addTo(map);
 
-    // Pane 7 blockieren, Pane 6 aktivieren
-    pane7.style.pointerEvents = "none";
-    pane6.style.pointerEvents = "auto";
+    // altes Pane ausfaden
+    pane7.style.opacity = "0";
 
-    btnRes.innerHTML = "Feine Auflösung (r7)";
-    coarse = true;
+    setTimeout(() => {
+      map.removeLayer(layer7);
+      layer6.addTo(map);
+
+      // Mausblockierung
+      pane7.style.pointerEvents = "none";
+      pane6.style.pointerEvents = "auto";
+
+      // neues Pane einfaden
+      pane6.style.opacity = "0";
+      requestAnimationFrame(() => {
+        pane6.style.opacity = "1";
+      });
+
+      btnRes.innerHTML = "Feine Auflösung (r7)";
+      coarse = true;
+
+    }, 350);
   }
 };
 
