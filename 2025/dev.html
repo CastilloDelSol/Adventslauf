@@ -275,6 +275,49 @@ function getLabelFromIndex(idx){
   return BUCKETS[idx].label;
 }
 
+  function switchResolution(target) {
+
+  // old layer = currently active one
+  const oldLayer = (currentResolution === "r6") ? layer6 : layer7;
+  const newLayer = (target === "r6") ? layer6 : layer7;
+
+  // 1. Add new layer in background, invisible
+  if (!map.hasLayer(newLayer)) {
+    newLayer.eachLayer(l => l.setStyle({ opacity: 0, fillOpacity: 0 }));
+    newLayer.addTo(map);
+  }
+
+  // 2. Force reflow so transitions apply
+  void map._container.offsetHeight;
+
+  // 3. Crossfade:
+  // old layer → fade out
+  oldLayer.eachLayer(l => {
+    l.setStyle({
+      opacity: 0,
+      fillOpacity: 0,
+      transition: "opacity 0.45s cubic-bezier(.3,.02,.7,.98), fill-opacity 0.45s cubic-bezier(.3,.02,.7,.98)"
+    });
+  });
+
+  // new layer → fade in
+  newLayer.eachLayer(l => {
+    l.setStyle({
+      opacity: 1,
+      fillOpacity: 0.33,
+      transition: "opacity 0.45s cubic-bezier(.3,.02,.7,.98), fill-opacity 0.45s cubic-bezier(.3,.02,.7,.98)"
+    });
+  });
+
+  // 4. Remove old layer after transition
+  setTimeout(() => {
+    map.removeLayer(oldLayer);
+  }, 500);
+
+  // Update state
+  currentResolution = target;
+}
+
 /* ---------------------- LAYER LOAD ---------------------- */
 const layer6 = L.layerGroup();
 const layer7 = L.layerGroup();
@@ -314,60 +357,11 @@ layer6.addTo(map);
 
 /* ---------------------- BUTTON LOGIC ---------------------- */
 btnRes.onclick = () => {
-  const pane6 = map.getPane('hex6');
-  const pane7 = map.getPane('hex7');
-
-  if (coarse) {
-    // --- Wechsel: r6 → r7 ---
-
-    // altes Pane ausfaden
-    pane6.style.opacity = "0";
-
-    setTimeout(() => {
-      map.removeLayer(layer6);
-      layer7.addTo(map);
-
-      // Mausblockierung
-      pane6.style.pointerEvents = "none";
-      pane7.style.pointerEvents = "auto";
-
-      // neues Pane einfaden
-      pane7.style.opacity = "0";
-      requestAnimationFrame(() => {
-        pane7.style.opacity = "1";
-      });
-
-      btnRes.innerHTML = "Grobe Auflösung (r6)";
-      coarse = false;
-
-    }, 350); // fade-out time
-  }
-
-  else {
-    // --- Wechsel: r7 → r6 ---
-
-    // altes Pane ausfaden
-    pane7.style.opacity = "0";
-
-    setTimeout(() => {
-      map.removeLayer(layer7);
-      layer6.addTo(map);
-
-      // Mausblockierung
-      pane7.style.pointerEvents = "none";
-      pane6.style.pointerEvents = "auto";
-
-      // neues Pane einfaden
-      pane6.style.opacity = "0";
-      requestAnimationFrame(() => {
-        pane6.style.opacity = "1";
-      });
-
-      btnRes.innerHTML = "Feine Auflösung (r7)";
-      coarse = true;
-
-    }, 350);
-  }
+  const target = (currentResolution === "r6") ? "r7" : "r6";
+  switchResolution(target);
+  btnRes.textContent = (target === "r6")
+    ? "Grobe Auflösung (r6)"
+    : "Feine Auflösung (r7)";
 };
 
 /* ---------------------- LEGEND (AUTO FROM BUCKETS.JSON) ---------------------- */
