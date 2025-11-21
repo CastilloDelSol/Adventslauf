@@ -314,8 +314,14 @@ function loadLayer(file, paneName, intoLayer){
 loadLayer("hexagons_r6.geojson", "hex6", layer6);
 loadLayer("hexagons_r7.geojson", "hex7", layer7);
 
-let coarse = true;   // r6 = coarse grid
+// Beide Layer zur Map hinzufügen (für Crossfade notwendig)
 layer6.addTo(map);
+layer7.addTo(map);
+
+// Aber r7 komplett unsichtbar machen
+map.getPane('hex7').style.opacity = "0";
+
+let currentResolution = "r6";
 
 /* ---------------------- BUTTON LOGIC ---------------------- */
 btnRes.onclick = () => {
