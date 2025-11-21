@@ -305,16 +305,30 @@ layer6.addTo(map);
 
 /* ---------------------- BUTTON LOGIC ---------------------- */
 btnRes.onclick = () => {
+  const pane6 = map.getPane('hex6');
+  const pane7 = map.getPane('hex7');
+
   if (coarse) {
-    // switch to fine (r7)
+    // --- Wechsel: r6 → r7 ---
     map.removeLayer(layer6);
     layer7.addTo(map);
+
+    // Pane 6 blockieren, Pane 7 aktivieren
+    pane6.style.pointerEvents = "none";
+    pane7.style.pointerEvents = "auto";
+
     btnRes.innerHTML = "Grobe Auflösung (r6)";
     coarse = false;
+
   } else {
-    // switch to coarse (r6)
+    // --- Wechsel: r7 → r6 ---
     map.removeLayer(layer7);
     layer6.addTo(map);
+
+    // Pane 7 blockieren, Pane 6 aktivieren
+    pane7.style.pointerEvents = "none";
+    pane6.style.pointerEvents = "auto";
+
     btnRes.innerHTML = "Feine Auflösung (r7)";
     coarse = true;
   }
