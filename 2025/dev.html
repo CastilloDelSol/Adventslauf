@@ -213,7 +213,7 @@ body, .legend, .stats-box, .leaflet-container {
 function openPrivacy(){ document.getElementById("privacyBox").style.display="block"; }
 function closePrivacy(){ document.getElementById("privacyBox").style.display="none"; }
 
-/* ---------------------- LOAD BUCKETS.JSON ---------------------- */
+/* ---------------------- LOAD BUCKETS.JSON (NEW) ---------------------- */
 let BUCKETS = [];
 
 fetch("buckets.json")
@@ -223,10 +223,7 @@ fetch("buckets.json")
     initMap();
   });
 
-
-/* ==========================================================
-   INIT MAP
-   ========================================================== */
+/* ---------------------- MAP + LAYERS (wrapped into function) ---------------------- */
 function initMap(){
 
 const map = L.map('map', {
@@ -236,40 +233,31 @@ const map = L.map('map', {
   zoom: 9
 });
 
-/* === BASE LAYERS === */
 const osmTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(map);
 const lowContrastTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:19});
 
 let lowContrast = false;
 
+/* ---------------------- DARK MODE ---------------------- */
 btnMapType.onclick = () => {
   if(!lowContrast){
-    map.removeLayer(osmTiles);
-    lowContrastTiles.addTo(map);
-    lowContrast = true;
-    btnMapType.innerHTML = "OSM Standard";
+    map.removeLayer(osmTiles); lowContrastTiles.addTo(map);
+    lowContrast = true; btnMapType.innerHTML="OSM Standard";
   } else {
-    map.removeLayer(lowContrastTiles);
-    osmTiles.addTo(map);
-    lowContrast = false;
-    btnMapType.innerHTML = "CARTO Light Grey";
+    map.removeLayer(lowContrastTiles); osmTiles.addTo(map);
+    lowContrast = false; btnMapType.innerHTML="CARTO Light Grey";
   }
 };
 
+/* ---------------------- PANES ---------------------- */
+map.createPane('hex6');
+map.getPane('hex6').style.zIndex = 410;
 
-/* ==========================================================
-   PANES
-   ========================================================== */
-map.createPane("hex6");
-map.getPane("hex6").style.zIndex = 410;
+map.createPane('hex7');
+map.getPane('hex7').style.zIndex = 420;
 
-map.createPane("hex7");
-map.getPane("hex7").style.zIndex = 420;
+/* ---------------------- COLOR + LABEL FROM BUCKETS.JSON (NEW) ---------------------- */
 
-
-/* ==========================================================
-   HELPERS
-   ========================================================== */
 function getColorFromIndex(idx){
   return BUCKETS[idx].color;
 }
@@ -278,89 +266,89 @@ function getLabelFromIndex(idx){
   return BUCKETS[idx].label;
 }
 
-/* Entfernt alle SVG/Canvas-Elemente aus einem Pane */
-function resetPane(paneName){
-  const p = map.getPane(paneName);
-  if (!p) return;
-  while (p.firstChild) p.removeChild(p.firstChild);
-}
+/* ---------------------- LAYER LOAD ---------------------- */
+const layer6 = L.layerGroup();
+const layer7 = L.layerGroup();
 
-
-/* ==========================================================
-   LOAD + BUILD HEX LAYER
-   ========================================================== */
-function loadHexLayer(file, paneName) {
-  return fetch(file)
+function loadLayer(file, paneName, intoLayer){
+  fetch(file)
     .then(r => r.json())
     .then(data => {
-      return L.geoJSON(data, {
+
+      L.geoJSON(data, {
         pane: paneName,
+
         style: f => ({
           fillColor: getColorFromIndex(f.properties.count_index),
           color: "#6B6B6B",
           weight: 0.75,
           fillOpacity: 0.33
         }),
+
         onEachFeature: (f, layer) => {
           layer.bindTooltip(
             "Anmeldungen: " + getLabelFromIndex(f.properties.count_index),
-            { sticky: true }
+            { sticky:true }
           );
         }
-      });
+
+      }).addTo(intoLayer);
+
     });
 }
 
+loadLayer("hexagons_r6.geojson", "hex6", layer6);
+loadLayer("hexagons_r7.geojson", "hex7", layer7);
 
-/* ==========================================================
-   RESOLUTION SWITCH LOGIC
-   ========================================================== */
-let currentResolution = "r6";
-let activeLayer = null;
+let coarse = true;   // r6 = coarse grid
+layer6.addTo(map);
 
-async function showResolution(res){
+/* ----------------------------------------------------
+   BUTTON LOGIC — FIXED VERSION
+   - richtiger Button-Text
+   - Layer werden wirklich geleert
+   - keine toten Mausbereiche mehr
+   ---------------------------------------------------- */
 
-  /* 1) Entferne alten Layer */
-  if (activeLayer){
-    map.removeLayer(activeLayer);
-    activeLayer = null;
-  }
-
-  /* 2) Pane säubern (sonst tote Mouseover-Flächen) */
-  resetPane("hex6");
-  resetPane("hex7");
-
-  /* 3) Datei und Pane wählen */
-  const file = (res === "r6")
-    ? "hexagons_r6.geojson"
-    : "hexagons_r7.geojson";
-
-  const pane = (res === "r6") ? "hex6" : "hex7";
-
-  /* 4) Layer neu laden */
-  activeLayer = await loadHexLayer(file, pane);
-  activeLayer.addTo(map);
-
-  /* 5) Button-Beschriftung (immer gleiche Breite, kein Springen) */
-  btnRes.innerHTML = (res === "r6")
-    ? "Feine Auflösung (r7)"
-    : "Grobe Auflösung (r6)";
-
-  currentResolution = res;
-}
-
-/* Start: Grobe Auflösung */
-showResolution("r6");
-
-/* Toggle Button */
 btnRes.onclick = () => {
-  showResolution(currentResolution === "r6" ? "r7" : "r6");
+
+  if (coarse) {
+    // ---- Wechsel zu feiner Auflösung (r7) ----
+    layer6.clearLayers();          // alte Zellen komplett entfernen
+    map.removeLayer(layer6);
+    layer7.addTo(map);
+    btnRes.innerHTML = "Aktiv: Feine Auflösung (r7)";
+    coarse = false;
+
+  } else {
+    // ---- Wechsel zu grober Auflösung (r6) ----
+    layer7.clearLayers();          // alte Zellen komplett entfernen
+    map.removeLayer(layer7);
+    layer6.addTo(map);
+    btnRes.innerHTML = "Aktiv: Grobe Auflösung (r6)";
+    coarse = true;
+  }
 };
 
+/* ---------------------- LEGEND (AUTO FROM BUCKETS.JSON) ---------------------- */
+const legend = L.control({position:"bottomright"});
 
-/* ==========================================================
-   STATS BOX
-   ========================================================== */
+legend.onAdd = function(){
+  const div = L.DomUtil.create("div","legend");
+  div.innerHTML = "<b>Anmeldungen</b><br>";
+
+  BUCKETS.forEach(b => {
+    div.innerHTML += `
+      <i style="background:${b.color}"></i>${b.label}<br>
+    `;
+  });
+
+  return div;
+};
+
+legend.addTo(map);
+
+/* ---------------------- LOAD STATS BOX ---------------------- */
 fetch("statistics.json")
   .then(r => r.json())
   .then(stats => {
@@ -379,19 +367,15 @@ fetch("statistics.json")
       <br><b>Anreise-Entfernungen</b>
       <table>
         ${Object.entries(stats.distance_buckets)
-          .map(([k,v]) => `<tr><td class="label">${k}:</td><td>${v}</td></tr>`)
-          .join("")}
+          .map(([k,v]) => `<tr><td class="label">${k}:</td><td>${v}</td></tr>`).join("")}
       </table>
     `;
 
     box.innerHTML = html;
   })
-  .catch(() => {
-    document.getElementById("stats").innerHTML="Keine Statistikdaten gefunden.";
-  });
+  .catch(() => { document.getElementById("stats").innerHTML="Keine Statistikdaten gefunden."; });
 
 } // END initMap()
 </script>
-
 </body>
 </html>
