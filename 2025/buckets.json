@@ -5,44 +5,45 @@
       "min": 1,
       "max": 2,
       "label": "≤2",
-      "color": "#f3e79b"
+      "color": "#ffffb2"
     },
     {
       "index": 1,
       "min": 3,
       "max": 5,
       "label": "3–5",
-      "color": "#f1c87b"
+      "color": "#fecc5c"
     },
     {
       "index": 2,
       "min": 6,
       "max": 10,
       "label": "6–10",
-      "color": "#ec9f6a"
+      "color": "#fd8d3c"
     },
     {
       "index": 3,
       "min": 11,
       "max": 15,
       "label": "11–15",
-      "color": "#e26a6a"
+      "color": "#f03b20"
     },
     {
       "index": 4,
       "min": 16,
       "max": 25,
       "label": "16–25",
-      "color": "#a868a6"
+      "color": "#bd0026"
     },
     {
       "index": 5,
       "min": 26,
       "max": 99999,
       "label": ">25",
-      "color": "#5f4b8b"
+      "color": "#800026"
     }
   ]
 }
+
 
 
