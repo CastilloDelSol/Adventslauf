@@ -274,8 +274,7 @@ function loadLayer(file, paneName, intoLayer){
   fetch(file)
     .then(r => r.json())
     .then(data => {
-
-      L.geoJSON(data, {
+      const geo = L.geoJSON(data, {
         pane: paneName,
 
         style: f => ({
@@ -291,9 +290,10 @@ function loadLayer(file, paneName, intoLayer){
             { sticky:true }
           );
         }
+      });
 
-      }).addTo(intoLayer);
-
+      // WICHTIG: erst wenn geladen, in layerGroup stecken
+      intoLayer.addLayer(geo);
     });
 }
 
@@ -303,36 +303,22 @@ loadLayer("hexagons_r7.geojson", "hex7", layer7);
 let coarse = true;   // r6 = coarse grid
 layer6.addTo(map);
 
-/* -----------------------------------------------------------
-   BUTTON LOGIC — FIXED
-   - richtiger Buttontext
-   - verhindert Tooltip-Bugs
-   - Layer werden vor Reload geleert
-   ----------------------------------------------------------- */
-
+/* ---------------------- BUTTON LOGIC ---------------------- */
 btnRes.onclick = () => {
   if (coarse) {
-    // --- Wechsel zu feiner Auflösung (r7) ---
-    layer6.clearLayers();       // alte Zellen vollständig löschen
+    // switch to fine (r7)
     map.removeLayer(layer6);
-
     layer7.addTo(map);
-    btnRes.innerHTML = "Aktiv: Feine Auflösung (r7)";
-
+    btnRes.innerHTML = "Grobe Auflösung (r6)";
     coarse = false;
-
   } else {
-    // --- Wechsel zu grober Auflösung (r6) ---
-    layer7.clearLayers();       // alte Zellen vollständig löschen
+    // switch to coarse (r6)
     map.removeLayer(layer7);
-
     layer6.addTo(map);
-    btnRes.innerHTML = "Aktiv: Grobe Auflösung (r6)";
-
+    btnRes.innerHTML = "Feine Auflösung (r7)";
     coarse = true;
   }
 };
-
 
 /* ---------------------- LEGEND (AUTO FROM BUCKETS.JSON) ---------------------- */
 const legend = L.control({position:"bottomright"});
