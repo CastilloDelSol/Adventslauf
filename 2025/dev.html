@@ -103,7 +103,7 @@ function initMap() {
   map.getPane("tilesCARTO").style.opacity = "0";
 
   const osmTiles = L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
     { maxZoom:19, pane:"tilesOSM" }
   ).addTo(map);
 
