@@ -151,12 +151,6 @@ body, .legend, .stats-box, .leaflet-container {
   transition: opacity 0.45s cubic-bezier(.3,.02,.7,.98);
 }
 
-/* --- Crossfade für die Map-Panes --- */
-.leaflet-pane.tile-fade {
-  transition: opacity 0.45s cubic-bezier(.3,.02,.7,.98);
-}
-
-
 </style>
 </head>
 
@@ -246,62 +240,31 @@ function initMap() {
     zoom: 9
   });
 
-  /* ============================================================
-     BASEMAP CROSSFADE PANES
-     ============================================================ */
-
-  map.createPane("tilesOSM");
-  map.getPane("tilesOSM").style.zIndex = 150;
-  map.getPane("tilesOSM").style.opacity = "1";
-
-  map.createPane("tilesCARTO");
-  map.getPane("tilesCARTO").style.zIndex = 151;
-  map.getPane("tilesCARTO").style.opacity = "0";
-
-  const osmTiles = L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    { maxZoom:19, pane: "tilesOSM" }
-  ).addTo(map);
-
-  const lowContrastTiles = L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    { maxZoom:19, pane: "tilesCARTO" }
-  ).addTo(map);
-
+  const osmTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(map);
+  const lowContrastTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:19});
   let lowContrast = false;
 
+  /* --- MapType Button --- */
   btnMapType.onclick = () => {
-    const pOSM = map.getPane("tilesOSM");
-    const pCARTO = map.getPane("tilesCARTO");
-
     if (!lowContrast) {
-      // Fade OSM → CARTO
-      pOSM.style.opacity = "0";
-      pCARTO.style.opacity = "1";
-      lowContrast = true;
-      btnMapType.textContent = "OSM Standard";
+      map.removeLayer(osmTiles); lowContrastTiles.addTo(map);
+      lowContrast = true; btnMapType.innerHTML = "OSM Standard";
     } else {
-      // Fade CARTO → OSM
-      pOSM.style.opacity = "1";
-      pCARTO.style.opacity = "0";
-      lowContrast = false;
-      btnMapType.textContent = "CARTO Light Grey";
+      map.removeLayer(lowContrastTiles); osmTiles.addTo(map);
+      lowContrast = false; btnMapType.innerHTML = "CARTO Light Grey";
     }
   };
 
-
-  /* ============================================================
-     HEXAGON PANES + FADE
-     ============================================================ */
+  /* --- Panes --- */
   map.createPane("hex6");
   map.getPane("hex6").style.zIndex = 410;
   map.getPane("hex6").style.opacity = "1";
-  map.getPane("hex6").style.pointerEvents = "auto";
+  map.getPane("hex6").style.transition = "opacity .45s cubic-bezier(.3,.02,.7,.98)";
 
   map.createPane("hex7");
   map.getPane("hex7").style.zIndex = 420;
   map.getPane("hex7").style.opacity = "0";
-  map.getPane("hex7").style.pointerEvents = "none";
+  map.getPane("hex7").style.transition = "opacity .45s cubic-bezier(.3,.02,.7,.98)";
 
   let currentResolution = "r6";
 
@@ -309,15 +272,18 @@ function initMap() {
   const getColorFromIndex = idx => BUCKETS[idx].color;
   const getLabelFromIndex = idx => BUCKETS[idx].label;
 
-  /* --- GEOJSON LAYER LOAD --- */
+  /* ============================================================
+     LOAD GEOJSON DIRECTLY (NO LAYERGROUP BUG ANYMORE)
+     ============================================================ */
 
   let layer6 = null;
   let layer7 = null;
 
-  function loadLayer(file, paneName, callback){
+  function loadLayer(file, paneName, callback) {
     fetch(file)
       .then(r => r.json())
       .then(data => {
+
         const geo = L.geoJSON(data, {
           pane: paneName,
           style: f => ({
@@ -338,62 +304,52 @@ function initMap() {
       });
   }
 
-  // Load r6 visible
+  /* Load r6 first */
   loadLayer("hexagons_r6.geojson", "hex6", geo => {
     layer6 = geo;
-    layer6.addTo(map);
+    layer6.addTo(map);  // Start sichtbar
   });
 
-  // Load r7 invisible
+  /* Load r7 second (unsichtbar) */
   loadLayer("hexagons_r7.geojson", "hex7", geo => {
     layer7 = geo;
-    layer7.addTo(map);
+    layer7.addTo(map); // Unsichtbar wegen pane opacity=0
   });
 
-
   /* ============================================================
-     RESOLUTION SWITCH + FADE + TOOLTIP CONTROL
+     RESOLUTION SWITCH + CROSSFADE
      ============================================================ */
 
-  btnRes.onclick = () => {
+btnRes.onclick = () => {
+  if (!layer6 || !layer7) return; // not loaded yet
 
-    if (!layer6 || !layer7) return;
+  if (currentResolution === "r6") {
+    // r6 → r7
+    map.getPane("hex6").style.opacity = "0";
+    map.getPane("hex7").style.opacity = "1";
 
-    const p6 = map.getPane("hex6");
-    const p7 = map.getPane("hex7");
+    // Mouse events nur auf r7
+    map.getPane("hex6").style.pointerEvents = "none";
+    map.getPane("hex7").style.pointerEvents = "auto";
 
-    if (currentResolution === "r6") {
+    currentResolution = "r7";
+    btnRes.textContent = "Grobe Auflösung (r6)";
 
-      // Fade r6 → r7
-      p6.style.opacity = "0";
-      p7.style.opacity = "1";
+  } else {
+    // r7 → r6
+    map.getPane("hex6").style.opacity = "1";
+    map.getPane("hex7").style.opacity = "0";
 
-      p6.style.pointerEvents = "none";
-      p7.style.pointerEvents = "auto";
+    // Mouse events nur auf r6
+    map.getPane("hex6").style.pointerEvents = "auto";
+    map.getPane("hex7").style.pointerEvents = "none";
 
-      currentResolution = "r7";
-      btnRes.textContent = "Grobe Auflösung (r6)";
+    currentResolution = "r6";
+    btnRes.textContent = "Feine Auflösung (r7)";
+  }
+};
 
-    } else {
-
-      // Fade r7 → r6
-      p6.style.opacity = "1";
-      p7.style.opacity = "0";
-
-      p6.style.pointerEvents = "auto";
-      p7.style.pointerEvents = "none";
-
-      currentResolution = "r6";
-      btnRes.textContent = "Feine Auflösung (r7)";
-    }
-
-  };
-
-
-  /* ============================================================
-     LEGEND
-     ============================================================ */
-
+  /* ---------------------- Legend ---------------------- */
   const legend = L.control({position:"bottomright"});
   legend.onAdd = () => {
     const div = L.DomUtil.create("div","legend");
@@ -405,11 +361,7 @@ function initMap() {
   };
   legend.addTo(map);
 
-
-  /* ============================================================
-     STATS
-     ============================================================ */
-
+  /* ---------------------- STATS BOX ---------------------- */
   fetch("statistics.json")
     .then(r => r.json())
     .then(stats => {
@@ -432,8 +384,7 @@ function initMap() {
       `;
     })
     .catch(() => {
-      document.getElementById("stats").innerHTML =
-        "Keine Statistikdaten gefunden.";
+      document.getElementById("stats").innerHTML = "Keine Statistikdaten gefunden.";
     });
 
 } // END initMap()
