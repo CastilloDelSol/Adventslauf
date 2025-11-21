@@ -278,11 +278,10 @@ const lightMapTiles = L.tileLayer(
         const geo = L.geoJSON(data, {
           pane,
           style: f => ({
-            fillColor: getColorFromIndex(f.properties.count_index),
+            fillColor: getColor(f.properties.count_index),
             color: "#c9bfae",
             weight: 0.5,
-            opacity: 0.85,
-            fillOpacity: 0.40
+            fillOpacity: 0.4
           }),
           onEachFeature: (f, layer) => {
             layer.bindTooltip(
