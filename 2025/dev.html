@@ -15,6 +15,56 @@ body {
                Roboto, Helvetica, Arial, sans-serif;
 }
 
+  /* ---------------------- COPYRIGHT BOX ---------------------- */
+.copyright-box {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: white;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 10px;
+  line-height: 18px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  z-index: 9901;
+  max-width: 400px;
+}
+
+.copyright-box a {
+  color: #0078ff;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* PRIVACY POPUP */
+#privacyBox {
+  display:none;
+  position: fixed;
+  left:50%;
+  top:50%;
+  transform: translate(-50%, -50%);
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  width: 320px;
+  max-width:90%;
+  box-shadow:0 4px 15px rgba(0,0,0,0.4);
+  z-index:99999;
+}
+
+#privacyBox a {
+  color: #006DF2;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#privacyBox button{
+  margin-top:15px;
+  padding:8px 12px;
+  cursor:pointer;
+}
+
 /* ---------- Fade für Hexagon Layers ---------- */
 .leaflet-pane.hex-pane {
   transition: opacity 0.45s cubic-bezier(.3,.05,.7,.95);
@@ -63,6 +113,51 @@ body {
 </div>
 
 <div id="stats" class="stats-box">Lade Statistik…</div>
+
+  <!-- COPYRIGHT + DSGVO -->
+<div class="copyright-box">
+  © 2025 Ratzeburger Adventslauf - <a onclick="openPrivacy()">Datenschutzhinweis</a><br>
+  Visualisierung & Datenaggregation: <a href="mailto:tim.sonnenburg@gmx.de?subject=Ich%20interessiere%20mich%20für%20die%20Visualisierung%20meiner%20Veranstaltung">Tim Sonnenburg</a>
+</div>
+
+<!-- POPUP -->
+<div id="privacyBox">
+  <h3>Datenschutzhinweis</h3>
+  <p>
+    Die dargestellten Karten verwenden eine vollständig anonymisierte Form der
+    Geodatenverarbeitung. Es werden <b>keine Adressen</b>, <b>keine exakten Koordinaten</b> 
+    und <b>keine personenbezogenen Daten</b> gespeichert oder dargestellt.
+  </p>
+
+  <p>
+    Statt einzelner Punkte werden alle Werte in sogenannte 
+    <b><a href="https://h3geo.org/" target="_blank">H3-Hexagon-Zellen</a></b> 
+    umgerechnet. Diese Flächen besitzen je nach Auflösung
+    eine Größe von ca. 5,1km² (r7) bis etwa 36,1km² (r6).
+  </p>
+
+  <p>
+    Zusätzlich erfolgt eine <b>Abstufung der Werte</b>:
+    Zellen mit 1 oder 2 Teilnehmenden werden nur als 
+    <b>„1–2“</b> angegeben. Dadurch ist eine Rückführung auf einzelne Personen
+    oder Adressen technisch ausgeschlossen.
+  </p>
+
+  <p>
+    Die Datenverarbeitung erfolgt ausschließlich für statistische Zwecke zur
+    Visualisierung der regionalen Herkunft der eingegangenen Anmeldungen.
+    Es findet <b>keine Profilbildung</b> und keine Weitergabe der Rohdaten statt.
+  </p>
+
+  <p>
+    Bei Fragen zur Datenverarbeitung wenden Sie sich bitte an:
+    <a href="mailto:info@adventslauf.de">info@adventslauf.de</a>
+  </p>
+
+  <center>
+    <button onclick="closePrivacy()">Fenster Schließen</button>
+  </center>
+</div>
 
 <script>
 /* ============================================================
