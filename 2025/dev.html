@@ -286,12 +286,12 @@ function loadHex(file, pane, cb) {
           // Helle Zellen → etwas dunklerer Rand
           // Dunklere Zellen → etwas heller, damit es nicht absäuft
           const border =
-            idx <= 1 ? "#d0c7b6" :      // sehr helle Bereiche
-            idx === 2 ? "#c4b9a8" :      // gelb-orange
-            idx === 3 ? "#b6a99a" :      // hell-rot
-            idx === 4 ? "#a8958a" :      // dunkler-rot
-                        "#9a8279";       // dunkelste Zellen
-
+            idx <= 1 ? "#c3b8a6" :
+            idx === 2 ? "#b8ac9b" :
+            idx === 3 ? "#aa9d8d" :
+            idx === 4 ? "#a8958a" :
+                        "#9a8279";
+          
           return {
             fillColor: getColor(idx),
             color: border,
