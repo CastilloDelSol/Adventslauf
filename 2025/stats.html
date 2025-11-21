@@ -161,7 +161,7 @@ h1 {
 <div class="grid-4" style="margin-top: 18px;">
   <div class="box">
     <div class="box-value" id="distanceMin">–</div>
-    <div class="box-label">Min. (km)</div>
+    <div class="box-label">Minimum (km)</div>
   </div>
 
   <div class="box">
@@ -176,7 +176,7 @@ h1 {
 
   <div class="box">
     <div class="box-value" id="distanceMax">–</div>
-    <div class="box-label">Max. (km)</div>
+    <div class="box-label">Maximum (km)</div>
   </div>
 </div>
 
@@ -232,7 +232,7 @@ function buildDashboard(stats, nationalities) {
   document.getElementById("distanceMin").textContent = formatNumber(stats.distance_min_km.toFixed(1));
   document.getElementById("distanceAvg").textContent = formatNumber(stats.distance_avg_km.toFixed(1));
   document.getElementById("distanceMedian").textContent = formatNumber(stats.distance_median_km.toFixed(1));
-  document.getElementById("distanceMax").textContent = formatNumber(stats.distance_max_km.toFixed(1));
+  document.getElementById("distanceMax").textContent = formatNumber(stats.distance_max_km.toFixed(0));
 
   buildPercentilePlot(stats.percentiles_km);
 }
