@@ -99,7 +99,7 @@ body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Ro
 }
   
 .legend i {
-  width:18px; height:18px; float:left; margin-right:8px; border-radius:3px; opacity: 0.4;
+  width:18px; height:18px; float:left; margin-right:8px; border-radius:3px; opacity: 0.6;
 }
 
 </style>
@@ -281,7 +281,7 @@ const lightMapTiles = L.tileLayer(
             fillColor: getColor(f.properties.count_index),
             color: "#c9bfae",
             weight: 0.5,
-            fillOpacity: 0.4
+            fillOpacity: 0.38
           }),
           onEachFeature: (f, layer) => {
             layer.bindTooltip(
