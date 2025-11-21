@@ -146,11 +146,11 @@ body, .legend, .stats-box, .leaflet-container {
   font-weight: 500;
 }
 
-  /* ---- Fade-Effekt für Hexagon-Panes ---- */
-.leaflet-pane.fade-layer {
-  transition: opacity 0.25s cubic-bezier(.3,.02,.7,.98);
+/* --- Crossfade für die Hexagon-Panes --- */
+.leaflet-pane.hex-pane {
+  transition: opacity 0.45s cubic-bezier(.3,.02,.7,.98);
 }
-  
+
 </style>
 </head>
 
@@ -257,12 +257,17 @@ btnMapType.onclick = () => {
 /* ---------------------- PANES ---------------------- */
 map.createPane('hex6');
 map.getPane('hex6').style.zIndex = 410;
+map.getPane('hex6').classList.add("hex-pane");
 
 map.createPane('hex7');
 map.getPane('hex7').style.zIndex = 420;
+map.getPane('hex7').classList.add("hex-pane");
 
-map.getPane('hex6').classList.add("fade-layer");
-map.getPane('hex7').classList.add("fade-layer");
+// Start: r6 sichtbar, r7 unsichtbar
+map.getPane('hex6').style.opacity = "1";
+map.getPane('hex7').style.opacity = "0";
+
+let currentResolution = "r6";
 
 
 /* ---------------------- COLOR + LABEL FROM BUCKETS.JSON (NEW) ---------------------- */
@@ -273,49 +278,6 @@ function getColorFromIndex(idx){
 
 function getLabelFromIndex(idx){
   return BUCKETS[idx].label;
-}
-
-  function switchResolution(target) {
-
-  // old layer = currently active one
-  const oldLayer = (currentResolution === "r6") ? layer6 : layer7;
-  const newLayer = (target === "r6") ? layer6 : layer7;
-
-  // 1. Add new layer in background, invisible
-  if (!map.hasLayer(newLayer)) {
-    newLayer.eachLayer(l => l.setStyle({ opacity: 0, fillOpacity: 0 }));
-    newLayer.addTo(map);
-  }
-
-  // 2. Force reflow so transitions apply
-  void map._container.offsetHeight;
-
-  // 3. Crossfade:
-  // old layer → fade out
-  oldLayer.eachLayer(l => {
-    l.setStyle({
-      opacity: 0,
-      fillOpacity: 0,
-      transition: "opacity 0.45s cubic-bezier(.3,.02,.7,.98), fill-opacity 0.45s cubic-bezier(.3,.02,.7,.98)"
-    });
-  });
-
-  // new layer → fade in
-  newLayer.eachLayer(l => {
-    l.setStyle({
-      opacity: 1,
-      fillOpacity: 0.33,
-      transition: "opacity 0.45s cubic-bezier(.3,.02,.7,.98), fill-opacity 0.45s cubic-bezier(.3,.02,.7,.98)"
-    });
-  });
-
-  // 4. Remove old layer after transition
-  setTimeout(() => {
-    map.removeLayer(oldLayer);
-  }, 500);
-
-  // Update state
-  currentResolution = target;
 }
 
 /* ---------------------- LAYER LOAD ---------------------- */
@@ -357,11 +319,22 @@ layer6.addTo(map);
 
 /* ---------------------- BUTTON LOGIC ---------------------- */
 btnRes.onclick = () => {
-  const target = (currentResolution === "r6") ? "r7" : "r6";
-  switchResolution(target);
-  btnRes.textContent = (target === "r6")
-    ? "Grobe Auflösung (r6)"
-    : "Feine Auflösung (r7)";
+
+  if (currentResolution === "r6") {
+    // r6 -> r7
+    map.getPane('hex6').style.opacity = "0";
+    map.getPane('hex7').style.opacity = "1";
+
+    currentResolution = "r7";
+    btnRes.textContent = "Grobe Auflösung (r6)";
+  } else {
+    // r7 -> r6
+    map.getPane('hex6').style.opacity = "1";
+    map.getPane('hex7').style.opacity = "0";
+
+    currentResolution = "r6";
+    btnRes.textContent = "Feine Auflösung (r7)";
+  }
 };
 
 /* ---------------------- LEGEND (AUTO FROM BUCKETS.JSON) ---------------------- */
