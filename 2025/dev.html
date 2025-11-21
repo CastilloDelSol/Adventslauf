@@ -87,45 +87,46 @@ function initMap() {
     preferCanvas: true,
     inertia: false,
     center: [53.699327, 10.774143],
-    zoom: 9
+    zoom: 9,
+    attributionControl: true
   });
 
   /* ---------- Tile Panes ---------- */
-  map.createPane("tilesOSM");
-  map.getPane("tilesOSM").classList.add("tile-pane");
-  map.createPane("tilesCARTO");
-  map.getPane("tilesCARTO").classList.add("tile-pane");
+  map.createPane("tilesDefault");
+  map.getPane("tilesDefault").classList.add("tile-pane");
+  map.createPane("tilesLight");
+  map.getPane("tilesLight").classList.add("tile-pane");
 
-  map.getPane("tilesOSM").style.zIndex = 200;
-  map.getPane("tilesCARTO").style.zIndex = 201;
+  map.getPane("tilesDefault").style.zIndex = 200;
+  map.getPane("tilesLight").style.zIndex = 201;
 
-  map.getPane("tilesOSM").style.opacity = "1";
-  map.getPane("tilesCARTO").style.opacity = "0";
+  map.getPane("tilesDefault").style.opacity = "1";
+  map.getPane("tilesLight").style.opacity = "0";
 
-  const osmTiles = L.tileLayer(
+  const defaultMapTiles = L.tileLayer(
     "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-    { maxZoom:19, pane:"tilesOSM" }
+    { maxZoom:19, pane:"tilesDefault" }
   ).addTo(map);
 
-  const cartoTiles = L.tileLayer(
+  const lightMapTiles = L.tileLayer(
     "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    { maxZoom:19, pane:"tilesCARTO" }
+    { maxZoom:19, pane:"tilesLight" }
   ).addTo(map);
 
-  let currentBase = "osm";
+  let currentBase = "default";
 
 
   /* ---------- Base Layer Fade Button ---------- */
   btnMapType.onclick = () => {
-    if (currentBase === "osm") {
-      map.getPane("tilesOSM").style.opacity = "0";
-      map.getPane("tilesCARTO").style.opacity = "1";
-      currentBase = "carto";
-      btnMapType.textContent = "OSM Standard";
+    if (currentBase === "default") {
+      map.getPane("tilesDefault").style.opacity = "0";
+      map.getPane("tilesLight").style.opacity = "1";
+      currentBase = "light";
+      btnMapType.textContent = "CARTO Voyager";
     } else {
-      map.getPane("tilesOSM").style.opacity = "1";
-      map.getPane("tilesCARTO").style.opacity = "0";
-      currentBase = "osm";
+      map.getPane("tilesDefault").style.opacity = "1";
+      map.getPane("tilesLight").style.opacity = "0";
+      currentBase = "default";
       btnMapType.textContent = "CARTO Light Grey";
     }
   };
