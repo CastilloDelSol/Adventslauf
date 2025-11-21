@@ -320,45 +320,34 @@ function initMap() {
      RESOLUTION SWITCH + CROSSFADE
      ============================================================ */
 
-  btnRes.onclick = () => {
+btnRes.onclick = () => {
+  if (!layer6 || !layer7) return; // not loaded yet
 
-    if (!layer6 || !layer7) return; // not loaded yet
+  if (currentResolution === "r6") {
+    // r6 → r7
+    map.getPane("hex6").style.opacity = "0";
+    map.getPane("hex7").style.opacity = "1";
 
-    if (currentResolution === "r6") {
-      // r6 → r7
-      map.getPane("hex6").style.opacity = "0";
-      map.getPane("hex7").style.opacity = "1";
+    // Mouse events nur auf r7
+    map.getPane("hex6").style.pointerEvents = "none";
+    map.getPane("hex7").style.pointerEvents = "auto";
 
-      // Tooltips: r6 deaktiviert
-      layer6.eachLayer(l => l.unbindTooltip());
+    currentResolution = "r7";
+    btnRes.textContent = "Grobe Auflösung (r6)";
 
-      // Tooltips: r7 aktivieren
-      layer7.eachLayer(l => {
-        const idx = l.feature.properties.count_index;
-        l.bindTooltip("Anmeldungen: " + getLabelFromIndex(idx), { sticky:true });
-      });
+  } else {
+    // r7 → r6
+    map.getPane("hex6").style.opacity = "1";
+    map.getPane("hex7").style.opacity = "0";
 
-      currentResolution = "r7";
-      btnRes.textContent = "Grobe Auflösung (r6)";
+    // Mouse events nur auf r6
+    map.getPane("hex6").style.pointerEvents = "auto";
+    map.getPane("hex7").style.pointerEvents = "none";
 
-    } else {
-      // r7 → r6
-      map.getPane("hex6").style.opacity = "1";
-      map.getPane("hex7").style.opacity = "0";
-
-      // Tooltips: r7 deaktivieren
-      layer7.eachLayer(l => l.unbindTooltip());
-
-      // Tooltips: r6 aktivieren
-      layer6.eachLayer(l => {
-        const idx = l.feature.properties.count_index;
-        l.bindTooltip("Anmeldungen: " + getLabelFromIndex(idx), { sticky:true });
-      });
-
-      currentResolution = "r6";
-      btnRes.textContent = "Feine Auflösung (r7)";
-    }
-  };
+    currentResolution = "r6";
+    btnRes.textContent = "Feine Auflösung (r7)";
+  }
+};
 
   /* ---------------------- Legend ---------------------- */
   const legend = L.control({position:"bottomright"});
