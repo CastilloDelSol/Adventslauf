@@ -280,9 +280,9 @@ const lightMapTiles = L.tileLayer(
           pane,
           style: f => ({
             fillColor: getColor(f.properties.count_index),
-            color: "#e0e0e0",
+            color: "#999999",
             weight: 0.7,
-            fillOpacity: 0.33
+            fillOpacity: 0.4
           }),
           onEachFeature: (f, layer) => {
             layer.bindTooltip(
