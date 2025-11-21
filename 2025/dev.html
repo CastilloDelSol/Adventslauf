@@ -246,11 +246,15 @@ let lowContrast = false;
 /* ---------------------- DARK MODE ---------------------- */
 btnMapType.onclick = () => {
   if(!lowContrast){
-    map.removeLayer(osmTiles); lowContrastTiles.addTo(map);
-    lowContrast = true; btnMapType.innerHTML="OSM Standard";
+    map.removeLayer(osmTiles); 
+    lowContrastTiles.addTo(map);
+    lowContrast = true; 
+    btnMapType.innerHTML="OSM Standard";
   } else {
-    map.removeLayer(lowContrastTiles); osmTiles.addTo(map);
-    lowContrast = false; btnMapType.innerHTML="CARTO Light Grey";
+    map.removeLayer(lowContrastTiles); 
+    osmTiles.addTo(map);
+    lowContrast = false; 
+    btnMapType.innerHTML="CARTO Light Grey";
   }
 };
 
@@ -263,19 +267,16 @@ map.createPane('hex7');
 map.getPane('hex7').style.zIndex = 420;
 map.getPane('hex7').classList.add("hex-pane");
 
-// Start: r6 sichtbar, r7 unsichtbar
+// Startwerte: r6 an, r7 aus
 map.getPane('hex6').style.opacity = "1";
 map.getPane('hex7').style.opacity = "0";
 
 let currentResolution = "r6";
 
-
-/* ---------------------- COLOR + LABEL FROM BUCKETS.JSON (NEW) ---------------------- */
-
+/* ---------------------- COLOR + LABEL ---------------------- */
 function getColorFromIndex(idx){
   return BUCKETS[idx].color;
 }
-
 function getLabelFromIndex(idx){
   return BUCKETS[idx].label;
 }
@@ -285,19 +286,17 @@ const layer6 = L.layerGroup();
 const layer7 = L.layerGroup();
 
 function loadLayer(file, paneName, intoLayer){
-  fetch(file)
+  return fetch(file)
     .then(r => r.json())
     .then(data => {
       const geo = L.geoJSON(data, {
         pane: paneName,
-
         style: f => ({
           fillColor: getColorFromIndex(f.properties.count_index),
           color: "#6B6B6B",
           weight: 0.75,
           fillOpacity: 0.33
         }),
-
         onEachFeature: (f, layer) => {
           layer.bindTooltip(
             "Anmeldungen: " + getLabelFromIndex(f.properties.count_index),
@@ -306,46 +305,48 @@ function loadLayer(file, paneName, intoLayer){
         }
       });
 
-      // WICHTIG: erst wenn geladen, in layerGroup stecken
       intoLayer.addLayer(geo);
     });
 }
 
-loadLayer("hexagons_r6.geojson", "hex6", layer6);
-loadLayer("hexagons_r7.geojson", "hex7", layer7);
+/* --- Sicherstellen dass ALLE Layer geladen sind bevor wir arbeiten --- */
+Promise.all([
+  loadLayer("hexagons_r6.geojson", "hex6", layer6),
+  loadLayer("hexagons_r7.geojson", "hex7", layer7)
+]).then(() => {
 
-// Beide Layer zur Map hinzufügen (für Crossfade notwendig)
-layer6.addTo(map);
-layer7.addTo(map);
+  // Beide Layer müssen existieren, damit Crossfade klappt
+  layer6.addTo(map);
+  layer7.addTo(map);
 
-// Aber r7 komplett unsichtbar machen
-map.getPane('hex7').style.opacity = "0";
+  // r7 startet unsichtbar
+  map.getPane('hex7').style.opacity = "0";
+  currentResolution = "r6";
+});
 
-let currentResolution = "r6";
-
-/* ---------------------- BUTTON LOGIC ---------------------- */
+/* ---------------------- RESOLUTION BUTTON ---------------------- */
 btnRes.onclick = () => {
+
+  const pane6 = map.getPane('hex6');
+  const pane7 = map.getPane('hex7');
 
   if (currentResolution === "r6") {
     // r6 -> r7
-    map.getPane('hex6').style.opacity = "0";
-    map.getPane('hex7').style.opacity = "1";
-
+    pane6.style.opacity = "0";
+    pane7.style.opacity = "1";
     currentResolution = "r7";
     btnRes.textContent = "Grobe Auflösung (r6)";
   } else {
     // r7 -> r6
-    map.getPane('hex6').style.opacity = "1";
-    map.getPane('hex7').style.opacity = "0";
-
+    pane6.style.opacity = "1";
+    pane7.style.opacity = "0";
     currentResolution = "r6";
     btnRes.textContent = "Feine Auflösung (r7)";
   }
 };
 
-/* ---------------------- LEGEND (AUTO FROM BUCKETS.JSON) ---------------------- */
+/* ---------------------- LEGEND ---------------------- */
 const legend = L.control({position:"bottomright"});
-
 legend.onAdd = function(){
   const div = L.DomUtil.create("div","legend");
   div.innerHTML = "<b>Anmeldungen</b><br>";
@@ -358,7 +359,6 @@ legend.onAdd = function(){
 
   return div;
 };
-
 legend.addTo(map);
 
 /* ---------------------- LOAD STATS BOX ---------------------- */
@@ -389,6 +389,7 @@ fetch("statistics.json")
   .catch(() => { document.getElementById("stats").innerHTML="Keine Statistikdaten gefunden."; });
 
 } // END initMap()
+
 </script>
 </body>
 </html>
