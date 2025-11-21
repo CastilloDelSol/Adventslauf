@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Distance Statistics Dashboard</title>
+<title>Statistics Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- Plotly -->
@@ -75,9 +75,7 @@ h1 {
   margin-top: 25px;
 }
 
-/* ------------------------------------ */
-/* Nationality Table */
-/* ------------------------------------ */
+/* Nationality table */
 .nationality-card-title {
   font-size: 18px;
   margin-bottom: 10px;
@@ -98,6 +96,14 @@ h1 {
 .nationality-table th {
   color: var(--muted);
   font-weight: 500;
+}
+
+.nationality-table th.land {
+  text-align: left;
+}
+
+.nationality-table th.count {
+  text-align: right;
 }
 
 .nationality-table td.count {
@@ -130,8 +136,8 @@ h1 {
 <body>
 <div class="page">
 
-<h1>Distance Statistics Dashboard</h1>
-<div class="subtitle">Percentil-Auswertung — Plotly, gestochen scharf</div>
+<h1>Statistics Dashboard</h1>
+<div class="subtitle">Ratzeburger Adventslauf 2025</div>
 
 <!-- TOP BOXES -->
 <div class="grid-5">
@@ -168,8 +174,8 @@ h1 {
   <table class="nationality-table" id="nationalityTable">
     <thead>
       <tr>
-        <th style="text-align:left;">Land</th>
-        <th style="text-align:right;">Anzahl</th>
+        <th class="land">Land</th>
+        <th class="count">Anzahl</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -184,27 +190,69 @@ h1 {
 </div>
 
 <script>
-// --- Formatter: comma decimal ---
+// --- Custom formatter: comma decimal, NO thousand separators ---
 function formatNumber(value) {
   let s = String(value).replace(".", ",");
   return s.replace(/\./g, "");
 }
 
+// =========================
+// Init: getrennte Fetches
+// =========================
 document.addEventListener("DOMContentLoaded", () => {
-  Promise.all([
-    fetch("./statistics.json").then(r => r.json()),
-    fetch("./nationality.json").then(r => r.json())
-  ])
-    .then(([stats, nationalities]) => {
-      buildDashboard(stats);
-      buildNationalityTable(nationalities);
-    });
+  // Statistik
+  fetch("./statistics.json")
+    .then(r => r.json())
+    .then(data => buildDashboard(data))
+    .catch(err => console.error("Could not load statistics.json", err));
+
+  // Nationalitäten
+  fetch("./nationality.json")
+    .then(r => r.json())
+    .then(data => buildNationalityTable(data))
+    .catch(err => console.error("Could not load nationality.json", err));
 });
 
 // ======================================================
-// NATIONALITY TABLE
+// =============== Dashboard (Top-Kacheln) ==============
+// ======================================================
+function buildDashboard(data) {
+  if (!data) return;
+
+  document.getElementById("totalParticipants").textContent =
+    String(data.total_participants ?? "–");
+
+  if (typeof data.distance_min_km === "number") {
+    document.getElementById("distanceMin").textContent =
+      formatNumber(data.distance_min_km.toFixed(2));
+  }
+
+  if (typeof data.distance_avg_km === "number") {
+    document.getElementById("distanceAvg").textContent =
+      formatNumber(data.distance_avg_km.toFixed(2));
+  }
+
+  if (typeof data.distance_median_km === "number") {
+    document.getElementById("distanceMedian").textContent =
+      formatNumber(data.distance_median_km.toFixed(2));
+  }
+
+  if (typeof data.distance_max_km === "number") {
+    document.getElementById("distanceMax").textContent =
+      formatNumber(data.distance_max_km.toFixed(2));
+  }
+
+  if (data.percentiles_km) {
+    buildPercentilePlot(data.percentiles_km);
+  }
+}
+
+// ======================================================
+// =============== Nationality Table ====================
 // ======================================================
 function buildNationalityTable(list) {
+  if (!Array.isArray(list)) return;
+
   const sorted = [...list].sort((a, b) => b.count - a.count);
   const tbody = document.querySelector("#nationalityTable tbody");
   tbody.innerHTML = "";
@@ -223,7 +271,7 @@ function buildNationalityTable(list) {
       const img = document.createElement("img");
       img.className = "nationality-flag";
       img.src = entry.flag;
-      img.alt = entry.code;
+      img.alt = entry.code || "";
       wrapper.appendChild(img);
     }
 
@@ -241,10 +289,9 @@ function buildNationalityTable(list) {
 }
 
 // ======================================================
-// PERCENTILE PLOT
+// =============== Percentile Plot ======================
 // ======================================================
 function buildPercentilePlot(percentileData) {
-
   const entries = Object.entries(percentileData)
     .sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]));
 
@@ -278,6 +325,7 @@ function buildPercentilePlot(percentileData) {
 
     xaxis: {
       title: "Perzentil [%]",
+      tick0: 0,
       dtick: 10,
       tickfont: { size: 12, color: "#E6EDF3" },
       titlefont: { size: 14, color: "#E6EDF3" },
@@ -304,7 +352,9 @@ function buildPercentilePlot(percentileData) {
         showgrid: true,
         gridcolor: "rgba(140,140,140,0.08)"
       }
-    }
+    },
+
+    hovermode: "closest"
   };
 
   Plotly.newPlot("percentilePlot", [trace], layout, {
