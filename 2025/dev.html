@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Teilnehmer Hexagon-Heatmap ### Ratzeburger Adventslauf 2025</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/h3-js@4.1.0/dist/h3-js.umd.js"></script>
+
+<style>
+html, body, #map {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body, .legend, .stats-box, .leaflet-container {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ---------------------- COPYRIGHT BOX ---------------------- */
+.copyright-box {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: white;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 10px;
+  line-height: 18px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  z-index: 9901;
+  max-width: 400px;
+}
+
+.copyright-box a {
+  color: #0078ff;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* PRIVACY POPUP */
+#privacyBox {
+  display:none;
+  position: fixed;
+  left:50%;
+  top:50%;
+  transform: translate(-50%, -50%);
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  width: 320px;
+  max-width:90%;
+  box-shadow:0 4px 15px rgba(0,0,0,0.4);
+  z-index:99999;
+}
+
+#privacyBox a {
+  color: #006DF2;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#privacyBox button{
+  margin-top:15px;
+  padding:8px 12px;
+  cursor:pointer;
+}
+
+/* ---------------------- LEGEND ---------------------- */
+.legend {
+  background: white;
+  padding: 10px;
+  line-height: 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+  
+.legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+  opacity: 0.85;
+  border-radius: 3px;
+}
+
+/* ---------------------- BUTTONS rechts ---------------------- */
+.right-buttons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 9902;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.map-button {
+  background:white;
+  padding: 8px 14px;
+  border-radius:6px;
+  border:1px solid #999;
+  cursor:pointer;
+  font-size:14px;
+  box-shadow:0 2px 4px rgba(0,0,0,0.25);
+  min-width:130px;
+  text-align:center;
+}
+  
+.map-button:hover{
+  background:#f0f0f0;
+}
+  
+.map-button.active{
+  background:#0078ff;
+  color:white;
+  border-color:#005fcc;
+}
+
+/* ---------------------- STATS BOX unter Buttons ---------------------- */
+.stats-box {
+  position: absolute;
+  bottom: 90px;
+  left: 20px;
+  background:white;
+  padding:12px;
+  border-radius:8px;
+  font-size:13px;
+  line-height:20px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.25);
+  max-width:260px;
+  z-index:9903;
+}
+  
+.stats-box table { width:100%; border-collapse:collapse; }
+.stats-box td.label { font-weight:600; white-space:nowrap; padding-right:6px; }
+
+/* Tooltip */
+.leaflet-tooltip {
+  font-size: 13px;
+  font-weight: 500;
+}
+  
+</style>
+</head>
+
+<body>
+
+<div id="map"></div>
+
+<!-- RIGHT BUTTON PANEL -->
+<div class="right-buttons">
+  <div id="btnMapType" class="map-button">CARTO Light Grey</div>
+  <div id="btnRes" class="map-button">Grobe Auflösung (r6)</div>
+</div>
+
+
+<!-- STATS BOX -->
+<div id="stats" class="stats-box">Lade Statistik…</div>
+
+<!-- COPYRIGHT + DSGVO -->
+<div class="copyright-box">
+  © 2025 Ratzeburger Adventslauf - <a onclick="openPrivacy()">Datenschutzhinweis</a><br>
+  Visualisierung & Datenaggregation: <a href="mailto:tim.sonnenburg@gmx.de?subject=Ich%20interessiere%20mich%20für%20die%20Visualisierung%20meiner%20Veranstaltung">Tim Sonnenburg</a>
+</div>
+
+<!-- POPUP -->
+<div id="privacyBox">
+  <h3>Datenschutzhinweis</h3>
+  <p>
+    Die dargestellten Karten verwenden eine vollständig anonymisierte Form der
+    Geodatenverarbeitung. Es werden <b>keine Adressen</b>, <b>keine exakten Koordinaten</b> 
+    und <b>keine personenbezogenen Daten</b> gespeichert oder dargestellt.
+  </p>
+
+  <p>
+    Statt einzelner Punkte werden alle Werte in sogenannte 
+    <b><a href="https://h3geo.org/" target="_blank">H3-Hexagon-Zellen</a></b> 
+    umgerechnet. Diese Flächen besitzen je nach Auflösung
+    eine Größe von ca. 5,1km² (r7) bis etwa 36,1km² (r6).
+  </p>
+
+  <p>
+    Zusätzlich erfolgt eine <b>Abstufung der Werte</b>:
+    Zellen mit 1 oder 2 Teilnehmenden werden nur als 
+    <b>„1–2“</b> angegeben. Dadurch ist eine Rückführung auf einzelne Personen
+    oder Adressen technisch ausgeschlossen.
+  </p>
+
+  <p>
+    Die Datenverarbeitung erfolgt ausschließlich für statistische Zwecke zur
+    Visualisierung der regionalen Herkunft der eingegangenen Anmeldungen.
+    Es findet <b>keine Profilbildung</b> und keine Weitergabe der Rohdaten statt.
+  </p>
+
+  <p>
+    Bei Fragen zur Datenverarbeitung wenden Sie sich bitte an:
+    <a href="mailto:info@adventslauf.de">info@adventslauf.de</a>
+  </p>
+
+  <center>
+    <button onclick="closePrivacy()">Fenster Schließen</button>
+  </center>
+</div>
+
+<script>
+/* ---------------------- PRIVACY ---------------------- */
+function openPrivacy(){ document.getElementById("privacyBox").style.display="block"; }
+function closePrivacy(){ document.getElementById("privacyBox").style.display="none"; }
+
+/* ---------------------- LOAD BUCKETS.JSON (NEW) ---------------------- */
+let BUCKETS = [];
+
+fetch("buckets.json")
+  .then(r => r.json())
+  .then(data => {
+    BUCKETS = data.buckets;
+    initMap();
+  });
+
+/* ---------------------- MAP + LAYERS (wrapped into function) ---------------------- */
+function initMap(){
+
+const map = L.map('map', {
+  preferCanvas: true,
+  inertia: false,
+  center: [53.699327, 10.774143],
+  zoom: 9
+});
+
+const osmTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(map);
+const lowContrastTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:19});
+
+let lowContrast = false;
+
+/* ---------------------- DARK MODE ---------------------- */
+btnMapType.onclick = () => {
+  if(!lowContrast){
+    map.removeLayer(osmTiles); lowContrastTiles.addTo(map);
+    lowContrast = true; btnMapType.innerHTML="OSM Standard";
+  } else {
+    map.removeLayer(lowContrastTiles); osmTiles.addTo(map);
+    lowContrast = false; btnMapType.innerHTML="CARTO Light Grey";
+  }
+};
+
+/* ---------------------- PANES ---------------------- */
+map.createPane('hex6');
+map.getPane('hex6').style.zIndex = 410;
+
+map.createPane('hex7');
+map.getPane('hex7').style.zIndex = 420;
+
+/* ---------------------- COLOR + LABEL FROM BUCKETS.JSON (NEW) ---------------------- */
+
+function getColorFromIndex(idx){
+  return BUCKETS[idx].color;
+}
+
+function getLabelFromIndex(idx){
+  return BUCKETS[idx].label;
+}
+
+/* ==========================================================
+   LAYER MANAGEMENT — CLEAN RELOAD SYSTEM
+   ========================================================== */
+
+map.createPane('hex6');
+map.getPane('hex6').style.zIndex = 410;
+
+map.createPane('hex7');
+map.getPane('hex7').style.zIndex = 420;
+
+let currentResolution = "r6";  // ACTIVE mode on first load
+
+// ACTIVE layer container
+let activeLayer = null;
+
+/* ---------------------- LOAD + BUILD LAYER ---------------------- */
+function buildHexLayer(file, paneName) {
+  return fetch(file)
+    .then(r => r.json())
+    .then(data => {
+      return L.geoJSON(data, {
+        pane: paneName,
+        style: f => ({
+          fillColor: getColorFromIndex(f.properties.count_index),
+          color: "#6B6B6B",
+          weight: 0.75,
+          fillOpacity: 0.33
+        }),
+        onEachFeature: (f, layer) => {
+          layer.bindTooltip(
+            "Anmeldungen: " + getLabelFromIndex(f.properties.count_index),
+            { sticky: true }
+          );
+        }
+      });
+    });
+}
+  
+/* ---------------------- SHOW LAYER (REBUILD ALWAYS) ---------------------- */
+async function showResolution(res) {
+  
+  // Remove old layer if exists
+  if (activeLayer) {
+    map.removeLayer(activeLayer);
+    activeLayer = null;
+  }
+
+  // Which file to load
+  const file = (res === "r6")
+    ? "hexagons_r6.geojson"
+    : "hexagons_r7.geojson";
+
+  const pane = (res === "r6") ? "hex6" : "hex7";
+
+  // Load fresh layer
+  activeLayer = await buildHexLayer(file, pane);
+  activeLayer.addTo(map);
+
+  // Update button label (ACTIVE MODE)
+  if (res === "r6") {
+    btnRes.innerHTML = "Aktiv: Grobe Auflösung (r6)";
+  } else {
+    btnRes.innerHTML = "Aktiv: Feine Auflösung (r7)";
+  }
+
+  currentResolution = res;
+}
+
+
+/* ---------------------- INITIAL LOAD ---------------------- */
+showResolution("r6");   // start with coarse r6
+
+
+/* ---------------------- BUTTON SWITCH ---------------------- */
+btnRes.onclick = () => {
+  if (currentResolution === "r6") {
+    showResolution("r7");
+  } else {
+    showResolution("r6");
+  }
+};
+
+/* ---------------------- LOAD STATS BOX ---------------------- */
+fetch("statistics.json")
+  .then(r => r.json())
+  .then(stats => {
+    const box = document.getElementById("stats");
+
+    let html = `
+      <b>Statistiken</b>
+      <table>
+        <tr><td class="label">Anmeldungen:</td><td>${stats.total_participants}</td></tr>
+        <tr><td class="label">Min Distanz:</td><td>${stats.distance_min_km} km</td></tr>
+        <tr><td class="label">Max Distanz:</td><td>${stats.distance_max_km} km</td></tr>
+        <tr><td class="label">Ø Distanz:</td><td>${stats.distance_avg_km} km</td></tr>
+        <tr><td class="label">Median:</td><td>${stats.distance_median_km} km</td></tr>
+      </table>
+
+      <br><b>Anreise-Entfernungen</b>
+      <table>
+        ${Object.entries(stats.distance_buckets)
+          .map(([k,v]) => `<tr><td class="label">${k}:</td><td>${v}</td></tr>`).join("")}
+      </table>
+    `;
+
+    box.innerHTML = html;
+  })
+  .catch(() => { document.getElementById("stats").innerHTML="Keine Statistikdaten gefunden."; });
+
+} // END initMap()
+</script>
+</body>
+</html>
