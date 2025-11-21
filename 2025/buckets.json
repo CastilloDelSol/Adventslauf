@@ -5,21 +5,21 @@
       "min": 1,
       "max": 2,
       "label": "≤2",
-      "color": "#fde725"
+      "color": "#fcd34d"
     },
     {
       "index": 1,
       "min": 3,
       "max": 5,
       "label": "3–5",
-      "color": "#f68e26"
+      "color": "#f97316"
     },
     {
       "index": 2,
       "min": 6,
       "max": 10,
       "label": "6–10",
-      "color": "#e7582f"
+      "color": "#dc2626"
     },
     {
       "index": 3,
@@ -43,6 +43,4 @@
       "color": "#2d0184"
     }
   ]
-
 }
-
