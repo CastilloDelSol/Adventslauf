@@ -44,9 +44,16 @@ h1 {
   margin-bottom: 25px;
 }
 
-.grid-5 {
+/* Kachel-Grids */
+.grid-3 {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 18px;
 }
 
@@ -109,7 +116,7 @@ h1 {
   text-align: right;
 }
 
-/* ALIGN FLAG + LAND vertically */
+/* ALIGN FLAG + LAND */
 .flag-row {
   display: flex;
   align-items: center;
@@ -132,13 +139,26 @@ h1 {
 <h1>Ratzeburger Adventslauf 2025</h1>
 <div class="subtitle">Statistik Dashboard</div>
 
-<!-- TOP BOXES -->
-<div class="grid-5">
+<!-- TOP ROW (3 boxes) -->
+<div class="grid-3">
   <div class="box">
     <div class="box-value" id="totalParticipants">–</div>
     <div class="box-label">Teilnehmer</div>
   </div>
 
+  <div class="box">
+    <div class="box-value" id="nationalCount">–</div>
+    <div class="box-label">Deutschland</div>
+  </div>
+
+  <div class="box">
+    <div class="box-value" id="internationalCount">–</div>
+    <div class="box-label">International</div>
+  </div>
+</div>
+
+<!-- SECOND ROW (4 boxes) -->
+<div class="grid-4" style="margin-top: 18px;">
   <div class="box">
     <div class="box-value" id="distanceMin">–</div>
     <div class="box-label">Minimum (km)</div>
@@ -182,7 +202,6 @@ h1 {
 </div>
 
 <script>
-// --- Custom formatter: comma decimal, NO thousand separators ---
 function formatNumber(value) {
   let s = String(value).replace(".", ",");
   return s.replace(/\./g, "");
@@ -202,22 +221,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ==================== DASHBOARD ======================
 function buildDashboard(stats, nationalities) {
-  const totalFromNationalities = nationalities.reduce((sum, e) => sum + e.count, 0);
+  const total = nationalities.reduce((sum, e) => sum + e.count, 0);
+  const germany = nationalities.find(e => e.code === "de")?.count || 0;
+  const international = total - germany;
 
-  document.getElementById("totalParticipants").textContent =
-    String(totalFromNationalities);
+  document.getElementById("totalParticipants").textContent = String(total);
+  document.getElementById("nationalCount").textContent = String(germany);
+  document.getElementById("internationalCount").textContent = String(international);
 
-  document.getElementById("distanceMin").textContent =
-    formatNumber(stats.distance_min_km.toFixed(2));
-
-  document.getElementById("distanceAvg").textContent =
-    formatNumber(stats.distance_avg_km.toFixed(2));
-
-  document.getElementById("distanceMedian").textContent =
-    formatNumber(stats.distance_median_km.toFixed(2));
-
-  document.getElementById("distanceMax").textContent =
-    formatNumber(stats.distance_max_km.toFixed(2));
+  document.getElementById("distanceMin").textContent = formatNumber(stats.distance_min_km.toFixed(2));
+  document.getElementById("distanceAvg").textContent = formatNumber(stats.distance_avg_km.toFixed(2));
+  document.getElementById("distanceMedian").textContent = formatNumber(stats.distance_median_km.toFixed(2));
+  document.getElementById("distanceMax").textContent = formatNumber(stats.distance_max_km.toFixed(2));
 
   buildPercentilePlot(stats.percentiles_km);
 }
@@ -234,13 +249,12 @@ function buildNationalityTable(list) {
     const tdCount = document.createElement("td");
     tdCount.classList.add("count");
 
-    // NEW WRAPPER FOR ALIGNMENT, FLAG SIZE UNCHANGED
     const wrapper = document.createElement("div");
     wrapper.className = "flag-row";
 
     if (entry.flag) {
       const img = document.createElement("img");
-      img.className = "nationality-flag"; // EXACT original size
+      img.className = "nationality-flag";
       img.src = entry.flag;
       img.alt = entry.code;
       wrapper.appendChild(img);
@@ -273,9 +287,7 @@ function buildPercentilePlot(percentileData) {
 
   let minorTicks = [];
   for (let decade of [0.1, 1, 10, 100, 1000]) {
-    for (let m = 2; m <= 9; m++) {
-      minorTicks.push(decade * (m / 10));
-    }
+    for (let m = 2; m <= 9; m++) minorTicks.push(decade * (m / 10));
   }
 
   const trace = {
@@ -296,9 +308,9 @@ function buildPercentilePlot(percentileData) {
     xaxis: {
       title: "Perzentil [%]",
       dtick: 10,
+      gridcolor: "rgba(140,140,140,0.2)",
       tickfont: { size: 12, color: "#E6EDF3" },
       titlefont: { size: 14, color: "#E6EDF3" },
-      gridcolor: "rgba(140,140,140,0.2)",
       minor: { dtick: 5, showgrid: true, gridcolor: "rgba(140,140,140,0.1)" }
     },
 
@@ -307,9 +319,9 @@ function buildPercentilePlot(percentileData) {
       type: "log",
       tickvals: mainTicks,
       ticktext: mainTickLabels,
+      gridcolor: "rgba(140,140,140,0.2)",
       tickfont: { size: 12, color: "#E6EDF3" },
       titlefont: { size: 14, color: "#E6EDF3" },
-      gridcolor: "rgba(140,140,140,0.2)",
       minor: { tickvals: minorTicks, showgrid: true, gridcolor: "rgba(140,140,140,0.1)" }
     }
   };
