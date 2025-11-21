@@ -74,6 +74,43 @@ h1 {
   border: 1px solid var(--border);
   margin-top: 25px;
 }
+
+/* Nationality table */
+.nationality-card-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.nationality-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.nationality-table th,
+.nationality-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.nationality-table th {
+  text-align: left;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.nationality-table td.count {
+  text-align: right;
+}
+
+.nationality-flag {
+  width: 24px;
+  height: 18px;
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  margin-right: 6px;
+}
 </style>
 </head>
 
@@ -111,35 +148,54 @@ h1 {
   </div>
 </div>
 
-<!-- PERCENTILE CHART -->
+<!-- ============================ -->
+<!-- NATIONALITY TABLE -->
+<!-- ============================ -->
 <div class="chart-card">
-  <div id="percentilePlot" style="height: 600px;"></div>
+  <div class="nationality-card-title">Teilnehmer nach Nationalität</div>
+  <table class="nationality-table" id="nationalityTable">
+    <thead>
+      <tr>
+        <th>Land</th>
+        <th>Anzahl</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 
-<!-- HISTOGRAM CHART -->
+<!-- ============================ -->
+<!-- PERCENTILE CHART -->
+<!-- ============================ -->
 <div class="chart-card">
-  <div id="distanceHistogram" style="height: 500px;"></div>
+  <div id="percentilePlot" style="height: 600px;"></div>
 </div>
 
 </div>
 
 <script>
-// --- Custom formatter: comma decimal, NO thousand separators ---
+// --- Custom formatter: comma decimal, NO thousands separators ---
 function formatNumber(value) {
   let s = String(value).replace(".", ",");
   return s.replace(/\./g, "");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  fetch("./statistics.json")
-    .then(r => r.json())
-    .then(data => buildDashboard(data))
-    .catch(err => console.error("Could not load statistics.json", err));
+  Promise.all([
+    fetch("./statistics.json").then(r => r.json()),
+    fetch("./nationality.json").then(r => r.json())
+  ])
+    .then(([stats, nationalities]) => {
+      buildDashboard(stats);
+      buildNationalityTable(nationalities);
+    })
+    .catch(err => console.error("Could not load JSON files", err));
 });
 
+// ====================================================
+// ==================== DASHBOARD ======================
+// ====================================================
 function buildDashboard(data) {
-
-  // ---- TOP VALUES ----
   document.getElementById("totalParticipants").textContent =
     String(data.total_participants);
 
@@ -156,130 +212,100 @@ function buildDashboard(data) {
     formatNumber(data.distance_max_km.toFixed(2));
 
   buildPercentilePlot(data.percentiles_km);
-  buildHistogram(data.distance_histogram);
 }
 
-// ======================================================
-// =============== Percentile Plot ======================
-// ======================================================
+// ====================================================
+// =============== NATIONALITY TABLE ==================
+// ====================================================
+function buildNationalityTable(list) {
+  const sorted = [...list].sort((a, b) => b.count - a.count);
+  const tbody = document.querySelector("#nationalityTable tbody");
+
+  sorted.forEach(entry => {
+    const tr = document.createElement("tr");
+
+    const tdLand = document.createElement("td");
+    const tdCount = document.createElement("td");
+    tdCount.classList.add("count");
+
+    if (entry.flag) {
+      const img = document.createElement("img");
+      img.className = "nationality-flag";
+      img.src = entry.flag;
+      img.alt = entry.code;
+      tdLand.appendChild(img);
+    }
+
+    tdLand.appendChild(document.createTextNode(entry.land));
+    tdCount.textContent = entry.count;
+
+    tr.appendChild(tdLand);
+    tr.appendChild(tdCount);
+    tbody.appendChild(tr);
+  });
+}
+
+// ====================================================
+// =============== Percentile Plot =====================
+// ====================================================
 function buildPercentilePlot(percentileData) {
 
-const entries = Object.entries(percentileData)
-  .sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]));
+  const entries = Object.entries(percentileData)
+    .sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]));
 
-const percentiles = entries.map(e => parseFloat(e[0]));
-const distances   = entries.map(e => e[1]);
+  const percentiles = entries.map(e => parseFloat(e[0]));
+  const distances   = entries.map(e => e[1]);
 
-const mainTicks = [0.1, 1, 10, 100, 1000];
-const mainTickLabels = mainTicks.map(v => formatNumber(v));
+  const mainTicks = [0.1, 1, 10, 100, 1000];
+  const mainTickLabels = mainTicks.map(v => formatNumber(v));
 
-let minorTicks = [];
-for (let decade of [0.1, 1, 10, 100, 1000]) {
-  for (let m = 2; m <= 9; m++) {
-    minorTicks.push(decade * (m / 10));
+  let minorTicks = [];
+  for (let decade of [0.1, 1, 10, 100, 1000]) {
+    for (let m = 2; m <= 9; m++) {
+      minorTicks.push(decade * (m / 10));
+    }
   }
-}
-
-const trace = {
-  x: percentiles,
-  y: distances,
-  mode: "lines+markers",
-  line: { color: "#0EA5E9", width: 3 },
-  marker: { color: "#0EA5E9", size: 4 }
-};
-
-const layout = {
-  title: "Perzentilverteilung der Anreiseentfernungen",
-  titlefont: { color: "#E6EDF3", size: 18 },
-  paper_bgcolor: "rgba(0,0,0,0)",
-  plot_bgcolor: "rgba(0,0,0,0)",
-  margin: { t: 50, r: 20, b: 60, l: 80 },
-
-  xaxis: {
-    title: "Perzentil [%]",
-    tick0: 0,
-    dtick: 10,
-    tickfont: { size: 12, color: "#E6EDF3" },
-    titlefont: { size: 14, color: "#E6EDF3" },
-    gridcolor: "rgba(140,140,140,0.22)",
-    minor: {
-      dtick: 5,
-      showgrid: true,
-      gridcolor: "rgba(140,140,140,0.10)"
-    }
-  },
-
-  yaxis: {
-    title: "Anreise Entfernung [km]",
-    type: "log",
-    tickvals: mainTicks,
-    ticktext: mainTickLabels,
-    tickfont: { size: 12, color: "#E6EDF3" },
-    titlefont: { size: 14, color: "#E6EDF3" },
-    gridcolor: "rgba(140,140,140,0.22)",
-    showgrid: true,
-    zeroline: false,
-    minor: {
-      tickvals: minorTicks,
-      showgrid: true,
-      gridcolor: "rgba(140,140,140,0.08)"
-    }
-  },
-
-  hovermode: "closest"
-};
-
-Plotly.newPlot("percentilePlot", [trace], layout, {
-  responsive: true,
-  displayModeBar: false
-});
-}
-
-
-// ======================================================
-// ================= Histogram Plot =====================
-// ======================================================
-function buildHistogram(distance_histogram) {
-
-  const labels = distance_histogram.map(b => `${b.min}-${b.max}`);
-  const counts = distance_histogram.map(b => b.count);
 
   const trace = {
-    x: labels,
-    y: counts,
-    type: "bar",
-    marker: { color: "#0EA5E9" }
+    x: percentiles,
+    y: distances,
+    mode: "lines+markers",
+    line: { color: "#0EA5E9", width: 3 },
+    marker: { color: "#0EA5E9", size: 4 }
   };
 
   const layout = {
-    title: "Histogramm der Anreiseentfernungen",
+    title: "Perzentilverteilung der Anreiseentfernungen",
     titlefont: { color: "#E6EDF3", size: 18 },
     paper_bgcolor: "rgba(0,0,0,0)",
     plot_bgcolor: "rgba(0,0,0,0)",
-    margin: { t: 50, r: 20, b: 120, l: 60 },
+    margin: { t: 50, r: 20, b: 60, l: 80 },
 
     xaxis: {
-      title: "Distanzklasse [km]",
-      tickangle: -45,
-      tickfont: { color: "#E6EDF3" },
-      titlefont: { color: "#E6EDF3" },
-      gridcolor: "rgba(255,255,255,0.05)"
+      title: "Perzentil [%]",
+      dtick: 10,
+      tickfont: { size: 12, color: "#E6EDF3" },
+      titlefont: { size: 14, color: "#E6EDF3" },
+      minor: { dtick: 5, showgrid: true, gridcolor: "rgba(140,140,140,0.10)" }
     },
 
     yaxis: {
-      title: "Teilnehmer",
-      tickfont: { color: "#E6EDF3" },
-      titlefont: { color: "#E6EDF3" },
-      gridcolor: "rgba(255,255,255,0.05)"
+      title: "Anreise Entfernung [km]",
+      type: "log",
+      tickvals: mainTicks,
+      ticktext: mainTickLabels,
+      tickfont: { size: 12, color: "#E6EDF3" },
+      titlefont: { size: 14, color: "#E6EDF3" },
+      gridcolor: "rgba(140,140,140,0.22)",
+      minor: { tickvals: minorTicks, showgrid: true }
     }
   };
 
-  Plotly.newPlot("distanceHistogram", [trace], layout, {
+  Plotly.newPlot("percentilePlot", [trace], layout, {
     responsive: true,
     displayModeBar: false
   });
 }
-
 </script>
 
 </body>
