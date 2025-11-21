@@ -75,7 +75,9 @@ h1 {
   margin-top: 25px;
 }
 
-/* Nationality table */
+/* ------------------------------------ */
+/* Nationality Table */
+/* ------------------------------------ */
 .nationality-card-title {
   font-size: 18px;
   margin-bottom: 10px;
@@ -89,12 +91,11 @@ h1 {
 
 .nationality-table th,
 .nationality-table td {
-  padding: 8px 6px;
+  padding: 10px 8px;
   border-bottom: 1px solid var(--border);
 }
 
 .nationality-table th {
-  text-align: left;
   color: var(--muted);
   font-weight: 500;
 }
@@ -103,13 +104,25 @@ h1 {
   text-align: right;
 }
 
+.flag-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .nationality-flag {
-  width: 24px;
-  height: 18px;
-  object-fit: cover;
+  width: 28px;
+  height: 20px;
   border-radius: 3px;
+  object-fit: cover;
   border: 1px solid var(--border);
-  margin-right: 6px;
+}
+
+@media (max-width: 600px) {
+  .nationality-table th,
+  .nationality-table td {
+    padding: 8px 6px;
+  }
 }
 </style>
 </head>
@@ -148,25 +161,22 @@ h1 {
   </div>
 </div>
 
-<!-- ============================ -->
 <!-- NATIONALITY TABLE -->
-<!-- ============================ -->
 <div class="chart-card">
   <div class="nationality-card-title">Teilnehmer nach Nationalität</div>
+
   <table class="nationality-table" id="nationalityTable">
     <thead>
       <tr>
-        <th>Land</th>
-        <th>Anzahl</th>
+        <th style="text-align:left;">Land</th>
+        <th style="text-align:right;">Anzahl</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 </div>
 
-<!-- ============================ -->
-<!-- PERCENTILE CHART -->
-<!-- ============================ -->
+<!-- PERCENTILE PLOT -->
 <div class="chart-card">
   <div id="percentilePlot" style="height: 600px;"></div>
 </div>
@@ -174,7 +184,7 @@ h1 {
 </div>
 
 <script>
-// --- Custom formatter: comma decimal, NO thousands separators ---
+// --- Formatter: comma decimal ---
 function formatNumber(value) {
   let s = String(value).replace(".", ",");
   return s.replace(/\./g, "");
@@ -188,38 +198,16 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(([stats, nationalities]) => {
       buildDashboard(stats);
       buildNationalityTable(nationalities);
-    })
-    .catch(err => console.error("Could not load JSON files", err));
+    });
 });
 
-// ====================================================
-// ==================== DASHBOARD ======================
-// ====================================================
-function buildDashboard(data) {
-  document.getElementById("totalParticipants").textContent =
-    String(data.total_participants);
-
-  document.getElementById("distanceMin").textContent =
-    formatNumber(data.distance_min_km.toFixed(2));
-
-  document.getElementById("distanceAvg").textContent =
-    formatNumber(data.distance_avg_km.toFixed(2));
-
-  document.getElementById("distanceMedian").textContent =
-    formatNumber(data.distance_median_km.toFixed(2));
-
-  document.getElementById("distanceMax").textContent =
-    formatNumber(data.distance_max_km.toFixed(2));
-
-  buildPercentilePlot(data.percentiles_km);
-}
-
-// ====================================================
-// =============== NATIONALITY TABLE ==================
-// ====================================================
+// ======================================================
+// NATIONALITY TABLE
+// ======================================================
 function buildNationalityTable(list) {
   const sorted = [...list].sort((a, b) => b.count - a.count);
   const tbody = document.querySelector("#nationalityTable tbody");
+  tbody.innerHTML = "";
 
   sorted.forEach(entry => {
     const tr = document.createElement("tr");
@@ -228,15 +216,22 @@ function buildNationalityTable(list) {
     const tdCount = document.createElement("td");
     tdCount.classList.add("count");
 
+    const wrapper = document.createElement("div");
+    wrapper.className = "flag-row";
+
     if (entry.flag) {
       const img = document.createElement("img");
       img.className = "nationality-flag";
       img.src = entry.flag;
       img.alt = entry.code;
-      tdLand.appendChild(img);
+      wrapper.appendChild(img);
     }
 
-    tdLand.appendChild(document.createTextNode(entry.land));
+    const span = document.createElement("span");
+    span.textContent = entry.land;
+    wrapper.appendChild(span);
+
+    tdLand.appendChild(wrapper);
     tdCount.textContent = entry.count;
 
     tr.appendChild(tdLand);
@@ -245,9 +240,9 @@ function buildNationalityTable(list) {
   });
 }
 
-// ====================================================
-// =============== Percentile Plot =====================
-// ====================================================
+// ======================================================
+// PERCENTILE PLOT
+// ======================================================
 function buildPercentilePlot(percentileData) {
 
   const entries = Object.entries(percentileData)
@@ -286,7 +281,12 @@ function buildPercentilePlot(percentileData) {
       dtick: 10,
       tickfont: { size: 12, color: "#E6EDF3" },
       titlefont: { size: 14, color: "#E6EDF3" },
-      minor: { dtick: 5, showgrid: true, gridcolor: "rgba(140,140,140,0.10)" }
+      gridcolor: "rgba(140,140,140,0.22)",
+      minor: {
+        dtick: 5,
+        showgrid: true,
+        gridcolor: "rgba(140,140,140,0.10)"
+      }
     },
 
     yaxis: {
@@ -297,7 +297,13 @@ function buildPercentilePlot(percentileData) {
       tickfont: { size: 12, color: "#E6EDF3" },
       titlefont: { size: 14, color: "#E6EDF3" },
       gridcolor: "rgba(140,140,140,0.22)",
-      minor: { tickvals: minorTicks, showgrid: true }
+      showgrid: true,
+      zeroline: false,
+      minor: {
+        tickvals: minorTicks,
+        showgrid: true,
+        gridcolor: "rgba(140,140,140,0.08)"
+      }
     }
   };
 
