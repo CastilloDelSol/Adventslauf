@@ -9,12 +9,10 @@
 <script src="https://unpkg.com/h3-js@4.1.0/dist/h3-js.umd.js"></script>
 
 <style>
+  
 html, body, #map { height:100%; margin:0; padding:0; }
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-               Roboto, Helvetica, Arial, sans-serif;
-}
-
+body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  
   /* ---------------------- COPYRIGHT BOX ---------------------- */
 .copyright-box {
   position: absolute;
@@ -80,11 +78,13 @@ body {
   position: absolute; top: 20px; right: 20px; z-index: 9902;
   display: flex; flex-direction: column; gap: 10px;
 }
+  
 .map-button {
   background:white; padding:8px 14px; border-radius:6px; border:1px solid #999;
   cursor:pointer; font-size:14px; min-width:130px; text-align:center;
   box-shadow:0 2px 4px rgba(0,0,0,0.25);
 }
+  
 .map-button:hover { background:#f0f0f0; }
 
 .stats-box {
@@ -92,10 +92,12 @@ body {
   border-radius:8px; font-size:13px; box-shadow:0 2px 6px rgba(0,0,0,0.25);
   max-width:260px; z-index:9903;
 }
+  
 .legend {
   background:white; padding:10px; border-radius:6px;
   font-size:13px; box-shadow:0 2px 6px rgba(0,0,0,0.25);
 }
+  
 .legend i {
   width:18px; height:18px; float:left; margin-right:8px; border-radius:3px;
 }
@@ -278,7 +280,7 @@ const lightMapTiles = L.tileLayer(
           pane,
           style: f => ({
             fillColor: getColor(f.properties.count_index),
-            color: "#6B6B6B",
+            color: "#e0e0e0",
             weight: 0.7,
             fillOpacity: 0.33
           }),
