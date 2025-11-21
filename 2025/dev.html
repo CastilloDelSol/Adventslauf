@@ -271,28 +271,46 @@ const lightMapTiles = L.tileLayer(
   let layer6 = null;
   let layer7 = null;
 
-  function loadHex(file, pane, cb) {
-    fetch(file)
-      .then(r => r.json())
-      .then(data => {
-        const geo = L.geoJSON(data, {
-          pane,
-          style: f => ({
-            fillColor: getColor(f.properties.count_index),
-            color: "#c9bfae",
-            weight: 0.5,
+function loadHex(file, pane, cb) {
+  fetch(file)
+    .then(r => r.json())
+    .then(data => {
+
+      const geo = L.geoJSON(data, {
+        pane,
+
+        style: f => {
+          const idx = f.properties.count_index;
+
+          // ==== Adaptive Soft Border ====
+          // Helle Zellen → etwas dunklerer Rand
+          // Dunklere Zellen → etwas heller, damit es nicht absäuft
+          const border =
+            idx <= 1 ? "#d0c7b6" :      // sehr helle Bereiche
+            idx === 2 ? "#c4b9a8" :      // gelb-orange
+            idx === 3 ? "#b6a99a" :      // hell-rot
+            idx === 4 ? "#a8958a" :      // dunkler-rot
+                        "#9a8279";       // dunkelste Zellen
+
+          return {
+            fillColor: getColor(idx),
+            color: border,
+            weight: 0.75,
             fillOpacity: 0.38
-          }),
-          onEachFeature: (f, layer) => {
-            layer.bindTooltip(
-              "Anmeldungen: " + getLabel(f.properties.count_index),
-              { sticky: true }
-            );
-          }
-        });
-        cb(geo);
+          };
+        },
+
+        onEachFeature: (f, layer) => {
+          layer.bindTooltip(
+            "Anmeldungen: " + getLabel(f.properties.count_index),
+            { sticky: true }
+          );
+        }
       });
-  }
+
+      cb(geo);
+    });
+}
 
   loadHex("hexagons_r6.geojson", "hex6", geo => {
     layer6 = geo;
