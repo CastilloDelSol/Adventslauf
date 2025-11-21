@@ -218,7 +218,7 @@ body, .legend, .stats-box, .leaflet-container {
 function openPrivacy(){ document.getElementById("privacyBox").style.display="block"; }
 function closePrivacy(){ document.getElementById("privacyBox").style.display="none"; }
 
-/* ---------------------- LOAD BUCKETS.JSON (NEW) ---------------------- */
+/* ---------------------- LOAD BUCKETS.JSON ---------------------- */
 let BUCKETS = [];
 
 fetch("buckets.json")
@@ -228,168 +228,178 @@ fetch("buckets.json")
     initMap();
   });
 
-/* ---------------------- MAP + LAYERS (wrapped into function) ---------------------- */
-function initMap(){
+/* ============================================================
+   MAP + CROSSFADE LAYERS
+   ============================================================ */
+function initMap() {
 
-const map = L.map('map', {
-  preferCanvas: true,
-  inertia: false,
-  center: [53.699327, 10.774143],
-  zoom: 9
-});
-
-const osmTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(map);
-const lowContrastTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:19});
-
-let lowContrast = false;
-
-/* ---------------------- DARK MODE ---------------------- */
-btnMapType.onclick = () => {
-  if(!lowContrast){
-    map.removeLayer(osmTiles); 
-    lowContrastTiles.addTo(map);
-    lowContrast = true; 
-    btnMapType.innerHTML="OSM Standard";
-  } else {
-    map.removeLayer(lowContrastTiles); 
-    osmTiles.addTo(map);
-    lowContrast = false; 
-    btnMapType.innerHTML="CARTO Light Grey";
-  }
-};
-
-/* ---------------------- PANES ---------------------- */
-map.createPane('hex6');
-map.getPane('hex6').style.zIndex = 410;
-map.getPane('hex6').classList.add("hex-pane");
-
-map.createPane('hex7');
-map.getPane('hex7').style.zIndex = 420;
-map.getPane('hex7').classList.add("hex-pane");
-
-// Startwerte: r6 an, r7 aus
-map.getPane('hex6').style.opacity = "1";
-map.getPane('hex7').style.opacity = "0";
-
-let currentResolution = "r6";
-
-/* ---------------------- COLOR + LABEL ---------------------- */
-function getColorFromIndex(idx){
-  return BUCKETS[idx].color;
-}
-function getLabelFromIndex(idx){
-  return BUCKETS[idx].label;
-}
-
-/* ---------------------- LAYER LOAD ---------------------- */
-const layer6 = L.layerGroup();
-const layer7 = L.layerGroup();
-
-function loadLayer(file, paneName, intoLayer){
-  return fetch(file)
-    .then(r => r.json())
-    .then(data => {
-      const geo = L.geoJSON(data, {
-        pane: paneName,
-        style: f => ({
-          fillColor: getColorFromIndex(f.properties.count_index),
-          color: "#6B6B6B",
-          weight: 0.75,
-          fillOpacity: 0.33
-        }),
-        onEachFeature: (f, layer) => {
-          layer.bindTooltip(
-            "Anmeldungen: " + getLabelFromIndex(f.properties.count_index),
-            { sticky:true }
-          );
-        }
-      });
-
-      intoLayer.addLayer(geo);
-    });
-}
-
-/* --- Sicherstellen dass ALLE Layer geladen sind bevor wir arbeiten --- */
-Promise.all([
-  loadLayer("hexagons_r6.geojson", "hex6", layer6),
-  loadLayer("hexagons_r7.geojson", "hex7", layer7)
-]).then(() => {
-
-  // Beide Layer müssen existieren, damit Crossfade klappt
-  layer6.addTo(map);
-  layer7.addTo(map);
-
-  // r7 startet unsichtbar
-  map.getPane('hex7').style.opacity = "0";
-  currentResolution = "r6";
-});
-
-/* ---------------------- RESOLUTION BUTTON ---------------------- */
-btnRes.onclick = () => {
-
-  const pane6 = map.getPane('hex6');
-  const pane7 = map.getPane('hex7');
-
-  if (currentResolution === "r6") {
-    // r6 -> r7
-    pane6.style.opacity = "0";
-    pane7.style.opacity = "1";
-    currentResolution = "r7";
-    btnRes.textContent = "Grobe Auflösung (r6)";
-  } else {
-    // r7 -> r6
-    pane6.style.opacity = "1";
-    pane7.style.opacity = "0";
-    currentResolution = "r6";
-    btnRes.textContent = "Feine Auflösung (r7)";
-  }
-};
-
-/* ---------------------- LEGEND ---------------------- */
-const legend = L.control({position:"bottomright"});
-legend.onAdd = function(){
-  const div = L.DomUtil.create("div","legend");
-  div.innerHTML = "<b>Anmeldungen</b><br>";
-
-  BUCKETS.forEach(b => {
-    div.innerHTML += `
-      <i style="background:${b.color}"></i>${b.label}<br>
-    `;
+  const map = L.map('map', {
+    preferCanvas: true,
+    inertia: false,
+    center: [53.699327, 10.774143],
+    zoom: 9
   });
 
-  return div;
-};
-legend.addTo(map);
+  const osmTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(map);
+  const lowContrastTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:19});
+  let lowContrast = false;
 
-/* ---------------------- LOAD STATS BOX ---------------------- */
-fetch("statistics.json")
-  .then(r => r.json())
-  .then(stats => {
-    const box = document.getElementById("stats");
+  /* --- MapType Button --- */
+  btnMapType.onclick = () => {
+    if (!lowContrast) {
+      map.removeLayer(osmTiles); lowContrastTiles.addTo(map);
+      lowContrast = true; btnMapType.innerHTML = "OSM Standard";
+    } else {
+      map.removeLayer(lowContrastTiles); osmTiles.addTo(map);
+      lowContrast = false; btnMapType.innerHTML = "CARTO Light Grey";
+    }
+  };
 
-    let html = `
-      <b>Statistiken</b>
-      <table>
-        <tr><td class="label">Anmeldungen:</td><td>${stats.total_participants}</td></tr>
-        <tr><td class="label">Min Distanz:</td><td>${stats.distance_min_km} km</td></tr>
-        <tr><td class="label">Max Distanz:</td><td>${stats.distance_max_km} km</td></tr>
-        <tr><td class="label">Ø Distanz:</td><td>${stats.distance_avg_km} km</td></tr>
-        <tr><td class="label">Median:</td><td>${stats.distance_median_km} km</td></tr>
-      </table>
+  /* --- Panes --- */
+  map.createPane("hex6");
+  map.getPane("hex6").style.zIndex = 410;
+  map.getPane("hex6").style.opacity = "1";
+  map.getPane("hex6").style.transition = "opacity .45s cubic-bezier(.3,.02,.7,.98)";
 
-      <br><b>Anreise-Entfernungen</b>
-      <table>
-        ${Object.entries(stats.distance_buckets)
-          .map(([k,v]) => `<tr><td class="label">${k}:</td><td>${v}</td></tr>`).join("")}
-      </table>
-    `;
+  map.createPane("hex7");
+  map.getPane("hex7").style.zIndex = 420;
+  map.getPane("hex7").style.opacity = "0";
+  map.getPane("hex7").style.transition = "opacity .45s cubic-bezier(.3,.02,.7,.98)";
 
-    box.innerHTML = html;
-  })
-  .catch(() => { document.getElementById("stats").innerHTML="Keine Statistikdaten gefunden."; });
+  let currentResolution = "r6";
+
+  /* --- Helpers --- */
+  const getColorFromIndex = idx => BUCKETS[idx].color;
+  const getLabelFromIndex = idx => BUCKETS[idx].label;
+
+  /* ============================================================
+     LOAD GEOJSON DIRECTLY (NO LAYERGROUP BUG ANYMORE)
+     ============================================================ */
+
+  let layer6 = null;
+  let layer7 = null;
+
+  function loadLayer(file, paneName, callback) {
+    fetch(file)
+      .then(r => r.json())
+      .then(data => {
+
+        const geo = L.geoJSON(data, {
+          pane: paneName,
+          style: f => ({
+            fillColor: getColorFromIndex(f.properties.count_index),
+            color: "#6B6B6B",
+            weight: 0.75,
+            fillOpacity: 0.33
+          }),
+          onEachFeature: (f, layer) => {
+            layer.bindTooltip(
+              "Anmeldungen: " + getLabelFromIndex(f.properties.count_index),
+              { sticky: true }
+            );
+          }
+        });
+
+        callback(geo);
+      });
+  }
+
+  /* Load r6 first */
+  loadLayer("hexagons_r6.geojson", "hex6", geo => {
+    layer6 = geo;
+    layer6.addTo(map);  // Start sichtbar
+  });
+
+  /* Load r7 second (unsichtbar) */
+  loadLayer("hexagons_r7.geojson", "hex7", geo => {
+    layer7 = geo;
+    layer7.addTo(map); // Unsichtbar wegen pane opacity=0
+  });
+
+  /* ============================================================
+     RESOLUTION SWITCH + CROSSFADE
+     ============================================================ */
+
+  btnRes.onclick = () => {
+
+    if (!layer6 || !layer7) return; // not loaded yet
+
+    if (currentResolution === "r6") {
+      // r6 → r7
+      map.getPane("hex6").style.opacity = "0";
+      map.getPane("hex7").style.opacity = "1";
+
+      // Tooltips: r6 deaktiviert
+      layer6.eachLayer(l => l.unbindTooltip());
+
+      // Tooltips: r7 aktivieren
+      layer7.eachLayer(l => {
+        const idx = l.feature.properties.count_index;
+        l.bindTooltip("Anmeldungen: " + getLabelFromIndex(idx), { sticky:true });
+      });
+
+      currentResolution = "r7";
+      btnRes.textContent = "Grobe Auflösung (r6)";
+
+    } else {
+      // r7 → r6
+      map.getPane("hex6").style.opacity = "1";
+      map.getPane("hex7").style.opacity = "0";
+
+      // Tooltips: r7 deaktivieren
+      layer7.eachLayer(l => l.unbindTooltip());
+
+      // Tooltips: r6 aktivieren
+      layer6.eachLayer(l => {
+        const idx = l.feature.properties.count_index;
+        l.bindTooltip("Anmeldungen: " + getLabelFromIndex(idx), { sticky:true });
+      });
+
+      currentResolution = "r6";
+      btnRes.textContent = "Feine Auflösung (r7)";
+    }
+  };
+
+  /* ---------------------- Legend ---------------------- */
+  const legend = L.control({position:"bottomright"});
+  legend.onAdd = () => {
+    const div = L.DomUtil.create("div","legend");
+    div.innerHTML = "<b>Anmeldungen</b><br>";
+    BUCKETS.forEach(b => {
+      div.innerHTML += `<i style="background:${b.color}"></i>${b.label}<br>`;
+    });
+    return div;
+  };
+  legend.addTo(map);
+
+  /* ---------------------- STATS BOX ---------------------- */
+  fetch("statistics.json")
+    .then(r => r.json())
+    .then(stats => {
+      const box = document.getElementById("stats");
+      box.innerHTML = `
+        <b>Statistiken</b>
+        <table>
+          <tr><td class="label">Anmeldungen:</td><td>${stats.total_participants}</td></tr>
+          <tr><td class="label">Min Distanz:</td><td>${stats.distance_min_km} km</td></tr>
+          <tr><td class="label">Max Distanz:</td><td>${stats.distance_max_km} km</td></tr>
+          <tr><td class="label">Ø Distanz:</td><td>${stats.distance_avg_km} km</td></tr>
+          <tr><td class="label">Median:</td><td>${stats.distance_median_km} km</td></tr>
+        </table>
+
+        <br><b>Anreise-Entfernungen</b>
+        <table>
+          ${Object.entries(stats.distance_buckets)
+            .map(([k,v]) => `<tr><td class="label">${k}:</td><td>${v}</td></tr>`).join("")}
+        </table>
+      `;
+    })
+    .catch(() => {
+      document.getElementById("stats").innerHTML = "Keine Statistikdaten gefunden.";
+    });
 
 } // END initMap()
-
 </script>
+
 </body>
 </html>
