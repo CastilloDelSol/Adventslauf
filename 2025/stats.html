@@ -229,10 +229,10 @@ function buildDashboard(stats, nationalities) {
   document.getElementById("nationalCount").textContent = String(germany);
   document.getElementById("internationalCount").textContent = String(international);
 
-  document.getElementById("distanceMin").textContent = formatNumber(stats.distance_min_km.toFixed(2));
-  document.getElementById("distanceAvg").textContent = formatNumber(stats.distance_avg_km.toFixed(2));
-  document.getElementById("distanceMedian").textContent = formatNumber(stats.distance_median_km.toFixed(2));
-  document.getElementById("distanceMax").textContent = formatNumber(stats.distance_max_km.toFixed(2));
+  document.getElementById("distanceMin").textContent = formatNumber(stats.distance_min_km.toFixed(1));
+  document.getElementById("distanceAvg").textContent = formatNumber(stats.distance_avg_km.toFixed(1));
+  document.getElementById("distanceMedian").textContent = formatNumber(stats.distance_median_km.toFixed(1));
+  document.getElementById("distanceMax").textContent = formatNumber(stats.distance_max_km.toFixed(1));
 
   buildPercentilePlot(stats.percentiles_km);
 }
