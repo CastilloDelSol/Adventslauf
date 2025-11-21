@@ -194,30 +194,32 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch("./nationality.json").then(r => r.json())
   ])
     .then(([stats, nationalities]) => {
-      buildDashboard(stats);
+      buildDashboard(stats, nationalities);
       buildNationalityTable(nationalities);
     })
     .catch(err => console.error("Could not load JSON files", err));
 });
 
 // ==================== DASHBOARD ======================
-function buildDashboard(data) {
+function buildDashboard(stats, nationalities) {
+  const totalFromNationalities = nationalities.reduce((sum, e) => sum + e.count, 0);
+
   document.getElementById("totalParticipants").textContent =
-    String(data.total_participants);
+    String(totalFromNationalities);
 
   document.getElementById("distanceMin").textContent =
-    formatNumber(data.distance_min_km.toFixed(2));
+    formatNumber(stats.distance_min_km.toFixed(2));
 
   document.getElementById("distanceAvg").textContent =
-    formatNumber(data.distance_avg_km.toFixed(2));
+    formatNumber(stats.distance_avg_km.toFixed(2));
 
   document.getElementById("distanceMedian").textContent =
-    formatNumber(data.distance_median_km.toFixed(2));
+    formatNumber(stats.distance_median_km.toFixed(2));
 
   document.getElementById("distanceMax").textContent =
-    formatNumber(data.distance_max_km.toFixed(2));
+    formatNumber(stats.distance_max_km.toFixed(2));
 
-  buildPercentilePlot(data.percentiles_km);
+  buildPercentilePlot(stats.percentiles_km);
 }
 
 // ==================== NATIONALITY TABLE ==================
