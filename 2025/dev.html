@@ -151,6 +151,11 @@ body, .legend, .stats-box, .leaflet-container {
   transition: opacity 0.45s cubic-bezier(.3,.02,.7,.98);
 }
 
+/* --- Fade effect for basemap tiles --- */
+.leaflet-tile-pane.fade-tiles {
+  transition: opacity 0.45s cubic-bezier(.3,.02,.7,.98);
+}
+
 </style>
 </head>
 
@@ -228,167 +233,207 @@ fetch("buckets.json")
     initMap();
   });
 
-/* ============================================================
-   MAP + CROSSFADE LAYERS
-   ============================================================ */
-function initMap() {
+/* ---------------------- MAP + LAYERS ---------------------- */
+function initMap(){
 
-  const map = L.map('map', {
-    preferCanvas: true,
-    inertia: false,
-    center: [53.699327, 10.774143],
-    zoom: 9
-  });
+const map = L.map('map', {
+  preferCanvas: true,
+  inertia: false,
+  center: [53.699327, 10.774143],
+  zoom: 9
+});
 
-  const osmTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(map);
-  const lowContrastTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:19});
-  let lowContrast = false;
+/* ===========================================================
+   BASEMAP TILE PANES (for fade transition)
+   =========================================================== */
+map.createPane("tilesLight");
+map.getPane("tilesLight").classList.add("fade-tiles");
+map.getPane("tilesLight").style.zIndex = 200;
 
-  /* --- MapType Button --- */
-  btnMapType.onclick = () => {
-    if (!lowContrast) {
-      map.removeLayer(osmTiles); lowContrastTiles.addTo(map);
-      lowContrast = true; btnMapType.innerHTML = "OSM Standard";
-    } else {
-      map.removeLayer(lowContrastTiles); osmTiles.addTo(map);
-      lowContrast = false; btnMapType.innerHTML = "CARTO Light Grey";
-    }
-  };
+map.createPane("tilesDark");
+map.getPane("tilesDark").classList.add("fade-tiles");
+map.getPane("tilesDark").style.zIndex = 201;
 
-  /* --- Panes --- */
-  map.createPane("hex6");
-  map.getPane("hex6").style.zIndex = 410;
-  map.getPane("hex6").style.opacity = "1";
-  map.getPane("hex6").style.transition = "opacity .45s cubic-bezier(.3,.02,.7,.98)";
+// initial visibility
+map.getPane("tilesLight").style.opacity = "1";
+map.getPane("tilesDark").style.opacity = "0";
 
-  map.createPane("hex7");
-  map.getPane("hex7").style.zIndex = 420;
-  map.getPane("hex7").style.opacity = "0";
-  map.getPane("hex7").style.transition = "opacity .45s cubic-bezier(.3,.02,.7,.98)";
+const tilesLight = L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  { maxZoom: 19, pane: "tilesLight" }
+).addTo(map);
 
-  let currentResolution = "r6";
+const tilesDark = L.tileLayer(
+  "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+  { maxZoom: 19, pane: "tilesDark" }
+).addTo(map);
 
-  /* --- Helpers --- */
-  const getColorFromIndex = idx => BUCKETS[idx].color;
-  const getLabelFromIndex = idx => BUCKETS[idx].label;
+/* ---------------------- MAPTYPE BUTTON ---------------------- */
+btnMapType.onclick = () => {
+  const light = map.getPane("tilesLight");
+  const dark = map.getPane("tilesDark");
 
-  /* ============================================================
-     LOAD GEOJSON DIRECTLY (NO LAYERGROUP BUG ANYMORE)
-     ============================================================ */
-
-  let layer6 = null;
-  let layer7 = null;
-
-  function loadLayer(file, paneName, callback) {
-    fetch(file)
-      .then(r => r.json())
-      .then(data => {
-
-        const geo = L.geoJSON(data, {
-          pane: paneName,
-          style: f => ({
-            fillColor: getColorFromIndex(f.properties.count_index),
-            color: "#6B6B6B",
-            weight: 0.75,
-            fillOpacity: 0.33
-          }),
-          onEachFeature: (f, layer) => {
-            layer.bindTooltip(
-              "Anmeldungen: " + getLabelFromIndex(f.properties.count_index),
-              { sticky: true }
-            );
-          }
-        });
-
-        callback(geo);
-      });
+  if (light.style.opacity === "1") {
+    light.style.opacity = "0";
+    dark.style.opacity = "1";
+    btnMapType.textContent = "OSM Standard";
+  } else {
+    light.style.opacity = "1";
+    dark.style.opacity = "0";
+    btnMapType.textContent = "CARTO Light Grey";
   }
+};
 
-  /* Load r6 first */
-  loadLayer("hexagons_r6.geojson", "hex6", geo => {
-    layer6 = geo;
-    layer6.addTo(map);  // Start sichtbar
-  });
+/* ===========================================================
+   HEX LAYER PANES (for hexagon fade)
+   =========================================================== */
+map.createPane('hex6');
+map.getPane('hex6').style.zIndex = 410;
+map.getPane('hex6').classList.add("hex-pane");
 
-  /* Load r7 second (unsichtbar) */
-  loadLayer("hexagons_r7.geojson", "hex7", geo => {
-    layer7 = geo;
-    layer7.addTo(map); // Unsichtbar wegen pane opacity=0
-  });
+map.createPane('hex7');
+map.getPane('hex7').style.zIndex = 420;
+map.getPane('hex7').classList.add("hex-pane");
 
-  /* ============================================================
-     RESOLUTION SWITCH + CROSSFADE
-     ============================================================ */
+// Start with r6 visible
+map.getPane('hex6').style.opacity = "1";
+map.getPane('hex7').style.opacity = "0";
 
+let currentResolution = "r6";
+
+/* ---------------------- COLOR + LABEL HELPERS ---------------------- */
+function getColorFromIndex(idx){
+  return BUCKETS[idx].color;
+}
+function getLabelFromIndex(idx){
+  return BUCKETS[idx].label;
+}
+
+/* ---------------------- LAYER LOAD ---------------------- */
+const layer6 = L.layerGroup();
+const layer7 = L.layerGroup();
+
+function loadLayer(file, paneName, intoLayer){
+  fetch(file)
+    .then(r => r.json())
+    .then(data => {
+      const geo = L.geoJSON(data, {
+        pane: paneName,
+        style: f => ({
+          fillColor: getColorFromIndex(f.properties.count_index),
+          color: "#6B6B6B",
+          weight: 0.75,
+          fillOpacity: 0.33
+        }),
+        onEachFeature: (f, layer) => {
+          layer.bindTooltip(
+            "Anmeldungen: " + getLabelFromIndex(f.properties.count_index),
+            { sticky:true }
+          );
+        }
+      });
+
+      intoLayer.addLayer(geo);
+    });
+}
+
+loadLayer("hexagons_r6.geojson", "hex6", layer6);
+loadLayer("hexagons_r7.geojson", "hex7", layer7);
+
+// Add both for pane crossfade
+layer6.addTo(map);
+layer7.addTo(map);
+
+/* ---------------------- RESOLUTION BUTTON ---------------------- */
 btnRes.onclick = () => {
-  if (!layer6 || !layer7) return; // not loaded yet
 
   if (currentResolution === "r6") {
-    // r6 → r7
+
+    /* fade r6 -> r7 */
     map.getPane("hex6").style.opacity = "0";
     map.getPane("hex7").style.opacity = "1";
 
-    // Mouse events nur auf r7
-    map.getPane("hex6").style.pointerEvents = "none";
-    map.getPane("hex7").style.pointerEvents = "auto";
+    /* disable r6 tooltips */
+    layer6.eachLayer(l => l.unbindTooltip());
+
+    /* enable r7 tooltips */
+    layer7.eachLayer(l => {
+      const idx = l.feature.properties.count_index;
+      l.bindTooltip("Anmeldungen: " + getLabelFromIndex(idx), { sticky:true });
+    });
 
     currentResolution = "r7";
     btnRes.textContent = "Grobe Auflösung (r6)";
 
   } else {
-    // r7 → r6
+
+    /* fade r7 -> r6 */
     map.getPane("hex6").style.opacity = "1";
     map.getPane("hex7").style.opacity = "0";
 
-    // Mouse events nur auf r6
-    map.getPane("hex6").style.pointerEvents = "auto";
-    map.getPane("hex7").style.pointerEvents = "none";
+    /* disable r7 tooltips */
+    layer7.eachLayer(l => l.unbindTooltip());
+
+    /* enable r6 tooltips */
+    layer6.eachLayer(l => {
+      const idx = l.feature.properties.count_index;
+      l.bindTooltip("Anmeldungen: " + getLabelFromIndex(idx), { sticky:true });
+    });
 
     currentResolution = "r6";
     btnRes.textContent = "Feine Auflösung (r7)";
   }
 };
 
-  /* ---------------------- Legend ---------------------- */
-  const legend = L.control({position:"bottomright"});
-  legend.onAdd = () => {
-    const div = L.DomUtil.create("div","legend");
-    div.innerHTML = "<b>Anmeldungen</b><br>";
-    BUCKETS.forEach(b => {
-      div.innerHTML += `<i style="background:${b.color}"></i>${b.label}<br>`;
-    });
-    return div;
-  };
-  legend.addTo(map);
 
-  /* ---------------------- STATS BOX ---------------------- */
-  fetch("statistics.json")
-    .then(r => r.json())
-    .then(stats => {
-      const box = document.getElementById("stats");
-      box.innerHTML = `
-        <b>Statistiken</b>
-        <table>
-          <tr><td class="label">Anmeldungen:</td><td>${stats.total_participants}</td></tr>
-          <tr><td class="label">Min Distanz:</td><td>${stats.distance_min_km} km</td></tr>
-          <tr><td class="label">Max Distanz:</td><td>${stats.distance_max_km} km</td></tr>
-          <tr><td class="label">Ø Distanz:</td><td>${stats.distance_avg_km} km</td></tr>
-          <tr><td class="label">Median:</td><td>${stats.distance_median_km} km</td></tr>
-        </table>
+/* ---------------------- LEGEND ---------------------- */
+const legend = L.control({position:"bottomright"});
 
-        <br><b>Anreise-Entfernungen</b>
-        <table>
-          ${Object.entries(stats.distance_buckets)
-            .map(([k,v]) => `<tr><td class="label">${k}:</td><td>${v}</td></tr>`).join("")}
-        </table>
-      `;
-    })
-    .catch(() => {
-      document.getElementById("stats").innerHTML = "Keine Statistikdaten gefunden.";
-    });
+legend.onAdd = function(){
+  const div = L.DomUtil.create("div","legend");
+  div.innerHTML = "<b>Anmeldungen</b><br>";
+
+  BUCKETS.forEach(b => {
+    div.innerHTML += `
+      <i style="background:${b.color}"></i>${b.label}<br>
+    `;
+  });
+
+  return div;
+};
+
+legend.addTo(map);
+
+/* ---------------------- LOAD STATS BOX ---------------------- */
+fetch("statistics.json")
+  .then(r => r.json())
+  .then(stats => {
+    const box = document.getElementById("stats");
+
+    let html = `
+      <b>Statistiken</b>
+      <table>
+        <tr><td class="label">Anmeldungen:</td><td>${stats.total_participants}</td></tr>
+        <tr><td class="label">Min Distanz:</td><td>${stats.distance_min_km} km</td></tr>
+        <tr><td class="label">Max Distanz:</td><td>${stats.distance_max_km} km</td></tr>
+        <tr><td class="label">Ø Distanz:</td><td>${stats.distance_avg_km} km</td></tr>
+        <tr><td class="label">Median:</td><td>${stats.distance_median_km} km</td></tr>
+      </table>
+
+      <br><b>Anreise-Entfernungen</b>
+      <table>
+        ${Object.entries(stats.distance_buckets)
+          .map(([k,v]) => `<tr><td class="label">${k}:</td><td>${v}</td></tr>`).join("")}
+      </table>
+    `;
+
+    box.innerHTML = html;
+  })
+  .catch(() => { document.getElementById("stats").innerHTML="Keine Statistikdaten gefunden."; });
 
 } // END initMap()
 </script>
+
 
 </body>
 </html>
