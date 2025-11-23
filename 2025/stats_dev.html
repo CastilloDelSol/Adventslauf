@@ -514,7 +514,8 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         marker: { color: "#0EA5E9" },
         // eigener Text z.B. "M55: 53"
         customdata: labels.map((lab, idx) => `M${lab}: ${m_vals[idx]}`),
-        hovertemplate: "%{customdata}<extra></extra>"
+        hovertemplate: "%{customdata}<extra></extra>",
+        textposition: "outside"
     };
     
     const traceW = {
@@ -526,7 +527,8 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         marker: { color: "#E34A2A" },
         // eigener Text z.B. "W55: 48"
         customdata: labels.map((lab, idx) => `W${lab}: ${w_vals[idx]}`),
-        hovertemplate: "%{customdata}<extra></extra>"
+        hovertemplate: "%{customdata}<extra></extra>",
+        textposition: "outside"
     };
 
     // Build evenly spaced tick values
