@@ -504,7 +504,6 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
     );
     const axisMax = Math.ceil(maxVal / 10) * 10 + 10; // round + padding (e.g. 80)
   
-    // --- TRACES ---
     const traceM = {
         y: labels,
         x: m_negative,
@@ -512,10 +511,17 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         orientation: "h",
         type: "bar",
         marker: { color: "#0EA5E9" },
-        // eigener Text z.B. "M55: 53"
+    
         customdata: labels.map((lab, idx) => `M${lab}: ${m_vals[idx]}`),
+    
+        // Verschiebt den Hover-Ankerpunkt links nach außen
         hovertemplate: "%{customdata}<extra></extra>",
-        textposition: "outside"
+        hoverinfo: "text",
+        offsetgroup: "m",
+        hoverlabel: { align: "right" },  // Tooltip nach LINKS ausrichten
+    
+        // Trick: Hover-Punkt minimal weiter außen platzieren
+        cliponaxis: false
     };
     
     const traceW = {
@@ -525,11 +531,17 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         orientation: "h",
         type: "bar",
         marker: { color: "#E34A2A" },
-        // eigener Text z.B. "W55: 48"
+    
         customdata: labels.map((lab, idx) => `W${lab}: ${w_vals[idx]}`),
+    
         hovertemplate: "%{customdata}<extra></extra>",
-        textposition: "outside"
+        hoverinfo: "text",
+        offsetgroup: "w",
+        hoverlabel: { align: "left" },  // Tooltip nach RECHTS
+    
+        cliponaxis: false
     };
+
 
     // Build evenly spaced tick values
     const ticks = [];
@@ -565,8 +577,9 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
             categoryorder: "array",
             categoryarray: labels,   // ensure correct bucket order
             gridcolor: "rgba(140,140,140,0.2)",
+            showgrid: false,
             minor: {
-                showgrid: true,
+                showgrid: false,
                 gridcolor: "rgba(140,140,140,0.1)"
             }
         },
