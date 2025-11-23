@@ -503,7 +503,7 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         ...w_vals
     );
     const axisMax = Math.ceil(maxVal / 10) * 10 + 10; // round + padding (e.g. 80)
-
+  
     // --- TRACES ---
     const traceM = {
         y: labels,
@@ -511,16 +511,22 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         name: "M",
         orientation: "h",
         type: "bar",
-        marker: { color: "#0EA5E9" }
+        marker: { color: "#0EA5E9" },
+        // eigener Text z.B. "M55: 53"
+        customdata: labels.map((lab, idx) => `M${lab}: ${m_vals[idx]}`),
+        hovertemplate: "%{customdata}<extra></extra>"
     };
-
+    
     const traceW = {
         y: labels,
         x: w_vals,
         name: "W",
         orientation: "h",
         type: "bar",
-        marker: { color: "#E34A2A" }
+        marker: { color: "#E34A2A" },
+        // eigener Text z.B. "W55: 48"
+        customdata: labels.map((lab, idx) => `W${lab}: ${w_vals[idx]}`),
+        hovertemplate: "%{customdata}<extra></extra>"
     };
 
     // Build evenly spaced tick values
