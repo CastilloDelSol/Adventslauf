@@ -69,20 +69,32 @@ async function renderAgePyramid(sectionName, canvasId) {
         }
       },
       plugins: {
-        legend: { display: true },
-        tooltip: {
-          callbacks: {
-            label: ctx => {
-              const gender = ctx.dataset.label;       // "M" oder "W"
-              const ag     = ctx.label;               // Altersgruppe, z.B. "20"
-              const val    = Math.abs(ctx.raw);       // absoluter Wert
-        
-              return `${gender}${ag}: ${val}`;
+        legend: {
+          display: true,
+          labels: {
+            generateLabels: chart => {
+              const datasets = chart.data.datasets;
+              const labels   = chart.data.labels;
+      
+              let items = [];
+      
+              datasets.forEach((ds, dsIndex) => {
+                ds.data.forEach((value, i) => {
+                  items.push({
+                    text: `${ds.label}${labels[i]}: ${Math.abs(value)}`,
+                    fillStyle: ds.backgroundColor,
+                    strokeStyle: ds.backgroundColor,
+                    lineWidth: 0,
+                    hidden: false,
+                    datasetIndex: dsIndex
+                  });
+                });
+              });
+      
+              return items;
             }
           }
         }
-      }
-    }
   });
 }
 
