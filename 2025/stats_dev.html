@@ -476,7 +476,7 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
 
     let labels = Object.keys(group).sort((a,b) => {
         const parse = s => {
-            if (s.startsWith("J U")) return parseInt(s.replace("J U", ""),10) - 1000;
+            if (s.startsWith("J U")) return parseInt(s.replace("J U",""),10)-1000;
             return parseInt(s,10);
         };
         return parse(a) - parse(b);
@@ -491,6 +491,7 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
     const maxVal = Math.max(...m_vals, ...w_vals);
     const axisMax = Math.ceil(maxVal / 10) * 10 + 10;
 
+    // === BARS ===
     const traceM = {
         y: labels,
         x: m_neg,
@@ -498,10 +499,7 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         orientation: "h",
         name: "M",
         marker: { color: "#0EA5E9" },
-        text: labels.map((lab,i)=>`M${lab}: ${m_vals[i]}`),
-        textposition: "outside",
-        insidetextanchor: "start",
-        hovertemplate: "%{text}<extra></extra>"
+        hoverinfo: "none"
     };
 
     const traceW = {
@@ -511,17 +509,37 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         orientation: "h",
         name: "W",
         marker: { color: "#E34A2A" },
-        text: labels.map((lab,i)=>`W${lab}: ${w_vals[i]}`),
-        textposition: "outside",
-        insidetextanchor: "end",
-        hovertemplate: "%{text}<extra></extra>"
+        hoverinfo: "none"
     };
 
+    // === HOVER SCATTER (invisible points outside the bars) ===
+    const hoverM = {
+        y: labels,
+        x: m_neg.map(v => v - 0.5),   // always left outside
+        text: labels.map((lab,i)=>`M${lab}: ${m_vals[i]}`),
+        mode: "markers",
+        marker: { size: 10, opacity: 0 },   // invisible
+        hovertemplate: "%{text}<extra></extra>",
+        showlegend: false
+    };
+
+    const hoverW = {
+        y: labels,
+        x: w_vals.map(v => v + 0.5),  // always right outside
+        text: labels.map((lab,i)=>`W${lab}: ${w_vals[i]}`),
+        mode: "markers",
+        marker: { size: 10, opacity: 0 },
+        hovertemplate: "%{text}<extra></extra>",
+        showlegend: false
+    };
+
+    // === LAYOUT ===
     const ticks = [];
     for (let i = -axisMax; i <= axisMax; i += 10) ticks.push(i);
 
     const layout = {
-        title: sectionName + " – Geschlecht / Altersklassen (Pyramide)",
+        title: `${sectionName} – Geschlecht / Altersklassen (Pyramide)`,
+
         barmode: "overlay",
         bargap: 0.05,
 
@@ -552,11 +570,12 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         margin: { l: 80, r: 80, t: 60, b: 40 }
     };
 
-    Plotly.newPlot(targetDiv, [traceM, traceW], layout, {
+    Plotly.newPlot(targetDiv, [traceM, traceW, hoverM, hoverW], layout, {
         displayModeBar: false,
         responsive: true
     });
 }
+
 
 </script>
 
