@@ -34,15 +34,19 @@ async function loadChart() {
           label: "M",
           data: males,
           backgroundColor: "rgba(54, 162, 235, 0.7)",
-          barPercentage: 1.0,
-          categoryPercentage: 1.0
+          grouped: false,
+          barPercentage: 1,
+          categoryPercentage: 1,
+          offset: false
         },
         {
           label: "W",
           data: females,
           backgroundColor: "rgba(255, 99, 132, 0.7)",
-          barPercentage: 1.0,
-          categoryPercentage: 1.0
+          grouped: false,
+          barPercentage: 1,
+          categoryPercentage: 1,
+          offset: false
         }
       ]
     },
