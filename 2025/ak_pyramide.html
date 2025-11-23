@@ -15,31 +15,24 @@ async function renderAgePyramid(sectionName, canvasId) {
   // JSON laden
   const resp = await fetch("./age_buckets_by_distance.json");
   const data = await resp.json();
-  const group = data["Kurzstrecke"];
+  const group = data[sectionName];  // jetzt ein ARRAY
 
-  const labels  = group.map(e => e.label);
-  const males   = group.map(e => -e.M);
-  const females = group.map(e =>  e.W);
-
-  // Falls die Strecke nicht existiert → Fehler
   if (!group) {
     console.error("Section not found:", sectionName);
     return;
   }
 
-  // Reihenfolge 1:1 aus JSON übernehmen
-  const entries = Object.entries(group);
-
-  const labels  = entries.map(e => e[0]);     // Altersklassen
-  const males   = entries.map(e => -e[1].M);  // links
-  const females = entries.map(e =>  e[1].W);  // rechts
+  // DIREKT aus Array holen – KEINE Sortierung, KEINE Entries
+  const labels  = group.map(e => e.label);
+  const males   = group.map(e => -e.M); // links
+  const females = group.map(e =>  e.W); // rechts
 
   const ctx = document.getElementById(canvasId).getContext("2d");
 
   new Chart(ctx, {
     type: "bar",
     data: {
-      labels,
+      labels: labels,
       datasets: [
         {
           label: "M",
@@ -76,7 +69,6 @@ async function renderAgePyramid(sectionName, canvasId) {
   });
 }
 
-// Chart starten — nur Kurzstrecke
 renderAgePyramid("Kurzstrecke", "chartKurz");
 </script>
 
