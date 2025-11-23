@@ -26,11 +26,14 @@ async function renderAgePyramid(sectionName, canvasId) {
   const males     = group.map(e => -e.M).reverse();
   const females   = group.map(e =>  e.W).reverse();
 
-  // Center at 0: same left/right axis
-  const maxValue = Math.max(
+  // get max value
+  let maxValue = Math.max(
       ...males.map(v => Math.abs(v)),
       ...females
   );
+
+  // round to next full 10 (e.g. 77 -> 80)
+  maxValue = Math.ceil(maxValue / 10) * 10;
 
   const ctx = document.getElementById(canvasId).getContext("2d");
 
