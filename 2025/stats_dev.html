@@ -194,6 +194,19 @@ h1 {
   </table>
 </div>
 
+<div class="chart-card">
+  <div id="chartKurzAbs" style="height: 500px;"></div>
+</div>
+
+<div class="chart-card">
+  <div id="chartKurzRel" style="height: 500px;"></div>
+</div>
+
+<div class="chart-card">
+  <div id="chartKurzDonut" style="height: 400px;"></div>
+</div>
+
+
 <!-- PERCENTILE PLOT -->
 <div class="chart-card">
   <div id="percentilePlot" style="height: 600px;"></div>
@@ -331,6 +344,140 @@ function buildPercentilePlot(percentileData) {
     displayModeBar: false
   });
 }
+
+// ======================== AGEGROUP + GENDER PLOTS ========================
+
+// Läuft für jeden Bereich: "Kurzstrecke", "Hauptlauf", "Kinderlauf"
+function buildAgeGroupCharts(ageData, sectionName, targetAbsolute, targetRelative, targetDonut) {
+    const group = ageData[sectionName];
+    if (!group) return;
+
+    const labels = Object.keys(group);
+    const m_vals = labels.map(k => group[k]["M"]);
+    const w_vals = labels.map(k => group[k]["W"]);
+
+    // ========= ABSOLUTE BAR =========
+    const absTraceM = {
+        y: labels,
+        x: m_vals,
+        name: "M",
+        type: "bar",
+        orientation: "h",
+        marker: { color: "#0EA5E9" }
+    };
+
+    const absTraceW = {
+        y: labels,
+        x: w_vals,
+        name: "W",
+        type: "bar",
+        orientation: "h",
+        marker: { color: "#E34A2A" }
+    };
+
+    Plotly.newPlot(targetAbsolute, [absTraceM, absTraceW], {
+        title: sectionName + " – Altersklassen (absolut)",
+        barmode: "stack",
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
+        font: { color: "#E6EDF3" },
+        margin: { l: 80, r: 20, t: 50, b: 40 }
+    }, {displayModeBar:false, responsive:true});
+
+    // ========= RELATIVE BAR (100%) =========
+    const rel_m = [];
+    const rel_w = [];
+    for (let k of labels) {
+        const total = group[k]["M"] + group[k]["W"];
+        rel_m.push(total ? (group[k]["M"] / total) * 100 : 0);
+        rel_w.push(total ? (group[k]["W"] / total) * 100 : 0);
+    }
+
+    const relTraceM = {
+        y: labels,
+        x: rel_m,
+        type: "bar",
+        name: "M (%)",
+        orientation: "h",
+        marker: { color: "#0EA5E9" }
+    };
+
+    const relTraceW = {
+        y: labels,
+        x: rel_w,
+        type: "bar",
+        name: "W (%)",
+        orientation: "h",
+        marker: { color: "#E34A2A" }
+    };
+
+    Plotly.newPlot(targetRelative, [relTraceM, relTraceW], {
+        title: sectionName + " – Geschlechterverteilung (%)",
+        barmode: "stack",
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
+        font: { color: "#E6EDF3" },
+        xaxis: { range: [0, 100] },
+        margin: { l: 80, r: 20, t: 50, b: 40 }
+    }, {displayModeBar:false, responsive:true});
+
+    // ========= DONUT =========
+    const sum_m = m_vals.reduce((a,b)=>a+b,0);
+    const sum_w = w_vals.reduce((a,b)=>a+b,0);
+    const total = sum_m + sum_w;
+
+    Plotly.newPlot(targetDonut, [{
+        labels: ["M", "W"],
+        values: [sum_m, sum_w],
+        type: "pie",
+        hole: 0.55,
+        marker: {
+            colors: ["#0EA5E9", "#E34A2A"]
+        },
+        textinfo: "label+percent",
+        textfont: { color: "#E6EDF3" }
+    }], {
+        title: sectionName + " – Gesamtverteilung M/W",
+        annotations: [{
+            text: total + "<br>TN",
+            font: { size: 18, color: "#E6EDF3" },
+            showarrow: false
+        }],
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
+        font: { color: "#E6EDF3" }
+    }, {displayModeBar:false, responsive:true});
+}
+
+
+// ===================== LOAD JSON & INIT =====================
+document.addEventListener("DOMContentLoaded", () => {
+    fetch("./age_buckets_by_distance.json")
+        .then(r => r.json())
+        .then(ageData => {
+
+            // Kurzstrecke
+            buildAgeGroupCharts(
+                ageData,
+                "Kurzstrecke",
+                "chartKurzAbs",
+                "chartKurzRel",
+                "chartKurzDonut"
+            );
+
+            // Hauptlauf (nur vorbereiten)
+            // buildAgeGroupCharts(ageData, "Hauptlauf",
+            //                     "chartHauptAbs", "chartHauptRel", "chartHauptDonut");
+
+            // Kinderlauf (nur vorbereiten)
+            // buildAgeGroupCharts(ageData, "Kinderlauf",
+            //                     "chartKinderAbs", "chartKinderRel", "chartKinderDonut");
+
+        })
+        .catch(err => console.error("Age JSON Fehler:", err));
+});
+
+  
 </script>
 
 </body>
