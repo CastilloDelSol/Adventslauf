@@ -26,6 +26,12 @@ async function renderAgePyramid(sectionName, canvasId) {
   const males     = group.map(e => -e.M).reverse();
   const females   = group.map(e =>  e.W).reverse();
 
+  // Center at 0: same left/right axis
+  const maxValue = Math.max(
+      ...males.map(v => Math.abs(v)),
+      ...females
+  );
+
   const ctx = document.getElementById(canvasId).getContext("2d");
 
   new Chart(ctx, {
@@ -51,6 +57,8 @@ async function renderAgePyramid(sectionName, canvasId) {
       indexAxis: "y",
       scales: {
         x: {
+          min: -maxValue,
+          max:  maxValue,
           ticks: {
             callback: v => Math.abs(v)
           }
