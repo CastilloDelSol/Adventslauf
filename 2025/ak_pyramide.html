@@ -22,88 +22,64 @@ async function loadChart() {
       labels.push(key);
   }
 
-// extract values
-const m_vals = labels.map(k => group[k].M);
-const w_vals = labels.map(k => group[k].W);
+  // männlich links (negativ), weiblich rechts
+  const males = labels.map(k => -group[k].M);
+  const females = labels.map(k => group[k].W);
 
-// left side negative
-const m_negative = m_vals.map(v => -v);
+  const ctx = document.getElementById("pyramidChart").getContext("2d");
 
-// symmetric axis range
-const maxValue = Math.max(...m_vals, ...w_vals);
-const axisMax = Math.ceil(maxValue / 10) * 10;
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "M",
+          data: males,
+          backgroundColor: "rgba(54, 162, 235, 0.7)",
+          grouped: false,
+          barPercentage: 1,
+          categoryPercentage: 1,
+          offset: false
+        },
+        {
+          label: "W",
+          data: females,
+          backgroundColor: "rgba(255, 99, 132, 0.7)",
+          grouped: false,
+          barPercentage: 1,
+          categoryPercentage: 1,
+          offset: false
+        }
+      ]
+    },
+    options: {
+      indexAxis: "y",   // horizontale Balken
 
-// plugin to center labels
-const centerLabels = {
-  id: "centerLabels",
-  afterDraw(chart) {
-    const { ctx, scales } = chart;
-    const yScale = scales.y;
-    const xCenter = scales.x.getPixelForValue(0);
-
-    ctx.save();
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "white";
-
-    yScale.ticks.forEach((tick, i) => {
-      const y = yScale.getPixelForTick(i);
-      ctx.fillText(tick.label, xCenter, y);
-    });
-
-    ctx.restore();
-  }
-};
-
-new Chart(document.getElementById("pyramidChart"), {
-  type: "bar",
-  data: {
-    labels: labels,
-    datasets: [
-      {
-        label: "M",
-        data: m_negative,
-        backgroundColor: "rgba(0,160,255,0.7)"
+      scales: {
+        x: {
+          ticks: {
+            callback: value => Math.abs(value)  // positive Achse anzeigen
+          }
+        }
       },
-      {
-        label: "W",
-        data: w_vals,
-        backgroundColor: "rgba(255,80,120,0.7)"
-      }
-    ]
-  },
-  options: {
-    indexAxis: "y",
-    responsive: true,
-    plugins: {
-      legend: { position: "top" },
-      tooltip: {
-        callbacks: {
-          label: function(ctx) {
-            const value = Math.abs(ctx.raw);
-            return ctx.dataset.label + ": " + value;
+
+      plugins: {
+        legend: {
+          display: true   // Standard-Legende
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const val = Math.abs(ctx.raw);
+              return `${ctx.dataset.label}: ${val}`;
+            }
           }
         }
       }
-    },
-    scales: {
-      x: {
-        min: -axisMax,
-        max: axisMax,
-        ticks: {
-          callback: value => Math.abs(value)
-        },
-        grid: {
-          color: "rgba(255,255,255,0.15)"
-        }
-      },
-      y: {
-        grid: { display: false }
-      }
     }
-  },
-  plugins: [centerLabels]
-});
+  });
+}
 
 loadChart();
 </script>
