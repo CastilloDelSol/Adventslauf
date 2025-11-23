@@ -15,7 +15,11 @@ async function renderAgePyramid(sectionName, canvasId) {
   // JSON laden
   const resp = await fetch("./age_buckets_by_distance.json");
   const data = await resp.json();
-  const group = data[sectionName];
+  const group = data["Kurzstrecke"];
+
+  const labels  = group.map(e => e.label);
+  const males   = group.map(e => -e.M);
+  const females = group.map(e =>  e.W);
 
   // Falls die Strecke nicht existiert → Fehler
   if (!group) {
