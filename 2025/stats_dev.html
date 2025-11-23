@@ -474,76 +474,64 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
     const group = ageData[sectionName];
     if (!group) return;
 
-    // --- SORT BUCKETS in correct order ---
+    // --- SORT BUCKETS ---
     let labels = Object.keys(group).sort((a, b) => {
         const parse = s => {
-            // Youth classes come first
             if (s.startsWith("J U")) return parseInt(s.replace("J U", ""), 10) - 1000;
             if (s.startsWith("K U")) return parseInt(s.replace("K U", ""), 10) - 2000;
-
-            // Numeric adult classes (20, 30, 35...)
             return parseInt(s, 10);
         };
         return parse(a) - parse(b);
     });
 
-    // Force labels to strings (CRITICAL FIX)
     labels = labels.map(String);
 
-    // Values
     const m_vals = labels.map(k => group[k]["M"]);
     const w_vals = labels.map(k => group[k]["W"]);
 
-    // For pyramid: males must be negative (left side)
+    // MAIN VALUES
     const m_negative = m_vals.map(v => -v);
+    const axisMax = Math.ceil(Math.max(...m_vals, ...w_vals) / 10) * 10 + 10;
 
-    // Compute symmetric axis max
-    const maxVal = Math.max(
-        ...m_vals,
-        ...w_vals
-    );
-    const axisMax = Math.ceil(maxVal / 10) * 10 + 10; // round + padding (e.g. 80)
-  
+    // **TINY SHIFT OUTSIDE**
+    const m_hoverpos = m_negative.map(v => v - 0.0001); // left
+    const w_hoverpos = w_vals.map(v => v + 0.0001);     // right
+
     const traceM = {
         y: labels,
         x: m_negative,
         name: "M",
-        orientation: "h",
         type: "bar",
+        orientation: "h",
         marker: { color: "#0EA5E9" },
-    
-        customdata: labels.map((lab, idx) => `M${lab}: ${m_vals[idx]}`),
-    
-        // Verschiebt den Hover-Ankerpunkt links nach außen
-        hovertemplate: "%{customdata}<extra></extra>",
+        customdata: m_vals.map((v, i) => `M${labels[i]}: ${v}`),
+
+        // Tooltip uses shifted x-position (OUTSIDE)
+        hovertemplate:
+            "<b>%{customdata}</b><extra></extra>",
+        xhoverinfo: "x",
         hoverinfo: "text",
-        offsetgroup: "m",
-        hoverlabel: { align: "right" },  // Tooltip nach LINKS ausrichten
-    
-        // Trick: Hover-Punkt minimal weiter außen platzieren
-        cliponaxis: false
+
+        // core trick:
+        xhover: m_hoverpos
     };
-    
+
     const traceW = {
         y: labels,
         x: w_vals,
         name: "W",
-        orientation: "h",
         type: "bar",
+        orientation: "h",
         marker: { color: "#E34A2A" },
-    
-        customdata: labels.map((lab, idx) => `W${lab}: ${w_vals[idx]}`),
-    
-        hovertemplate: "%{customdata}<extra></extra>",
-        hoverinfo: "text",
-        offsetgroup: "w",
-        hoverlabel: { align: "left" },  // Tooltip nach RECHTS
-    
-        cliponaxis: false
+        customdata: w_vals.map((v, i) => `W${labels[i]}: ${v}`),
+
+        hovertemplate:
+            "<b>%{customdata}</b><extra></extra>",
+
+        xhover: w_hoverpos
     };
 
-
-    // Build evenly spaced tick values
+    // TICKS
     const ticks = [];
     for (let i = -axisMax; i <= axisMax; i += 10) ticks.push(i);
 
@@ -556,13 +544,12 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         plot_bgcolor: "rgba(0,0,0,0)",
         font: { color: "#E6EDF3" },
 
-        // --- X-AXIS (Male left, Female right) ---
         xaxis: {
             title: "Teilnehmer",
             range: [-axisMax, axisMax],
             dtick: 10,
             tickvals: ticks,
-            ticktext: ticks.map(v => Math.abs(v)), // show positive values only
+            ticktext: ticks.map(v => Math.abs(v)),
             gridcolor: "rgba(140,140,140,0.2)",
             minor: {
                 dtick: 5,
@@ -571,20 +558,14 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
             }
         },
 
-        // --- Y-AXIS (CATEGORY MODE!) ---
         yaxis: {
             type: "category",
             categoryorder: "array",
-            categoryarray: labels,   // ensure correct bucket order
-            gridcolor: "rgba(140,140,140,0.2)",
-            showgrid: false,
-            minor: {
-                showgrid: false,
-                gridcolor: "rgba(140,140,140,0.1)"
-            }
+            categoryarray: labels,
+            showgrid: false
         },
 
-        margin: { l: 80, r: 50, t: 60, b: 40 }
+        margin: { l: 80, r: 80, t: 60, b: 40 }
     };
 
     Plotly.newPlot(targetDiv, [traceM, traceW], layout, {
@@ -592,6 +573,7 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         responsive: true
     });
 }
+
 
 
 </script>
