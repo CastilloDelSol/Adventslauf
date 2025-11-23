@@ -41,37 +41,71 @@ async function renderAgePyramid(sectionName, canvasId) {
     type: "bar",
     data: {
       labels: agegroups,
+
       datasets: [
         {
           label: "M",
           data: males,
-          backgroundColor: "rgba(54, 162, 235, 0.7)",
-          grouped: false
+          backgroundColor: "rgba(54, 162, 235, 0.75)",
+          borderWidth: 0,
         },
         {
           label: "W",
           data: females,
-          backgroundColor: "rgba(255, 99, 132, 0.7)",
-          grouped: false
+          backgroundColor: "rgba(255, 99, 132, 0.75)",
+          borderWidth: 0,
         }
       ]
     },
+
     options: {
       indexAxis: "y",
+
       scales: {
-        x: {
-          min: -maxValue,
-          max:  maxValue,
+        y: {
           ticks: {
-            callback: v => Math.abs(v)
+            color: "#000",
+            font: { weight: "bold" }
+          },
+          grid: {
+            display: false
+          }
+        },
+
+        x: {
+          min: -axisMax,
+          max: axisMax,
+
+          ticks: {
+            callback: value => Math.abs(value),
+            stepSize: 10,
+          },
+
+          grid: {
+            color: ctx => {
+              const v = ctx.tick.value;
+              return v % 20 === 0 ? "#cccccc" : "#e6e6e6";
+            }
           }
         }
       },
+
       plugins: {
-        legend: { display: true },
+        legend: {
+          display: true,
+          labels: {
+            usePointStyle: true
+          }
+        },
+
         tooltip: {
           callbacks: {
-            label: ctx => `${ctx.dataset.label}: ${Math.abs(ctx.raw)}`
+            label: ctx => {
+              const ag = ctx.label;
+              const gender = ctx.dataset.label;
+              const val = Math.abs(ctx.raw);
+              return `${gender}${ag}: ${val}`;
+            }
           }
         }
       }
