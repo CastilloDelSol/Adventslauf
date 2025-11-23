@@ -469,7 +469,7 @@ function buildAgeGroupCharts(ageData, sectionName, targetAbsolute, targetRelativ
     }, {displayModeBar:false, responsive:true});
 }
 
-// ==================== AGE PYRAMID CHART ======================
+// ==================== AGE PYRAMID (SHAPE VERSION, BULLETPROOF) ======================
 function buildAgePyramidChart(ageData, sectionName, targetDiv) {
     const group = ageData[sectionName];
     if (!group) return;
@@ -483,73 +483,86 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         };
         return parse(a) - parse(b);
     });
-
     labels = labels.map(String);
 
     const m_vals = labels.map(k => group[k]["M"]);
     const w_vals = labels.map(k => group[k]["W"]);
+    const maxVal = Math.max(...m_vals, ...w_vals);
+    const axisMax = Math.ceil(maxVal / 10) * 10 + 10;
 
-    // MAIN VALUES
-    const m_negative = m_vals.map(v => -v);
-    const axisMax = Math.ceil(Math.max(...m_vals, ...w_vals) / 10) * 10 + 10;
+    // === BUILD BAR SHAPES ===
+    let shapes = [];
+    const barHeight = 0.8;
 
-    // **TINY SHIFT OUTSIDE**
-    const m_hoverpos = m_negative.map(v => v - 0.0001); // left
-    const w_hoverpos = w_vals.map(v => v + 0.0001);     // right
+    labels.forEach((lab, i) => {
+        const y0 = i - barHeight / 2;
+        const y1 = i + barHeight / 2;
 
-    const traceM = {
-        y: labels,
-        x: m_negative,
-        name: "M",
-        type: "bar",
-        orientation: "h",
-        marker: { color: "#0EA5E9" },
-        customdata: m_vals.map((v, i) => `M${labels[i]}: ${v}`),
+        const m = m_vals[i];
+        const w = w_vals[i];
 
-        // Tooltip uses shifted x-position (OUTSIDE)
-        hovertemplate:
-            "<b>%{customdata}</b><extra></extra>",
-        xhoverinfo: "x",
-        hoverinfo: "text",
+        // --- Male bar (left) ---
+        if (m > 0) {
+            shapes.push({
+                type: "rect",
+                x0: -m,
+                x1: 0,
+                y0: y0,
+                y1: y1,
+                fillcolor: "#0EA5E9",
+                line: { width: 0 }
+            });
+        }
 
-        // core trick:
-        xhover: m_hoverpos
+        // --- Female bar (right) ---
+        if (w > 0) {
+            shapes.push({
+                type: "rect",
+                x0: 0,
+                x1: w,
+                y0: y0,
+                y1: y1,
+                fillcolor: "#E34A2A",
+                line: { width: 0 }
+            });
+        }
+    });
+
+    // === HOVER POINTS ===
+    const hoverM = {
+        x: m_vals.map(v => -(v + 1)),   // always safely outside
+        y: labels.map((_, i) => i),
+        mode: "markers",
+        marker: { opacity: 0.001 },
+        text: labels.map((lab, i) => `M${lab}: ${m_vals[i]}`),
+        hovertemplate: "%{text}<extra></extra>",
+        showlegend: false
     };
 
-    const traceW = {
-        y: labels,
-        x: w_vals,
-        name: "W",
-        type: "bar",
-        orientation: "h",
-        marker: { color: "#E34A2A" },
-        customdata: w_vals.map((v, i) => `W${labels[i]}: ${v}`),
-
-        hovertemplate:
-            "<b>%{customdata}</b><extra></extra>",
-
-        xhover: w_hoverpos
+    const hoverW = {
+        x: w_vals.map(v => v + 1),
+        y: labels.map((_, i) => i),
+        mode: "markers",
+        marker: { opacity: 0.001 },
+        text: labels.map((lab, i) => `W${lab}: ${w_vals[i]}`),
+        hovertemplate: "%{text}<extra></extra>",
+        showlegend: false
     };
 
-    // TICKS
-    const ticks = [];
-    for (let i = -axisMax; i <= axisMax; i += 10) ticks.push(i);
-
+    // === LAYOUT ===
     const layout = {
         title: sectionName + " – Geschlecht / Altersklassen (Pyramide)",
-        barmode: "overlay",
-        bargap: 0.1,
+        shapes: shapes,
 
         paper_bgcolor: "rgba(0,0,0,0)",
         plot_bgcolor: "rgba(0,0,0,0)",
         font: { color: "#E6EDF3" },
 
         xaxis: {
-            title: "Teilnehmer",
             range: [-axisMax, axisMax],
             dtick: 10,
-            tickvals: ticks,
-            ticktext: ticks.map(v => Math.abs(v)),
+            tickvals: [...Array(2 * axisMax / 10 + 1).keys()].map(i => i * 10 - axisMax),
+            ticktext: [...Array(2 * axisMax / 10 + 1).keys()].map(i => Math.abs(i * 10 - axisMax)),
             gridcolor: "rgba(140,140,140,0.2)",
             minor: {
                 dtick: 5,
@@ -568,11 +581,12 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         margin: { l: 80, r: 80, t: 60, b: 40 }
     };
 
-    Plotly.newPlot(targetDiv, [traceM, traceW], layout, {
+    Plotly.newPlot(targetDiv, [hoverM, hoverW], layout, {
         displayModeBar: false,
         responsive: true
     });
 }
+
 
 
 
