@@ -2,78 +2,69 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Pyramidenchart – Standard Chart.js</title>
+  <title>Pyramidenchart – Wiederverwendbar</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
-  <h2>Kurzstrecke – Pyramidenchart (Standard Chart.js)</h2>
-  <canvas id="pyramidChart" width="900" height="600"></canvas>
+  <h2>Kurzstrecke – Pyramidenchart (Chart.js)</h2>
+  <canvas id="chartKurz" width="900" height="600"></canvas>
 
 <script>
-async function loadChart() {
+async function renderAgePyramid(sectionName, canvasId) {
   // JSON laden
   const resp = await fetch("./age_buckets_by_distance.json");
   const data = await resp.json();
-  const group = data["Kurzstrecke"];
+  const group = data[sectionName];
 
-  let labels = [];
-  for (const key in group) {
-      labels.push(key + "\u200B");   // Force string ordering
+  // Falls die Strecke nicht existiert → Fehler
+  if (!group) {
+    console.error("Section not found:", sectionName);
+    return;
   }
 
-  // männlich links (negativ), weiblich rechts
-  const males = labels.map(k => -group[k].M);
-  const females = labels.map(k => group[k].W);
+  // Reihenfolge 1:1 aus JSON übernehmen
+  const entries = Object.entries(group);
 
-  const ctx = document.getElementById("pyramidChart").getContext("2d");
+  const labels  = entries.map(e => e[0]);     // Altersklassen
+  const males   = entries.map(e => -e[1].M);  // links
+  const females = entries.map(e =>  e[1].W);  // rechts
+
+  const ctx = document.getElementById(canvasId).getContext("2d");
 
   new Chart(ctx, {
     type: "bar",
     data: {
-      labels: labels,
+      labels,
       datasets: [
         {
           label: "M",
           data: males,
           backgroundColor: "rgba(54, 162, 235, 0.7)",
-          grouped: false,
-          barPercentage: 1,
-          categoryPercentage: 1,
-          offset: false
+          grouped: false
         },
         {
           label: "W",
           data: females,
           backgroundColor: "rgba(255, 99, 132, 0.7)",
-          grouped: false,
-          barPercentage: 1,
-          categoryPercentage: 1,
-          offset: false
+          grouped: false
         }
       ]
     },
     options: {
-      indexAxis: "y",   // horizontale Balken
-
+      indexAxis: "y",
       scales: {
         x: {
           ticks: {
-            callback: value => Math.abs(value)  // positive Achse anzeigen
+            callback: v => Math.abs(v)
           }
         }
       },
-
       plugins: {
-        legend: {
-          display: true   // Standard-Legende
-        },
+        legend: { display: true },
         tooltip: {
           callbacks: {
-            label: ctx => {
-              const val = Math.abs(ctx.raw);
-              return `${ctx.dataset.label}: ${val}`;
-            }
+            label: ctx => `${ctx.dataset.label}: ${Math.abs(ctx.raw)}`
           }
         }
       }
@@ -81,7 +72,9 @@ async function loadChart() {
   });
 }
 
-loadChart();
+// Chart starten — nur Kurzstrecke
+renderAgePyramid("Kurzstrecke", "chartKurz");
 </script>
+
 </body>
 </html>
