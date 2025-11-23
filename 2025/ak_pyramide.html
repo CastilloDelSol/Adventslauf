@@ -2,121 +2,28 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Kurzstrecke – Altersklassen-Pyramide</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Chart.js -->
+  <title>Pyramidenchart – Standard Chart.js</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <style>
-    body {
-      margin: 0;
-      padding: 20px;
-      background: #0D1117;
-      color: #E6EDF3;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      display: flex;
-      justify-content: center;
-    }
-
-    .page {
-      width: 100%;
-      max-width: 900px;
-    }
-
-    h1 {
-      font-size: 22px;
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      color: #9BA5B4;
-      margin-bottom: 18px;
-      font-size: 14px;
-    }
-
-    .chart-card {
-      background: #161B22;
-      border-radius: 14px;
-      border: 1px solid #2D333B;
-      padding: 16px 18px 20px;
-    }
-
-    .legend-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-      padding: 0 4px;
-      font-size: 14px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .legend-color {
-      width: 14px;
-      height: 14px;
-      border-radius: 3px;
-      display: inline-block;
-    }
-  </style>
 </head>
 
 <body>
-<div class="page">
-
-  <h1>Kurzstrecke – Geschlecht / Altersklassen</h1>
-  <div class="subtitle">Beispiel: Pyramiden-Diagramm aus <code>age_buckets_by_distance.json</code></div>
-
-  <div class="chart-card">
-    <canvas id="chartKurzPyramid" height="420"></canvas>
-
-    <!-- Manuelle Legende (M links, W rechts) -->
-    <div class="legend-row">
-      <div class="legend-item">
-        <span class="legend-color" style="background:#0EA5E9;"></span>
-        <span>M</span>
-      </div>
-      <div class="legend-item">
-        <span class="legend-color" style="background:#E34A2A;"></span>
-        <span>W</span>
-      </div>
-    </div>
-  </div>
-
-</div>
+  <h2>Kurzstrecke – Pyramidenchart (Standard Chart.js)</h2>
+  <canvas id="pyramidChart" width="900" height="600"></canvas>
 
 <script>
-async function buildKurzstreckePyramid() {
-  // JSON laden – Datei muss im gleichen Ordner liegen
+async function loadChart() {
+  // JSON laden
   const resp = await fetch("./age_buckets_by_distance.json");
-  const ageData = await resp.json();
+  const data = await resp.json();
+  const group = data["Kurzstrecke"];
 
-  const group = ageData["Kurzstrecke"];
-  if (!group) {
-    console.error("Kurzstrecke nicht in JSON gefunden");
-    return;
-  }
-
-  // Labels (Altersklassen) – hier ohne besondere Sortierung,
-  // du kannst bei Bedarf dieselbe Sortierlogik wie vorher einbauen.
   const labels = Object.keys(group);
 
-  // Werte: M negativ (links), W positiv (rechts)
-  const maleValues = labels.map(k => -group[k].M);
-  const femaleValues = labels.map(k => group[k].W);
+  // männlich links (negativ), weiblich rechts
+  const males = labels.map(k => -group[k].M);
+  const females = labels.map(k => group[k].W);
 
-  // Symmetrische Achse bestimmen
-  const maxVal = Math.max(
-    ...maleValues.map(v => Math.abs(v)),
-    ...femaleValues
-  );
-  const axisMax = Math.ceil(maxVal / 10) * 10; // auf 10er runden
-
-  const ctx = document.getElementById("chartKurzPyramid").getContext("2d");
+  const ctx = document.getElementById("pyramidChart").getContext("2d");
 
   new Chart(ctx, {
     type: "bar",
@@ -125,64 +32,36 @@ async function buildKurzstreckePyramid() {
       datasets: [
         {
           label: "M",
-          data: maleValues,
-          backgroundColor: "#0EA5E9",
-          borderSkipped: false
+          data: males,
+          backgroundColor: "rgba(54, 162, 235, 0.7)"
         },
         {
           label: "W",
-          data: femaleValues,
-          backgroundColor: "#E34A2A",
-          borderSkipped: false
+          data: females,
+          backgroundColor: "rgba(255, 99, 132, 0.7)"
         }
       ]
     },
     options: {
-      indexAxis: "y",           // horizontale Balken
-      responsive: true,
-      maintainAspectRatio: false,
-
-      animation: {
-        duration: 900,
-        easing: "easeOutQuart"
-      },
+      indexAxis: "y",   // horizontale Balken
 
       scales: {
         x: {
-          min: -axisMax,
-          max: axisMax,
           ticks: {
-            color: "#E6EDF3",
-            // negative Werte als positive anzeigen
-            callback: value => Math.abs(value)
-          },
-          grid: {
-            color: "rgba(140,140,140,0.2)"
-          }
-        },
-        y: {
-          ticks: {
-            color: "#E6EDF3"
-          },
-          grid: {
-            display: false
+            callback: value => Math.abs(value)  // positive Achse anzeigen
           }
         }
       },
 
       plugins: {
-        // interne Chart.js-Legende aus, wir haben unsere eigene unter dem Chart
         legend: {
-          display: false
+          display: true   // Standard-Legende
         },
         tooltip: {
           callbacks: {
-            // Tooltip im Format "M55: 53"
-            label: function(ctx) {
-              const ageBucket = ctx.label;          // z.B. "55" oder "J U18"
-              const gender = ctx.dataset.label;     // "M" oder "W"
-              const val = Math.abs(ctx.raw);        // immer positiv anzeigen
-              return `${gender}${ageBucket}: ${val}`;
+            label: ctx => {
+              const val = Math.abs(ctx.raw);
+              return `${ctx.dataset.label}: ${val}`;
             }
           }
         }
@@ -191,9 +70,7 @@ async function buildKurzstreckePyramid() {
   });
 }
 
-// Diagramm nach dem Laden der Seite zeichnen
-document.addEventListener("DOMContentLoaded", buildKurzstreckePyramid);
+loadChart();
 </script>
-
 </body>
 </html>
