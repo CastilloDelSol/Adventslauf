@@ -15,24 +15,23 @@ async function renderAgePyramid(sectionName, canvasId) {
   // JSON laden
   const resp = await fetch("./age_buckets_by_distance.json");
   const data = await resp.json();
-  const group = data[sectionName];  // jetzt ein ARRAY
+  const group = data[sectionName];
 
   if (!group) {
     console.error("Section not found:", sectionName);
     return;
   }
 
-  // DIREKT aus Array holen – KEINE Sortierung, KEINE Entries
-  const labels  = group.map(e => e.label);
-  const males   = group.map(e => -e.M); // links
-  const females = group.map(e =>  e.W); // rechts
+  const agegroups = group.map(e => e.AG).reverse();
+  const males     = group.map(e => -e.M).reverse();
+  const females   = group.map(e =>  e.W).reverse();
 
   const ctx = document.getElementById(canvasId).getContext("2d");
 
   new Chart(ctx, {
     type: "bar",
     data: {
-      labels: labels,
+      labels: agegroups,
       datasets: [
         {
           label: "M",
