@@ -479,11 +479,9 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
     const w_vals = labels.map(k => group[k]["W"]);
 
     const maxVal = Math.max(...m_vals, ...w_vals);
-
-    // negative for M
     const m_neg = m_vals.map(v => -v);
 
-    // NORMAL BARS (hover disabled)
+    // =================== NORMAL BAR TRACES ===================
     const traceM = {
         y: labels,
         x: m_neg,
@@ -504,44 +502,64 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         hoverinfo: "skip"
     };
 
-    // HOVER TRACES (invisible points OUTSIDE)
-
+    // =================== HOVER TRACES (just markers) ===================
     const traceM_hover = {
         y: labels,
         x: labels.map(() => -(maxVal * 1.05)),
         mode: "markers",
-        marker: { opacity: 0 },
-        showlegend: false,
-        hovertemplate: labels.map((lab, i) => `M${lab}: ${m_vals[i]}<extra></extra>`),
-        hoverinfo: "text"
+        marker: {
+            size: 12,
+            opacity: 0.01,    // not fully invisible → hover works
+            color: "#0EA5E9"
+        },
+        customdata: labels.map((lab, i) => `M${lab}: ${m_vals[i]}`),
+        hovertemplate: "%{customdata}<extra></extra>",
+        showlegend: false
     };
 
     const traceW_hover = {
         y: labels,
         x: labels.map(() => maxVal * 1.05),
         mode: "markers",
-        marker: { opacity: 0 },
-        showlegend: false,
-        hovertemplate: labels.map((lab, i) => `W${lab}: ${w_vals[i]}<extra></extra>`),
-        hoverinfo: "text"
+        marker: {
+            size: 12,
+            opacity: 0.01,
+            color: "#E34A2A"
+        },
+        customdata: labels.map((lab, i) => `W${lab}: ${w_vals[i]}`),
+        hovertemplate: "%{customdata}<extra></extra>",
+        showlegend: false
     };
 
+    // =================== AXES & GRID ===================
     const layout = {
         title: sectionName + " – Geschlecht / Altersklassen (Pyramide)",
         barmode: "overlay",
+
         xaxis: {
             range: [-(maxVal * 1.2), maxVal * 1.2],
-            gridcolor: "rgba(140,140,140,0.2)",
-            minor: { dtick: 5, showgrid: true, gridcolor: "rgba(140,140,140,0.1)" },
             tick0: 0,
             dtick: 10,
             zeroline: true,
-            zerolinecolor: "#AAA"
+            zerolinecolor: "#AAA",
+            gridcolor: "rgba(140,140,140,0.2)",
+            minor: {
+                dtick: 5,
+                showgrid: true,
+                gridcolor: "rgba(140,140,140,0.1)"
+            }
         },
         yaxis: {
+            type: "category",
+            categoryorder: "array",
+            categoryarray: labels,
             gridcolor: "rgba(140,140,140,0.2)",
-            minor: { dtick: 5, showgrid: true, gridcolor: "rgba(140,140,140,0.1)" }
+            minor: {
+                dtick: 1,
+                showgrid: false
+            }
         },
+
         paper_bgcolor: "rgba(0,0,0,0)",
         plot_bgcolor: "rgba(0,0,0,0)",
         font: { color: "#E6EDF3" },
@@ -554,6 +572,7 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         { responsive: true, displayModeBar: false }
     );
 }
+
 
 
 
