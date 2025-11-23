@@ -8,11 +8,11 @@
 
 <body>
   <h2>Kurzstrecke – Pyramidenchart (Chart.js)</h2>
-  <canvas id="chartKurz" width="900" height="600"></canvas>
+<canvas id="chartKurz" width="900" height="600"></canvas>
 
 <script>
 async function renderAgePyramid(sectionName, canvasId) {
-  // JSON laden
+
   const resp = await fetch("./age_buckets_by_distance.json");
   const data = await resp.json();
   const group = data[sectionName];
@@ -22,18 +22,19 @@ async function renderAgePyramid(sectionName, canvasId) {
     return;
   }
 
+  // Data arrays reversed (young->old)
   const agegroups = group.map(e => e.AG).reverse();
   const males     = group.map(e => -e.M).reverse();
   const females   = group.map(e =>  e.W).reverse();
 
-  // get max value
-  let maxValue = Math.max(
-      ...males.map(v => Math.abs(v)),
-      ...females
+  // Symmetric axis range
+  const maxValue = Math.max(
+    ...males.map(v => Math.abs(v)),
+    ...females
   );
 
-  // round to next full 10 (e.g. 77 -> 80)
-  maxValue = Math.ceil(maxValue / 10) * 10;
+  // Round to next 20
+  const axisMax = Math.ceil(maxValue / 20) * 20;
 
   const ctx = document.getElementById(canvasId).getContext("2d");
 
