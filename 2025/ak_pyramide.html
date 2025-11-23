@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -62,18 +63,6 @@ async function renderAgePyramid(sectionName, canvasId) {
           max:  maxValue,
           ticks: {
             callback: v => Math.abs(v)
-          },
-          grid: {
-            color: ctx => {
-              const v = ctx.tick.value;
-              return (v % 20 === 0) 
-                ? "#bbbbbb"    // major (20er Schritte)
-                : "#e6e6e6";   // minor (10er Schritte)
-            },
-            lineWidth: ctx => {
-              const v = ctx.tick.value;
-              return (v % 20 === 0) ? 1.5 : 0.7;
-            }
           }
         }
       },
