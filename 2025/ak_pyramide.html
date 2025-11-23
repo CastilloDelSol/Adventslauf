@@ -19,7 +19,7 @@ async function loadChart() {
 
   let labels = [];
   for (const key in group) {
-      labels.push(key);
+      labels.push(key + "\u200B");   // Force string ordering
   }
 
   // männlich links (negativ), weiblich rechts
