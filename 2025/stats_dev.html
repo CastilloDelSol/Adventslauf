@@ -541,13 +541,15 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         },
 
         yaxis: {
+            type: "category",
+            categoryorder: "array",
+            categoryarray: labels,
             gridcolor: "rgba(140,140,140,0.2)",
             minor: {
-                dtick: 1,
                 showgrid: true,
                 gridcolor: "rgba(140,140,140,0.1)"
             }
-        },
+        }
 
         margin: { l: 80, r: 20, t: 60, b: 40 }
     };
