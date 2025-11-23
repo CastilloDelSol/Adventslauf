@@ -195,6 +195,11 @@ h1 {
 </div>
 
 <div class="chart-card">
+  <div id="chartKurzPyramid" style="height: 600px;"></div>
+</div>
+
+
+<div class="chart-card">
   <div id="chartKurzAbs" style="height: 500px;"></div>
 </div>
 
@@ -244,6 +249,9 @@ document.addEventListener("DOMContentLoaded", () => {
       "chartKurzRel",
       "chartKurzDonut"
     );
+
+    buildAgePyramidChart(ageData, "Kurzstrecke", "chartKurzPyramid");
+
 
     // ===== OPTIONAL =====
     // buildAgeGroupCharts(ageData, "Hauptlauf", ...);
@@ -460,6 +468,63 @@ function buildAgeGroupCharts(ageData, sectionName, targetAbsolute, targetRelativ
         font: { color: "#E6EDF3" }
     }, {displayModeBar:false, responsive:true});
 }
+
+// ==================== AGE PYRAMID CHART ======================
+function buildAgePyramidChart(ageData, sectionName, targetDiv) {
+    const group = ageData[sectionName];
+    if (!group) return;
+
+    const labels = Object.keys(group);
+
+    // Werte
+    const m_vals = labels.map(k => group[k]["M"]);
+    const w_vals = labels.map(k => group[k]["W"]);
+
+    // Für die Pyramide: Männer negativ
+    const m_negative = m_vals.map(v => -v);
+
+    const traceM = {
+        y: labels,
+        x: m_negative,
+        name: "M",
+        orientation: "h",
+        type: "bar",
+        marker: { color: "#0EA5E9" }
+    };
+
+    const traceW = {
+        y: labels,
+        x: w_vals,
+        name: "W",
+        orientation: "h",
+        type: "bar",
+        marker: { color: "#E34A2A" }
+    };
+
+    const layout = {
+        title: sectionName + " – Geschlecht / Altersklassen (Pyramide)",
+        barmode: "overlay",
+        bargap: 0.1,
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
+        font: { color: "#E6EDF3" },
+
+        xaxis: {
+            title: "Teilnehmer",
+            tickmode: "array",
+            tickvals: [...new Set([...m_negative, ...w_vals])].sort((a,b)=>a-b),
+            ticktext: [...new Set([...m_negative, ...w_vals])]
+                        .sort((a,b)=>a-b)
+                        .map(v => Math.abs(v))
+        },
+
+        margin: { l: 80, r: 20, t: 60, b: 40 }
+    };
+
+    Plotly.newPlot(targetDiv, [traceM, traceW], layout,
+        { displayModeBar: false, responsive: true });
+}
+
 </script>
 
 </body>
