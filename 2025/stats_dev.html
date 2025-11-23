@@ -474,14 +474,29 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
     const group = ageData[sectionName];
     if (!group) return;
 
-    const labels = Object.keys(group);
+    // --- Labels sortieren ---
+    const labels = Object.keys(group).sort((a, b) => {
+        const parse = s => {
+            if (s.startsWith("J U")) return parseInt(s.replace("J U", ""), 10) - 1000;
+            if (s.startsWith("K U")) return parseInt(s.replace("K U", ""), 10) - 2000;
+            return parseInt(s, 10);
+        };
+        return parse(a) - parse(b);
+    });
 
     // Werte
     const m_vals = labels.map(k => group[k]["M"]);
     const w_vals = labels.map(k => group[k]["W"]);
 
-    // Für die Pyramide: Männer negativ
+    // Männer negativ für linke Seite
     const m_negative = m_vals.map(v => -v);
+
+    // Maximalwerte für symmetrische Achse
+    const maxVal = Math.max(
+        Math.max(...m_vals),
+        Math.max(...w_vals)
+    );
+    const axisMax = Math.ceil(maxVal / 10) * 10 + 10; // z.B. 80
 
     const traceM = {
         y: labels,
@@ -511,18 +526,36 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
 
         xaxis: {
             title: "Teilnehmer",
-            tickmode: "array",
-            tickvals: [...new Set([...m_negative, ...w_vals])].sort((a,b)=>a-b),
-            ticktext: [...new Set([...m_negative, ...w_vals])]
-                        .sort((a,b)=>a-b)
-                        .map(v => Math.abs(v))
+            range: [-axisMax, axisMax],
+            dtick: 10,
+            gridcolor: "rgba(140,140,140,0.2)",
+            minor: {
+                dtick: 5,
+                showgrid: true,
+                gridcolor: "rgba(140,140,140,0.1)"
+            },
+            tickformat: "~s",
+            ticktext: [...Array(axisMax / 10 + 1).keys()].flatMap(i => [-i * 10, i * 10]).sort((a,b)=>a-b)
+                     .map(v => Math.abs(v)),
+            tickvals: [...Array(axisMax / 10 + 1).keys()].flatMap(i => [-i * 10, i * 10]).sort((a,b)=>a-b)
+        },
+
+        yaxis: {
+            gridcolor: "rgba(140,140,140,0.2)",
+            minor: {
+                dtick: 1,
+                showgrid: true,
+                gridcolor: "rgba(140,140,140,0.1)"
+            }
         },
 
         margin: { l: 80, r: 20, t: 60, b: 40 }
     };
 
-    Plotly.newPlot(targetDiv, [traceM, traceW], layout,
-        { displayModeBar: false, responsive: true });
+    Plotly.newPlot(targetDiv, [traceM, traceW], layout, {
+        displayModeBar: false,
+        responsive: true
+    });
 }
 
 </script>
