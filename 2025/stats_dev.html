@@ -215,44 +215,50 @@ h1 {
 </div>
 
 <script>
+// ==================== Helpers ======================
 function formatNumber(value) {
   let s = String(value).replace(".", ",");
   return s.replace(/\./g, "");
 }
 
-// ===================== LOAD JSON & INIT (MERGED) =====================
+// ===================================================
+//   SINGLE INIT: alles in EINEM DOMContentLoaded
+// ===================================================
 document.addEventListener("DOMContentLoaded", () => {
 
-    Promise.all([
-        fetch("./statistics.json").then(r => r.json()),
-        fetch("./nationality.json").then(r => r.json()),
-        fetch("./age_buckets_by_distance.json").then(r => r.json())
-    ])
-    .then(([stats, nationalities, ageData]) => {
+  Promise.all([
+    fetch("./statistics.json").then(r => r.json()),
+    fetch("./nationality.json").then(r => r.json()),
+    fetch("./age_buckets_by_distance.json").then(r => r.json())
+  ])
+  .then(([stats, nationalities, ageData]) => {
 
-        // Dashboard
-        buildDashboard(stats, nationalities);
-        buildNationalityTable(nationalities);
+    buildDashboard(stats, nationalities);
+    buildNationalityTable(nationalities);
 
-        // Kurzstrecke
-        buildAgeGroupCharts(
-            ageData,
-            "Kurzstrecke",
-            "chartKurzAbs",
-            "chartKurzRel",
-            "chartKurzDonut"
-        );
+    // ===== AGE GROUP PLOTS: KURZSTRECKE =====
+    buildAgeGroupCharts(
+      ageData,
+      "Kurzstrecke",
+      "chartKurzAbs",
+      "chartKurzRel",
+      "chartKurzDonut"
+    );
 
-        // Für später vorbereitbar:
-        // buildAgeGroupCharts(ageData, "Hauptlauf", ...);
-        // buildAgeGroupCharts(ageData, "Kinderlauf", ...);
+    // ===== OPTIONAL =====
+    // buildAgeGroupCharts(ageData, "Hauptlauf", ...);
+    // buildAgeGroupCharts(ageData, "Kinderlauf", ...);
 
-    })
-    .catch(err => console.error("Init-Fehler:", err));
+    // === Perzentile
+    buildPercentilePlot(stats.percentiles_km);
+
+  })
+  .catch(err => console.error("INIT-Error:", err));
+
 });
 
 
-// ==================== DASHBOARD ======================
+// ==================== Dashboard Summary ======================
 function buildDashboard(stats, nationalities) {
   const total = nationalities.reduce((sum, e) => sum + e.count, 0);
   const germany = nationalities.find(e => e.code === "de")?.count || 0;
@@ -262,15 +268,14 @@ function buildDashboard(stats, nationalities) {
   document.getElementById("nationalCount").textContent = String(germany);
   document.getElementById("internationalCount").textContent = String(international);
 
-  document.getElementById("distanceMin").textContent = formatNumber(stats.distance_min_km.toFixed(1));
-  document.getElementById("distanceAvg").textContent = formatNumber(stats.distance_avg_km.toFixed(1));
+  document.getElementById("distanceMin").textContent    = formatNumber(stats.distance_min_km.toFixed(1));
+  document.getElementById("distanceAvg").textContent    = formatNumber(stats.distance_avg_km.toFixed(1));
   document.getElementById("distanceMedian").textContent = formatNumber(stats.distance_median_km.toFixed(1));
-  document.getElementById("distanceMax").textContent = formatNumber(stats.distance_max_km.toFixed(0));
-
-  buildPercentilePlot(stats.percentiles_km);
+  document.getElementById("distanceMax").textContent    = formatNumber(stats.distance_max_km.toFixed(0));
 }
 
-// ==================== NATIONALITY TABLE ==================
+
+// ==================== Nationality Table ======================
 function buildNationalityTable(list) {
   const sorted = [...list].sort((a, b) => b.count - a.count);
   const tbody = document.querySelector("#nationalityTable tbody");
@@ -306,7 +311,8 @@ function buildNationalityTable(list) {
   });
 }
 
-// ==================== Percentile Plot =====================
+
+// ==================== Percentile Plot ======================
 function buildPercentilePlot(percentileData) {
 
   const entries = Object.entries(percentileData)
@@ -333,17 +339,15 @@ function buildPercentilePlot(percentileData) {
 
   const layout = {
     title: "Perzentilverteilung der Anreiseentfernungen",
-    titlefont: { color: "#E6EDF3", size: 18 },
     paper_bgcolor: "rgba(0,0,0,0)",
     plot_bgcolor: "rgba(0,0,0,0)",
+    font: { color: "#E6EDF3" },
     margin: { t: 50, r: 20, b: 60, l: 80 },
 
     xaxis: {
       title: "Perzentil [%]",
       dtick: 10,
       gridcolor: "rgba(140,140,140,0.2)",
-      tickfont: { size: 12, color: "#E6EDF3" },
-      titlefont: { size: 14, color: "#E6EDF3" },
       minor: { dtick: 5, showgrid: true, gridcolor: "rgba(140,140,140,0.1)" }
     },
 
@@ -353,21 +357,17 @@ function buildPercentilePlot(percentileData) {
       tickvals: mainTicks,
       ticktext: mainTickLabels,
       gridcolor: "rgba(140,140,140,0.2)",
-      tickfont: { size: 12, color: "#E6EDF3" },
-      titlefont: { size: 14, color: "#E6EDF3" },
       minor: { tickvals: minorTicks, showgrid: true, gridcolor: "rgba(140,140,140,0.1)" }
     }
   };
 
-  Plotly.newPlot("percentilePlot", [trace], layout, {
-    responsive: true,
-    displayModeBar: false
-  });
+  Plotly.newPlot("percentilePlot", [trace], layout,
+    { responsive: true, displayModeBar: false }
+  );
 }
 
-// ======================== AGEGROUP + GENDER PLOTS ========================
 
-// Läuft für jeden Bereich: "Kurzstrecke", "Hauptlauf", "Kinderlauf"
+// ==================== AGEGROUP PLOTS (ABS, REL, DONUT) ======================
 function buildAgeGroupCharts(ageData, sectionName, targetAbsolute, targetRelative, targetDonut) {
     const group = ageData[sectionName];
     if (!group) return;
@@ -376,26 +376,23 @@ function buildAgeGroupCharts(ageData, sectionName, targetAbsolute, targetRelativ
     const m_vals = labels.map(k => group[k]["M"]);
     const w_vals = labels.map(k => group[k]["W"]);
 
-    // ========= ABSOLUTE BAR =========
-    const absTraceM = {
-        y: labels,
-        x: m_vals,
-        name: "M",
-        type: "bar",
-        orientation: "h",
-        marker: { color: "#0EA5E9" }
-    };
-
-    const absTraceW = {
-        y: labels,
-        x: w_vals,
-        name: "W",
-        type: "bar",
-        orientation: "h",
-        marker: { color: "#E34A2A" }
-    };
-
-    Plotly.newPlot(targetAbsolute, [absTraceM, absTraceW], {
+    // ===== Absolute =====
+    Plotly.newPlot(targetAbsolute, [
+        {
+            y: labels, x: m_vals,
+            type: "bar",
+            name: "M",
+            orientation: "h",
+            marker: { color: "#0EA5E9" }
+        },
+        {
+            y: labels, x: w_vals,
+            type: "bar",
+            name: "W",
+            orientation: "h",
+            marker: { color: "#E34A2A" }
+        }
+    ], {
         title: sectionName + " – Altersklassen (absolut)",
         barmode: "stack",
         paper_bgcolor: "rgba(0,0,0,0)",
@@ -404,7 +401,7 @@ function buildAgeGroupCharts(ageData, sectionName, targetAbsolute, targetRelativ
         margin: { l: 80, r: 20, t: 50, b: 40 }
     }, {displayModeBar:false, responsive:true});
 
-    // ========= RELATIVE BAR (100%) =========
+    // ===== Relative =====
     const rel_m = [];
     const rel_w = [];
     for (let k of labels) {
@@ -413,47 +410,42 @@ function buildAgeGroupCharts(ageData, sectionName, targetAbsolute, targetRelativ
         rel_w.push(total ? (group[k]["W"] / total) * 100 : 0);
     }
 
-    const relTraceM = {
-        y: labels,
-        x: rel_m,
-        type: "bar",
-        name: "M (%)",
-        orientation: "h",
-        marker: { color: "#0EA5E9" }
-    };
-
-    const relTraceW = {
-        y: labels,
-        x: rel_w,
-        type: "bar",
-        name: "W (%)",
-        orientation: "h",
-        marker: { color: "#E34A2A" }
-    };
-
-    Plotly.newPlot(targetRelative, [relTraceM, relTraceW], {
+    Plotly.newPlot(targetRelative, [
+        {
+            y: labels, x: rel_m,
+            type: "bar",
+            name: "M (%)",
+            orientation: "h",
+            marker: { color: "#0EA5E9" }
+        },
+        {
+            y: labels, x: rel_w,
+            type: "bar",
+            name: "W (%)",
+            orientation: "h",
+            marker: { color: "#E34A2A" }
+        }
+    ], {
         title: sectionName + " – Geschlechterverteilung (%)",
         barmode: "stack",
+        xaxis: { range: [0, 100] },
         paper_bgcolor: "rgba(0,0,0,0)",
         plot_bgcolor: "rgba(0,0,0,0)",
         font: { color: "#E6EDF3" },
-        xaxis: { range: [0, 100] },
         margin: { l: 80, r: 20, t: 50, b: 40 }
     }, {displayModeBar:false, responsive:true});
 
-    // ========= DONUT =========
-    const sum_m = m_vals.reduce((a,b)=>a+b,0);
-    const sum_w = w_vals.reduce((a,b)=>a+b,0);
-    const total = sum_m + sum_w;
+    // ===== Donut =====
+    const totalM = m_vals.reduce((a,b)=>a+b,0);
+    const totalW = w_vals.reduce((a,b)=>a+b,0);
+    const total  = totalM + totalW;
 
     Plotly.newPlot(targetDonut, [{
         labels: ["M", "W"],
-        values: [sum_m, sum_w],
+        values: [totalM, totalW],
         type: "pie",
         hole: 0.55,
-        marker: {
-            colors: ["#0EA5E9", "#E34A2A"]
-        },
+        marker: { colors: ["#0EA5E9", "#E34A2A"] },
         textinfo: "label+percent",
         textfont: { color: "#E6EDF3" }
     }], {
@@ -468,9 +460,6 @@ function buildAgeGroupCharts(ageData, sectionName, targetAbsolute, targetRelativ
         font: { color: "#E6EDF3" }
     }, {displayModeBar:false, responsive:true});
 }
-});
-
-  
 </script>
 
 </body>
