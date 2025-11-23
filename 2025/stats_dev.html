@@ -474,124 +474,87 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
     const group = ageData[sectionName];
     if (!group) return;
 
-    // --- SORT BUCKETS in correct order ---
-    let labels = Object.keys(group).sort((a, b) => {
-        const parse = s => {
-            // Youth classes come first
-            if (s.startsWith("J U")) return parseInt(s.replace("J U", ""), 10) - 1000;
-            if (s.startsWith("K U")) return parseInt(s.replace("K U", ""), 10) - 2000;
-
-            // Numeric adult classes (20, 30, 35...)
-            return parseInt(s, 10);
-        };
-        return parse(a) - parse(b);
-    });
-
-    // Force labels to strings (CRITICAL FIX)
-    labels = labels.map(String);
-
-    // Values
+    const labels = Object.keys(group);
     const m_vals = labels.map(k => group[k]["M"]);
     const w_vals = labels.map(k => group[k]["W"]);
 
-    // For pyramid: males must be negative (left side)
-    const m_negative = m_vals.map(v => -v);
+    const maxVal = Math.max(...m_vals, ...w_vals);
 
-    // Compute symmetric axis max
-    const maxVal = Math.max(
-        ...m_vals,
-        ...w_vals
-    );
-    const axisMax = Math.ceil(maxVal / 10) * 10 + 10; // round + padding (e.g. 80)
-  
+    // negative for M
+    const m_neg = m_vals.map(v => -v);
+
+    // NORMAL BARS (hover disabled)
     const traceM = {
         y: labels,
-        x: m_negative,
+        x: m_neg,
         name: "M",
-        orientation: "h",
         type: "bar",
+        orientation: "h",
         marker: { color: "#0EA5E9" },
-    
-        customdata: labels.map((lab, idx) => `M${lab}: ${m_vals[idx]}`),
-    
-        // Verschiebt den Hover-Ankerpunkt links nach außen
-        hovertemplate: "%{customdata}<extra></extra>",
-        hoverinfo: "text",
-        offsetgroup: "m",
-        hoverlabel: { align: "right" },  // Tooltip nach LINKS ausrichten
-    
-        // Trick: Hover-Punkt minimal weiter außen platzieren
-        cliponaxis: false
+        hoverinfo: "skip"
     };
-    
+
     const traceW = {
         y: labels,
         x: w_vals,
         name: "W",
-        orientation: "h",
         type: "bar",
+        orientation: "h",
         marker: { color: "#E34A2A" },
-    
-        customdata: labels.map((lab, idx) => `W${lab}: ${w_vals[idx]}`),
-    
-        hovertemplate: "%{customdata}<extra></extra>",
-        hoverinfo: "text",
-        offsetgroup: "w",
-        hoverlabel: { align: "left" },  // Tooltip nach RECHTS
-    
-        cliponaxis: false
+        hoverinfo: "skip"
     };
 
+    // HOVER TRACES (invisible points OUTSIDE)
 
-    // Build evenly spaced tick values
-    const ticks = [];
-    for (let i = -axisMax; i <= axisMax; i += 10) ticks.push(i);
+    const traceM_hover = {
+        y: labels,
+        x: labels.map(() => -(maxVal * 1.05)),
+        mode: "markers",
+        marker: { opacity: 0 },
+        showlegend: false,
+        hovertemplate: labels.map((lab, i) => `M${lab}: ${m_vals[i]}<extra></extra>`),
+        hoverinfo: "text"
+    };
+
+    const traceW_hover = {
+        y: labels,
+        x: labels.map(() => maxVal * 1.05),
+        mode: "markers",
+        marker: { opacity: 0 },
+        showlegend: false,
+        hovertemplate: labels.map((lab, i) => `W${lab}: ${w_vals[i]}<extra></extra>`),
+        hoverinfo: "text"
+    };
 
     const layout = {
         title: sectionName + " – Geschlecht / Altersklassen (Pyramide)",
         barmode: "overlay",
-        bargap: 0.1,
-
+        xaxis: {
+            range: [-(maxVal * 1.2), maxVal * 1.2],
+            gridcolor: "rgba(140,140,140,0.2)",
+            minor: { dtick: 5, showgrid: true, gridcolor: "rgba(140,140,140,0.1)" },
+            tick0: 0,
+            dtick: 10,
+            zeroline: true,
+            zerolinecolor: "#AAA"
+        },
+        yaxis: {
+            gridcolor: "rgba(140,140,140,0.2)",
+            minor: { dtick: 5, showgrid: true, gridcolor: "rgba(140,140,140,0.1)" }
+        },
         paper_bgcolor: "rgba(0,0,0,0)",
         plot_bgcolor: "rgba(0,0,0,0)",
         font: { color: "#E6EDF3" },
-
-        // --- X-AXIS (Male left, Female right) ---
-        xaxis: {
-            title: "Teilnehmer",
-            range: [-axisMax, axisMax],
-            dtick: 10,
-            tickvals: ticks,
-            ticktext: ticks.map(v => Math.abs(v)), // show positive values only
-            gridcolor: "rgba(140,140,140,0.2)",
-            minor: {
-                dtick: 5,
-                showgrid: true,
-                gridcolor: "rgba(140,140,140,0.1)"
-            }
-        },
-
-        // --- Y-AXIS (CATEGORY MODE!) ---
-        yaxis: {
-            type: "category",
-            categoryorder: "array",
-            categoryarray: labels,   // ensure correct bucket order
-            gridcolor: "rgba(140,140,140,0.2)",
-            showgrid: false,
-            minor: {
-                showgrid: false,
-                gridcolor: "rgba(140,140,140,0.1)"
-            }
-        },
-
-        margin: { l: 80, r: 50, t: 60, b: 40 }
+        margin: { l: 100, r: 100, t: 60, b: 50 }
     };
 
-    Plotly.newPlot(targetDiv, [traceM, traceW], layout, {
-        displayModeBar: false,
-        responsive: true
-    });
+    Plotly.newPlot(targetDiv,
+        [traceM, traceW, traceM_hover, traceW_hover],
+        layout,
+        { responsive: true, displayModeBar: false }
+    );
 }
+
 
 
 </script>
