@@ -220,17 +220,37 @@ function formatNumber(value) {
   return s.replace(/\./g, "");
 }
 
+// ===================== LOAD JSON & INIT (MERGED) =====================
 document.addEventListener("DOMContentLoaded", () => {
-  Promise.all([
-    fetch("./statistics.json").then(r => r.json()),
-    fetch("./nationality.json").then(r => r.json())
-  ])
-    .then(([stats, nationalities]) => {
-      buildDashboard(stats, nationalities);
-      buildNationalityTable(nationalities);
+
+    Promise.all([
+        fetch("./statistics.json").then(r => r.json()),
+        fetch("./nationality.json").then(r => r.json()),
+        fetch("./age_buckets_by_distance.json").then(r => r.json())
+    ])
+    .then(([stats, nationalities, ageData]) => {
+
+        // Dashboard
+        buildDashboard(stats, nationalities);
+        buildNationalityTable(nationalities);
+
+        // Kurzstrecke
+        buildAgeGroupCharts(
+            ageData,
+            "Kurzstrecke",
+            "chartKurzAbs",
+            "chartKurzRel",
+            "chartKurzDonut"
+        );
+
+        // Für später vorbereitbar:
+        // buildAgeGroupCharts(ageData, "Hauptlauf", ...);
+        // buildAgeGroupCharts(ageData, "Kinderlauf", ...);
+
     })
-    .catch(err => console.error("Could not load JSON files", err));
+    .catch(err => console.error("Init-Fehler:", err));
 });
+
 
 // ==================== DASHBOARD ======================
 function buildDashboard(stats, nationalities) {
@@ -448,33 +468,6 @@ function buildAgeGroupCharts(ageData, sectionName, targetAbsolute, targetRelativ
         font: { color: "#E6EDF3" }
     }, {displayModeBar:false, responsive:true});
 }
-
-
-// ===================== LOAD JSON & INIT =====================
-document.addEventListener("DOMContentLoaded", () => {
-    fetch("./age_buckets_by_distance.json")
-        .then(r => r.json())
-        .then(ageData => {
-
-            // Kurzstrecke
-            buildAgeGroupCharts(
-                ageData,
-                "Kurzstrecke",
-                "chartKurzAbs",
-                "chartKurzRel",
-                "chartKurzDonut"
-            );
-
-            // Hauptlauf (nur vorbereiten)
-            // buildAgeGroupCharts(ageData, "Hauptlauf",
-            //                     "chartHauptAbs", "chartHauptRel", "chartHauptDonut");
-
-            // Kinderlauf (nur vorbereiten)
-            // buildAgeGroupCharts(ageData, "Kinderlauf",
-            //                     "chartKinderAbs", "chartKinderRel", "chartKinderDonut");
-
-        })
-        .catch(err => console.error("Age JSON Fehler:", err));
 });
 
   
