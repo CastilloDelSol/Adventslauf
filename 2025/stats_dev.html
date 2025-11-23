@@ -474,85 +474,56 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
     const group = ageData[sectionName];
     if (!group) return;
 
-    // --- SORT BUCKETS ---
-    let labels = Object.keys(group).sort((a, b) => {
+    let labels = Object.keys(group).sort((a,b) => {
         const parse = s => {
-            if (s.startsWith("J U")) return parseInt(s.replace("J U", ""), 10) - 1000;
-            if (s.startsWith("K U")) return parseInt(s.replace("K U", ""), 10) - 2000;
-            return parseInt(s, 10);
+            if (s.startsWith("J U")) return parseInt(s.replace("J U", ""),10) - 1000;
+            return parseInt(s,10);
         };
         return parse(a) - parse(b);
     });
+
     labels = labels.map(String);
 
     const m_vals = labels.map(k => group[k]["M"]);
     const w_vals = labels.map(k => group[k]["W"]);
+    const m_neg = m_vals.map(v => -v);
+
     const maxVal = Math.max(...m_vals, ...w_vals);
     const axisMax = Math.ceil(maxVal / 10) * 10 + 10;
 
-    // === BUILD BAR SHAPES ===
-    let shapes = [];
-    const barHeight = 0.8;
-
-    labels.forEach((lab, i) => {
-        const y0 = i - barHeight / 2;
-        const y1 = i + barHeight / 2;
-
-        const m = m_vals[i];
-        const w = w_vals[i];
-
-        // --- Male bar (left) ---
-        if (m > 0) {
-            shapes.push({
-                type: "rect",
-                x0: -m,
-                x1: 0,
-                y0: y0,
-                y1: y1,
-                fillcolor: "#0EA5E9",
-                line: { width: 0 }
-            });
-        }
-
-        // --- Female bar (right) ---
-        if (w > 0) {
-            shapes.push({
-                type: "rect",
-                x0: 0,
-                x1: w,
-                y0: y0,
-                y1: y1,
-                fillcolor: "#E34A2A",
-                line: { width: 0 }
-            });
-        }
-    });
-
-    // === HOVER POINTS ===
-    const hoverM = {
-        x: m_vals.map(v => -(v + 1)),   // always safely outside
-        y: labels.map((_, i) => i),
-        mode: "markers",
-        marker: { opacity: 0.001 },
-        text: labels.map((lab, i) => `M${lab}: ${m_vals[i]}`),
-        hovertemplate: "%{text}<extra></extra>",
-        showlegend: false
+    const traceM = {
+        y: labels,
+        x: m_neg,
+        type: "bar",
+        orientation: "h",
+        name: "M",
+        marker: { color: "#0EA5E9" },
+        text: labels.map((lab,i)=>`M${lab}: ${m_vals[i]}`),
+        textposition: "outside",
+        insidetextanchor: "start",
+        hovertemplate: "%{text}<extra></extra>"
     };
 
-    const hoverW = {
-        x: w_vals.map(v => v + 1),
-        y: labels.map((_, i) => i),
-        mode: "markers",
-        marker: { opacity: 0.001 },
-        text: labels.map((lab, i) => `W${lab}: ${w_vals[i]}`),
-        hovertemplate: "%{text}<extra></extra>",
-        showlegend: false
+    const traceW = {
+        y: labels,
+        x: w_vals,
+        type: "bar",
+        orientation: "h",
+        name: "W",
+        marker: { color: "#E34A2A" },
+        text: labels.map((lab,i)=>`W${lab}: ${w_vals[i]}`),
+        textposition: "outside",
+        insidetextanchor: "end",
+        hovertemplate: "%{text}<extra></extra>"
     };
 
-    // === LAYOUT ===
+    const ticks = [];
+    for (let i = -axisMax; i <= axisMax; i += 10) ticks.push(i);
+
     const layout = {
         title: sectionName + " – Geschlecht / Altersklassen (Pyramide)",
-        shapes: shapes,
+        barmode: "overlay",
+        bargap: 0.05,
 
         paper_bgcolor: "rgba(0,0,0,0)",
         plot_bgcolor: "rgba(0,0,0,0)",
@@ -561,8 +532,8 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         xaxis: {
             range: [-axisMax, axisMax],
             dtick: 10,
-            tickvals: [...Array(2 * axisMax / 10 + 1).keys()].map(i => i * 10 - axisMax),
-            ticktext: [...Array(2 * axisMax / 10 + 1).keys()].map(i => Math.abs(i * 10 - axisMax)),
+            tickvals: ticks,
+            ticktext: ticks.map(v => Math.abs(v)),
             gridcolor: "rgba(140,140,140,0.2)",
             minor: {
                 dtick: 5,
@@ -581,14 +552,11 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         margin: { l: 80, r: 80, t: 60, b: 40 }
     };
 
-    Plotly.newPlot(targetDiv, [hoverM, hoverW], layout, {
+    Plotly.newPlot(targetDiv, [traceM, traceW], layout, {
         displayModeBar: false,
         responsive: true
     });
 }
-
-
-
 
 </script>
 
