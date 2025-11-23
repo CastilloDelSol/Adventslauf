@@ -72,7 +72,13 @@ async function renderAgePyramid(sectionName, canvasId) {
         legend: { display: true },
         tooltip: {
           callbacks: {
-            label: ctx => `${ctx.dataset.label}: ${Math.abs(ctx.raw)}`
+            label: ctx => {
+              const gender = ctx.dataset.label;       // "M" oder "W"
+              const ag     = ctx.label;               // Altersgruppe, z.B. "20"
+              const val    = Math.abs(ctx.raw);       // absoluter Wert
+        
+              return `${gender}${ag}: ${val}`;
+            }
           }
         }
       }
