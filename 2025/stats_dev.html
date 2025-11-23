@@ -474,30 +474,37 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
     const group = ageData[sectionName];
     if (!group) return;
 
-    // --- Labels sortieren ---
-    const labels = Object.keys(group).sort((a, b) => {
+    // --- SORT BUCKETS in correct order ---
+    let labels = Object.keys(group).sort((a, b) => {
         const parse = s => {
+            // Youth classes come first
             if (s.startsWith("J U")) return parseInt(s.replace("J U", ""), 10) - 1000;
             if (s.startsWith("K U")) return parseInt(s.replace("K U", ""), 10) - 2000;
+
+            // Numeric adult classes (20, 30, 35...)
             return parseInt(s, 10);
         };
         return parse(a) - parse(b);
     });
 
-    // Werte
+    // Force labels to strings (CRITICAL FIX)
+    labels = labels.map(String);
+
+    // Values
     const m_vals = labels.map(k => group[k]["M"]);
     const w_vals = labels.map(k => group[k]["W"]);
 
-    // Männer negativ für linke Seite
+    // For pyramid: males must be negative (left side)
     const m_negative = m_vals.map(v => -v);
 
-    // Maximalwerte für symmetrische Achse
+    // Compute symmetric axis max
     const maxVal = Math.max(
-        Math.max(...m_vals),
-        Math.max(...w_vals)
+        ...m_vals,
+        ...w_vals
     );
-    const axisMax = Math.ceil(maxVal / 10) * 10 + 10; // z.B. 80
+    const axisMax = Math.ceil(maxVal / 10) * 10 + 10; // round + padding (e.g. 80)
 
+    // --- TRACES ---
     const traceM = {
         y: labels,
         x: m_negative,
@@ -516,42 +523,47 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         marker: { color: "#E34A2A" }
     };
 
+    // Build evenly spaced tick values
+    const ticks = [];
+    for (let i = -axisMax; i <= axisMax; i += 10) ticks.push(i);
+
     const layout = {
         title: sectionName + " – Geschlecht / Altersklassen (Pyramide)",
         barmode: "overlay",
         bargap: 0.1,
+
         paper_bgcolor: "rgba(0,0,0,0)",
         plot_bgcolor: "rgba(0,0,0,0)",
         font: { color: "#E6EDF3" },
 
+        // --- X-AXIS (Male left, Female right) ---
         xaxis: {
             title: "Teilnehmer",
             range: [-axisMax, axisMax],
             dtick: 10,
+            tickvals: ticks,
+            ticktext: ticks.map(v => Math.abs(v)), // show positive values only
             gridcolor: "rgba(140,140,140,0.2)",
             minor: {
                 dtick: 5,
                 showgrid: true,
                 gridcolor: "rgba(140,140,140,0.1)"
-            },
-            tickformat: "~s",
-            ticktext: [...Array(axisMax / 10 + 1).keys()].flatMap(i => [-i * 10, i * 10]).sort((a,b)=>a-b)
-                     .map(v => Math.abs(v)),
-            tickvals: [...Array(axisMax / 10 + 1).keys()].flatMap(i => [-i * 10, i * 10]).sort((a,b)=>a-b)
+            }
         },
 
+        // --- Y-AXIS (CATEGORY MODE!) ---
         yaxis: {
             type: "category",
             categoryorder: "array",
-            categoryarray: labels,
+            categoryarray: labels,   // ensure correct bucket order
             gridcolor: "rgba(140,140,140,0.2)",
             minor: {
                 showgrid: true,
                 gridcolor: "rgba(140,140,140,0.1)"
             }
-        }
+        },
 
-        margin: { l: 80, r: 20, t: 60, b: 40 }
+        margin: { l: 80, r: 50, t: 60, b: 40 }
     };
 
     Plotly.newPlot(targetDiv, [traceM, traceW], layout, {
@@ -559,6 +571,7 @@ function buildAgePyramidChart(ageData, sectionName, targetDiv) {
         responsive: true
     });
 }
+
 
 </script>
 
