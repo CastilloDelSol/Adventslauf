@@ -13,7 +13,6 @@
 
 <script>
 async function renderAgePyramid(sectionName, canvasId) {
-  // JSON laden
   const resp = await fetch("./age_buckets_by_distance.json");
   const data = await resp.json();
   const group = data[sectionName];
@@ -27,13 +26,10 @@ async function renderAgePyramid(sectionName, canvasId) {
   const males     = group.map(e => -e.M).reverse();
   const females   = group.map(e =>  e.W).reverse();
 
-  // get max value
   let maxValue = Math.max(
       ...males.map(v => Math.abs(v)),
       ...females
   );
-
-  // round to next full 10 (e.g. 77 -> 80)
   maxValue = Math.ceil(maxValue / 10) * 10;
 
   const ctx = document.getElementById(canvasId).getContext("2d");
@@ -59,6 +55,7 @@ async function renderAgePyramid(sectionName, canvasId) {
     },
     options: {
       indexAxis: "y",
+
       scales: {
         x: {
           min: -maxValue,
@@ -71,45 +68,21 @@ async function renderAgePyramid(sectionName, canvasId) {
 
       plugins: {
         legend: {
-          display: true,
-          labels: {
-            generateLabels: chart => {
-              const datasets = chart.data.datasets;
-              const labels   = chart.data.labels;
-
-              let items = [];
-
-              datasets.forEach((ds, dsIndex) => {
-                ds.data.forEach((value, i) => {
-                  items.push({
-                    text: `${ds.label}${labels[i]}: ${Math.abs(value)}`,
-                    fillStyle: ds.backgroundColor,
-                    strokeStyle: ds.backgroundColor,
-                    lineWidth: 0,
-                    hidden: false,
-                    datasetIndex: dsIndex
-                  });
-                });
-              });
-
-              return items;
-            }
-          }
+          display: true   // <– wieder normale Legende!
         },
 
-        // ✅ TOOLTIP FIX — das hier wurde hinzugefügt
         tooltip: {
           callbacks: {
-            title: () => "",  // <<< verhindert das AG oben ("35")
+            title: () => "",  // verhindert „20“ oben
+
             label: ctx => {
-              const gender = ctx.dataset.label;   // M oder W
-              const ag     = ctx.label;           // "35"
-              const val    = Math.abs(ctx.raw);   // positiv
-              return `${gender}${ag}: ${val}`;     // GENAU dein Format
+              const gender = ctx.dataset.label;   // M / W
+              const ag     = ctx.label;           // z.B. 20
+              const val    = Math.abs(ctx.raw);   // Wert positiv
+              return `${gender}${ag}: ${val}`;
             }
           }
         }
-        // ✅ END TOOLTIP FIX
       }
     }
   });
@@ -117,7 +90,6 @@ async function renderAgePyramid(sectionName, canvasId) {
 
 renderAgePyramid("Kurzstrecke", "chartKurz");
 </script>
-
 
 </body>
 </html>
