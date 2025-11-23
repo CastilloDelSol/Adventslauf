@@ -17,7 +17,10 @@ async function loadChart() {
   const data = await resp.json();
   const group = data["Kurzstrecke"];
 
-  const labels = Object.keys(group);
+  let labels = [];
+  for (const key in group) {
+      labels.push(key);
+  }
 
   // männlich links (negativ), weiblich rechts
   const males = labels.map(k => -group[k].M);
