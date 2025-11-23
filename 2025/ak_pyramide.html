@@ -69,32 +69,18 @@ async function renderAgePyramid(sectionName, canvasId) {
         }
       },
       plugins: {
-        legend: {
-          display: true,
-          labels: {
-            generateLabels: chart => {
-              const datasets = chart.data.datasets;
-              const labels   = chart.data.labels;
-      
-              let items = [];
-      
-              datasets.forEach((ds, dsIndex) => {
-                ds.data.forEach((value, i) => {
-                  items.push({
-                    text: `${ds.label}${labels[i]}: ${Math.abs(value)}`,
-                    fillStyle: ds.backgroundColor,
-                    strokeStyle: ds.backgroundColor,
-                    lineWidth: 0,
-                    hidden: false,
-                    datasetIndex: dsIndex
-                  });
-                });
-              });
-      
-              return items;
+        tooltip: {
+          callbacks: {
+            title: () => "",   // verhindert die obere Zeile („35“)
+            label: ctx => {
+              const gender = ctx.dataset.label;   // M oder W
+              const ag     = ctx.label;           // z.B. 35
+              const val    = Math.abs(ctx.raw);   // Wert positiv
+              return `${gender}${ag}: ${val}`;
             }
           }
         }
+      }
   });
 }
 
