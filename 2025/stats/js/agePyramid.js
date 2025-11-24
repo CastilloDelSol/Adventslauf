@@ -1,3 +1,5 @@
+import { loadAgeData, getSection } from "./dataLoader.js";
+
 export async function renderAgePyramid(sectionName, canvasId, containerId, title) {
   await loadAgeData();
 
