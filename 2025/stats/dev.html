@@ -1,196 +1,174 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Adventslauf – Statistik Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adventslauf – Statistik 2025</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-      color: #222;
-    }
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    color: #222;
+  }
 
-    h1 {
-      text-align: center;
-      padding: 25px 0 10px;
-      margin: 0;
-      font-size: 28px;
-    }
+  h1 {
+    text-align: center;
+    padding: 25px 0 10px;
+    margin: 0;
+    font-size: 28px;
+  }
 
-    /* --- KPI GRID --- */
-    .kpi-grid {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      padding: 20px;
-      max-width: 1200px;
-      margin: auto;
-    }
+  /* ========================== KPI BOXEN ========================== */
+  .kpi-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+  }
 
-    .kpi-box {
-      background: white;
-      padding: 18px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
-    .kpi-value {
-      font-size: 28px;
-      font-weight: bold;
-    }
-    .kpi-label {
-      font-size: 13px;
-      color: #666;
-      margin-top: 6px;
-    }
+  .kpi-box {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .kpi-value { font-size: 26px; font-weight: bold; }
+  .kpi-label { color: #666; margin-top: 6px; }
 
-    /* --- TABS (Browser Style) --- */
-    .tab-wrapper {
-      max-width: 1200px;
-      margin: 25px auto;
-      padding: 0 20px;
-    }
+  /* ========================== TABS (BUTTON STYLE!) ========================== */
 
-    /* Hide radio buttons */
-    input[type="radio"] { display: none; }
+  .tabs {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+  }
 
-    /* Tab headers like browser tabs */
-    .tab-headers {
-      display: flex;
-      gap: 6px;
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 6px;
-      margin-bottom: 15px;
-      overflow-x: auto;
-    }
+  .tab-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
 
-    .tab-headers label {
-      padding: 10px 18px;
-      background: #ddd;
-      border-radius: 8px 8px 0 0;
-      cursor: pointer;
-      user-select: none;
-      transition: 0.2s;
-      white-space: nowrap;
-    }
+  .tab-buttons label {
+    padding: 10px 18px;
+    background: #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    transition: 0.2s;
+    font-weight: bold;
+  }
 
-    /* Active tab */
-    input:checked + label {
-      background: #fff;
-      border-bottom: 2px solid white;
-      color: #007bff;
-      font-weight: bold;
-      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-    }
+  input[type="radio"] { display: none; }
 
-    /* Tab content boxes */
-    .tab-content {
-      display: none;
-      background: white;
-      padding: 20px;
-      border-radius: 0 12px 12px 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      min-height: 250px;
-    }
+  input:checked + label {
+    background: #007bff;
+    color: white;
+  }
 
-    #tab1:checked ~ .content1,
-    #tab2:checked ~ .content2,
-    #tab3:checked ~ .content3,
-    #tab4:checked ~ .content4 {
-      display: block;
-    }
+  .tab-content {
+    display: none;
+    background: white;
+    padding: 25px;
+    margin-top: 5px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
 
-    /* Dummy boxes */
-    .dummy {
-      background: #e8e8e8;
-      border-radius: 10px;
-      height: 300px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      color: #555;
-      margin-bottom: 20px;
-    }
+  #tab1:checked ~ .content1,
+  #tab2:checked ~ .content2,
+  #tab3:checked ~ .content3,
+  #tab4:checked ~ .content4 {
+    display: block;
+  }
 
-    /* Donuts 2×2 */
-    .donut-grid {
-      display: grid;
-      gap: 20px;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    }
+  /* DUMMY BOX */
+  .dummy-box {
+    height: 200px;
+    background: #e5e5e5;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
 
-    @media(max-width: 600px) {
-      h1 { font-size: 22px; }
-    }
-  </style>
+  /* 2×2 Donut-Grid */
+  .donut-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .donut-box {
+    height: 250px;
+    background: #fafafa;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+
+</style>
 </head>
-
 <body>
 
 <h1>🎄 Adventslauf – Statistik 2025</h1>
 
 <!-- KPI GRID -->
 <div class="kpi-grid">
-  <div class="kpi-box">
-    <div class="kpi-value">0,1 km</div>
-    <div class="kpi-label">Minimum</div>
-  </div>
-  <div class="kpi-box">
-    <div class="kpi-value">49,5 km</div>
-    <div class="kpi-label">Durchschnitt</div>
-  </div>
-  <div class="kpi-box">
-    <div class="kpi-value">30,4 km</div>
-    <div class="kpi-label">Median</div>
-  </div>
-  <div class="kpi-box">
-    <div class="kpi-value">2166 km</div>
-    <div class="kpi-label">Maximum</div>
-  </div>
+  <div class="kpi-box"><div class="kpi-value">0,1 km</div><div class="kpi-label">Minimum</div></div>
+  <div class="kpi-box"><div class="kpi-value">49,5 km</div><div class="kpi-label">Durchschnitt</div></div>
+  <div class="kpi-box"><div class="kpi-value">30,4 km</div><div class="kpi-label">Median</div></div>
+  <div class="kpi-box"><div class="kpi-value">2166 km</div><div class="kpi-label">Maximum</div></div>
 </div>
 
 <!-- TABS -->
-<div class="tab-wrapper">
+<div class="tabs">
 
-  <!-- RADIO BUTTONS -->
-  <div class="tab-headers">
-    <input type="radio" name="tab" id="tab1" checked>
+  <!-- BUTTON TABS -->
+  <div class="tab-buttons">
+    <input type="radio" id="tab1" name="tab" checked>
     <label for="tab1">Nationalitäten</label>
 
-    <input type="radio" name="tab" id="tab2">
+    <input type="radio" id="tab2" name="tab">
     <label for="tab2">Geschlechter</label>
 
-    <input type="radio" name="tab" id="tab3">
+    <input type="radio" id="tab3" name="tab">
     <label for="tab3">Altersstruktur</label>
 
-    <input type="radio" name="tab" id="tab4">
+    <input type="radio" id="tab4" name="tab">
     <label for="tab4">Strecken</label>
   </div>
 
-  <!-- TAB CONTENT -->
+  <!-- CONTENT -->
   <div class="tab-content content1">
-    <div class="dummy">Tabelle – Nationalitäten</div>
+    <div class="dummy-box">Tabelle der Nationen</div>
   </div>
 
   <div class="tab-content content2">
     <div class="donut-grid">
-      <div class="dummy">Donut – Gesamt</div>
-      <div class="dummy">Donut – Kurz</div>
-      <div class="dummy">Donut – Haupt</div>
-      <div class="dummy">Donut – Kinder</div>
+      <div class="donut-box">Donut Gesamt</div>
+      <div class="donut-box">Donut Kurz</div>
+      <div class="donut-box">Donut Haupt</div>
+      <div class="donut-box">Donut Kinder</div>
     </div>
   </div>
 
   <div class="tab-content content3">
-    <div class="dummy">Pyramide – Dropdown für Strecke</div>
+    <div class="dummy-box">Pyramiden Charts – Dropdown Streckenauswahl</div>
   </div>
 
   <div class="tab-content content4">
-    <div class="dummy">Histogramm / Balkendiagramm</div>
+    <div class="dummy-box">Histogramm / Entfernungen</div>
   </div>
 
 </div>
