@@ -5,8 +5,7 @@ export async function renderGenderDonut(sectionName, canvasId) {
 
     const group = getSection(sectionName);
 
-    let totalM = 0;
-    let totalW = 0;
+    let totalM = 0, totalW = 0;
 
     group.forEach(e => {
         totalM += e.M;
@@ -22,6 +21,8 @@ export async function renderGenderDonut(sectionName, canvasId) {
                 backgroundColor: ["#4EA5E9", "#FF6384"]
             }]
         },
-        options: { responsive: true }
+        options: {
+            responsive: true
+        }
     });
 }
