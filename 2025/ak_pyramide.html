@@ -1,54 +1,70 @@
-
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Pyramidenchart – Wiederverwendbar</title>
+  <title>Pyramidencharts – Einheitliche Höhe</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Canvas erhält feste Höhe über CSS-Variable */
+    .chart-fixed-height {
+      display: block;
+      width: 100%;
+      height: var(--chart-height);
+    }
+  </style>
 </head>
 
 <body>
   <h2>Kurzstrecke – Pyramidenchart (Chart.js)</h2>
-  <canvas id="chartKurz"></canvas>
+  <canvas id="chartKurz" class="chart-fixed-height"></canvas>
+
   <h2>Hauptlauf – Pyramidenchart (Chart.js)</h2>
-  <canvas id="chartHaupt"></canvas>
+  <canvas id="chartHaupt" class="chart-fixed-height"></canvas>
+
   <h2>Kinderlauf – Pyramidenchart (Chart.js)</h2>
-  <canvas id="chartKinder"></canvas>
+  <canvas id="chartKinder" class="chart-fixed-height"></canvas>
 
 <script>
 async function renderAgePyramid(sectionName, canvasId) {
+
+  // JSON laden
   const resp = await fetch("./age_buckets_by_distance.json");
   const data = await resp.json();
   const group = data[sectionName];
 
-  if (!group) return console.error("Section not found:", sectionName);
+  if (!group) {
+    console.error("Section not found:", sectionName);
+    return;
+  }
 
-  // -------------------------------
-  // 🟦 Fixe Zeilenhöhe
-  // -------------------------------
+  // ----------------------------------
+  // ✔ FIXE ZEILENHÖHE PRO CHART
+  // ----------------------------------
   const rows = group.length;
-  const rowHeight = 26;     // <- Höhe pro Altergruppe
-  const topBottomPadding = 80; // Platz für Legende + Titel
+  const rowHeight = 28;        // Höhe jeder Datenzeile
+  const padding = 80;          // Platz für Titel + Legende
 
+  const totalHeight = rows * rowHeight + padding;
+
+  // CSS-variable für Höhe setzen
   const canvas = document.getElementById(canvasId);
-  canvas.height = rows * rowHeight + topBottomPadding;
+  canvas.style.setProperty("--chart-height", totalHeight + "px");
 
-  // Chart.js darf nicht automatisch skalieren!
-  // (Dies war der Fehler!)
+  // Chart.js darf nicht skalieren!
   Chart.defaults.maintainAspectRatio = false;
 
-  // -------------------------------
+  // Daten aus JSON extrahieren
   const agegroups = group.map(e => e.AG).reverse();
   const males     = group.map(e => -e.M).reverse();
   const females   = group.map(e =>  e.W).reverse();
 
+  // Maximalwert bestimmen und auf volle 10 aufrunden
   let maxValue = Math.max(...males.map(v => Math.abs(v)), ...females);
   maxValue = Math.ceil(maxValue / 10) * 10;
 
-  const ctx = canvas.getContext("2d");
-
-  new Chart(ctx, {
+  // Chart zeichnen
+  new Chart(canvas.getContext("2d"), {
     type: "bar",
     data: {
       labels: agegroups,
@@ -57,39 +73,49 @@ async function renderAgePyramid(sectionName, canvasId) {
           label: "M",
           data: males,
           backgroundColor: "rgba(54, 162, 235, 0.7)",
-          grouped: false,
-          barThickness: 20,
-          maxBarThickness: 20
+          barThickness: 22,
+          maxBarThickness: 22
         },
         {
           label: "W",
           data: females,
           backgroundColor: "rgba(255, 99, 132, 0.7)",
-          grouped: false,
-          barThickness: 20,
-          maxBarThickness: 20
+          barThickness: 22,
+          maxBarThickness: 22
         }
       ]
     },
     options: {
       indexAxis: "y",
-      maintainAspectRatio: false,  // <- absolut notwendig!
+      maintainAspectRatio: false,
       scales: {
         x: {
           min: -maxValue,
           max:  maxValue,
-          ticks: { callback: v => Math.abs(v) }
+          ticks: {
+            callback: v => Math.abs(v)
+          },
+          grid: {
+            color: (ctx) => ctx.tick.value % 20 === 0 ? "#cccccc" : "#e6e6e6"
+          }
+        },
+        y: {
+          ticks: {
+            autoSkip: false
+          }
         }
       },
       plugins: {
-        legend: { display: true },
+        legend: {
+          display: true
+        },
         tooltip: {
           callbacks: {
-            title: () => "",
+            title: () => "",   // Altersklasse NICHT oben anzeigen
             label: ctx => {
-              const gender = ctx.dataset.label;
-              const ag     = ctx.label;
-              const val    = Math.abs(ctx.raw);
+              const gender = ctx.dataset.label;   // M oder W
+              const ag     = ctx.label;           // z.B. "20"
+              const val    = Math.abs(ctx.raw);   // positive Zahl
               return `${gender}${ag}: ${val}`;
             }
           }
@@ -99,6 +125,7 @@ async function renderAgePyramid(sectionName, canvasId) {
   });
 }
 
+// Charts rendern
 renderAgePyramid("Kurzstrecke", "chartKurz");
 renderAgePyramid("Hauptlauf", "chartHaupt");
 renderAgePyramid("Kinderlauf", "chartKinder");
