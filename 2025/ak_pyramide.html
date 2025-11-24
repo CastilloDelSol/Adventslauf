@@ -27,15 +27,6 @@ async function renderAgePyramid(sectionName, canvasId) {
     return;
   }
 
-  // ---------------------------------------------
-  // 🎯 FIXE ZEILENHÖHE EINSTELLEN
-  // ---------------------------------------------
-  const rows = group.length;
-  const rowHeight = 22;   // gewünschte Höhe pro Zeile → anpassbar
-  const padding   = 60;   // oben/unten Platz für Titel, Legende
-  document.getElementById(canvasId).height = rows * rowHeight + padding;
-  // ---------------------------------------------
-
   const agegroups = group.map(e => e.AG).reverse();
   const males     = group.map(e => -e.M).reverse();
   const females   = group.map(e =>  e.W).reverse();
