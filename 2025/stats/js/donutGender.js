@@ -61,7 +61,7 @@ export async function renderGenderDonut(sectionName, canvasId) {
         plugins: [centerTextPlugin]
     });
   */
-    new Chart(canvas, {
+    new Chart(document.getElementById(canvasId), {
       type: "doughnut",
       plugins: [centerText],
       data: {
