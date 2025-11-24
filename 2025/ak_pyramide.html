@@ -5,66 +5,57 @@
   <title>Pyramidencharts – Einheitliche Höhe</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <style>
-    /* Canvas erhält feste Höhe über CSS-Variable */
-    .chart-fixed-height {
-      display: block;
-      width: 100%;
-      height: var(--chart-height);
-    }
-  </style>
+<style>
+.chart-container {
+  width: 900px;    /* oder 100% */
+  margin-bottom: 40px;
+  position: relative;
+}
+</style>
+
 </head>
 
 <body>
-  <h2>Kurzstrecke – Pyramidenchart (Chart.js)</h2>
-  <canvas id="chartKurz" class="chart-fixed-height"></canvas>
-
+<h2>Kurzstrecke – Pyramidenchart (Chart.js)</h2>
+  <div class="chart-container" id="boxKurz">
+    <canvas id="chartKurz"></canvas>
+  </div>
+  
   <h2>Hauptlauf – Pyramidenchart (Chart.js)</h2>
-  <canvas id="chartHaupt" class="chart-fixed-height"></canvas>
-
+  <div class="chart-container" id="boxHaupt">
+    <canvas id="chartHaupt"></canvas>
+  </div>
+  
   <h2>Kinderlauf – Pyramidenchart (Chart.js)</h2>
-  <canvas id="chartKinder" class="chart-fixed-height"></canvas>
+  <div class="chart-container" id="boxKinder">
+    <canvas id="chartKinder"></canvas>
+  </div>
+
 
 <script>
-async function renderAgePyramid(sectionName, canvasId) {
-
-  // JSON laden
+async function renderAgePyramid(sectionName, canvasId, containerId) {
   const resp = await fetch("./age_buckets_by_distance.json");
   const data = await resp.json();
   const group = data[sectionName];
+  if (!group) return;
 
-  if (!group) {
-    console.error("Section not found:", sectionName);
-    return;
-  }
-
-  // ----------------------------------
-  // ✔ FIXE ZEILENHÖHE PRO CHART
-  // ----------------------------------
+  // fixe Zeilenhöhe pro Altersgruppe
   const rows = group.length;
-  const rowHeight = 28;        // Höhe jeder Datenzeile
-  const padding = 80;          // Platz für Titel + Legende
+  const rowHeight = 26;
+  const topBottomPadding = 90;
 
-  const totalHeight = rows * rowHeight + padding;
+  // WICHTIG: Container statt Canvas skalieren
+  const box = document.getElementById(containerId);
+  box.style.height = (rows * rowHeight + topBottomPadding) + "px";
 
-  // CSS-variable für Höhe setzen
-  const canvas = document.getElementById(canvasId);
-  canvas.style.setProperty("--chart-height", totalHeight + "px");
-
-  // Chart.js darf nicht skalieren!
-  Chart.defaults.maintainAspectRatio = false;
-
-  // Daten aus JSON extrahieren
   const agegroups = group.map(e => e.AG).reverse();
   const males     = group.map(e => -e.M).reverse();
   const females   = group.map(e =>  e.W).reverse();
 
-  // Maximalwert bestimmen und auf volle 10 aufrunden
   let maxValue = Math.max(...males.map(v => Math.abs(v)), ...females);
   maxValue = Math.ceil(maxValue / 10) * 10;
 
-  // Chart zeichnen
-  new Chart(canvas.getContext("2d"), {
+  new Chart(document.getElementById(canvasId), {
     type: "bar",
     data: {
       labels: agegroups,
@@ -73,15 +64,13 @@ async function renderAgePyramid(sectionName, canvasId) {
           label: "M",
           data: males,
           backgroundColor: "rgba(54, 162, 235, 0.7)",
-          barThickness: 22,
-          maxBarThickness: 22
+          barThickness: 20
         },
         {
           label: "W",
           data: females,
           backgroundColor: "rgba(255, 99, 132, 0.7)",
-          barThickness: 22,
-          maxBarThickness: 22
+          barThickness: 20
         }
       ]
     },
@@ -92,32 +81,15 @@ async function renderAgePyramid(sectionName, canvasId) {
         x: {
           min: -maxValue,
           max:  maxValue,
-          ticks: {
-            callback: v => Math.abs(v)
-          },
-          grid: {
-            color: (ctx) => ctx.tick.value % 20 === 0 ? "#cccccc" : "#e6e6e6"
-          }
-        },
-        y: {
-          ticks: {
-            autoSkip: false
-          }
+          ticks: { callback: v => Math.abs(v) }
         }
       },
       plugins: {
-        legend: {
-          display: true
-        },
+        legend: { display: true },
         tooltip: {
           callbacks: {
-            title: () => "",   // Altersklasse NICHT oben anzeigen
-            label: ctx => {
-              const gender = ctx.dataset.label;   // M oder W
-              const ag     = ctx.label;           // z.B. "20"
-              const val    = Math.abs(ctx.raw);   // positive Zahl
-              return `${gender}${ag}: ${val}`;
-            }
+            title: () => "",
+            label: ctx => `${ctx.dataset.label}${ctx.label}: ${Math.abs(ctx.raw)}`
           }
         }
       }
@@ -125,10 +97,9 @@ async function renderAgePyramid(sectionName, canvasId) {
   });
 }
 
-// Charts rendern
-renderAgePyramid("Kurzstrecke", "chartKurz");
-renderAgePyramid("Hauptlauf", "chartHaupt");
-renderAgePyramid("Kinderlauf", "chartKinder");
+renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
+renderAgePyramid("Hauptlauf",   "chartHaupt", "boxHaupt");
+renderAgePyramid("Kinderlauf",  "chartKinder","boxKinder");
 
 </script>
 
