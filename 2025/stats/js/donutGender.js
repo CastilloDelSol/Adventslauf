@@ -42,7 +42,9 @@ export async function renderGenderDonut(sectionName, canvasId) {
         });
     }
 
+    
     const canvas = document.getElementById(canvasId);
+    /*
     const ctx = canvas.getContext("2d");
 
     const ratio = window.devicePixelRatio || 1;
@@ -51,8 +53,9 @@ export async function renderGenderDonut(sectionName, canvasId) {
     canvas.width  = rect.width  * ratio;
     canvas.height = rect.height * ratio;
     ctx.scale(ratio, ratio);
+    */
 
-    new Chart(ctx, {
+    new Chart(canvas, {
         type: "doughnut",
         plugins: [centerText],
         data: {
