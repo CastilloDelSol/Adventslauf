@@ -2,7 +2,8 @@ import { loadAgeData } from "./dataLoader.js";
 
 const centerText = {
     id: "centerText",
-    afterDraw(chart, args, options) {
+    afterDraw(chart, args, options)
+    {
         const ctx = chart.ctx;
         const { top, bottom, left, right } = chart.chartArea;
 
@@ -20,49 +21,38 @@ const centerText = {
     }
 };
 
-export async function renderGenderDonut(sectionName, canvasId) {
+export async function renderGenderDonut(sectionName, canvasId)
+{
     const data = await loadAgeData();
 
     let totalM = 0, totalW = 0;
 
-    if (sectionName === "TOTAL") {
-        for (const key of Object.keys(data)) {
-            data[key].forEach(e => {
-                totalM += e.M;
-                totalW += e.W;
-            });
+    if (sectionName === "TOTAL")
+    {
+        for (const key of Object.keys(data))
+        {
+            data[key].forEach(e => { totalM += e.M; totalW += e.W; });
         }
-    } else {
+    }
+    else
+    {
         const group = data[sectionName];
         if (!group) return console.error("Section not found:", sectionName);
-
-        group.forEach(e => {
-            totalM += e.M;
-            totalW += e.W;
-        });
+        group.forEach(e => { totalM += e.M; totalW += e.W; });
     }
 
-    
     const canvas = document.getElementById(canvasId);
-    /*
-    const ctx = canvas.getContext("2d");
 
-    const ratio = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-
-    canvas.width  = rect.width  * ratio;
-    canvas.height = rect.height * ratio;
-    ctx.scale(ratio, ratio);
-    */
-
-    new Chart(canvas, {
+    new Chart(canvas,{
         type: "doughnut",
         plugins: [centerText],
-        data: {
+        data:
+        {
             labels: ["M", "W"],
             datasets: [{ data: [totalM, totalW], backgroundColor: ["#4EA5E9", "#FF6384"]}]
         },
-        options: {
+        options:
+        {
             responsive: true,
             maintainAspectRatio: false,
             cutout: "60%",
