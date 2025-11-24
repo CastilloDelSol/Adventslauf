@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Pyramidencharts – Einheitliche Höhe</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    .chart-container {
+      width: 900px;
+      margin-bottom: 40px;
+      position: relative;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Kurzstrecke – Pyramidenchart (Chart.js)</h2>
+  <div class="chart-container" id="boxKurz">
+    <canvas id="chartKurz"></canvas>
+  </div>
+
+  <h2>Hauptlauf – Pyramidenchart (Chart.js)</h2>
+  <div class="chart-container" id="boxHaupt">
+    <canvas id="chartHaupt"></canvas>
+  </div>
+
+  <h2>Kinderlauf – Pyramidenchart (Chart.js)</h2>
+  <div class="chart-container" id="boxKinder">
+    <canvas id="chartKinder"></canvas>
+  </div>
+
+  <!-- EXTERNE PYRAMIDEN-JS-LADE -->
+  <script src="./js/agePyramid.js"></script>
+
+  <!-- DIESE 3 CALLS bleiben HIER (gewollt!) -->
+  <script>
+    renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
+    renderAgePyramid("Hauptlauf",   "chartHaupt", "boxHaupt");
+    renderAgePyramid("Kinderlauf",  "chartKinder","boxKinder");
+  </script>
+
+</body>
+</html>
