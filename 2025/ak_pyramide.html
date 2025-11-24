@@ -27,6 +27,15 @@ async function renderAgePyramid(sectionName, canvasId) {
     return;
   }
 
+  // ---------------------------------------------
+  // 🎯 FIXE ZEILENHÖHE EINSTELLEN
+  // ---------------------------------------------
+  const rows = group.length;
+  const rowHeight = 22;   // gewünschte Höhe pro Zeile → anpassbar
+  const padding   = 60;   // oben/unten Platz für Titel, Legende
+  document.getElementById(canvasId).height = rows * rowHeight + padding;
+  // ---------------------------------------------
+
   const agegroups = group.map(e => e.AG).reverse();
   const males     = group.map(e => -e.M).reverse();
   const females   = group.map(e =>  e.W).reverse();
@@ -50,10 +59,7 @@ async function renderAgePyramid(sectionName, canvasId) {
           backgroundColor: "rgba(54, 162, 235, 0.7)",
           grouped: false,
           barThickness: 14,
-          maxBarThickness: 14,
-          barPercentage: 1.0,
-          categoryPercentage: 1.0
-
+          maxBarThickness: 14
         },
         {
           label: "W",
@@ -61,9 +67,7 @@ async function renderAgePyramid(sectionName, canvasId) {
           backgroundColor: "rgba(255, 99, 132, 0.7)",
           grouped: false,
           barThickness: 14,
-          maxBarThickness: 14,
-          barPercentage: 1.0,
-          categoryPercentage: 1.0
+          maxBarThickness: 14
         }
       ]
     },
@@ -82,17 +86,16 @@ async function renderAgePyramid(sectionName, canvasId) {
 
       plugins: {
         legend: {
-          display: true   // <– wieder normale Legende!
+          display: true
         },
 
         tooltip: {
           callbacks: {
-            title: () => "",  // verhindert „20“ oben
-
+            title: () => "",
             label: ctx => {
-              const gender = ctx.dataset.label;   // M / W
-              const ag     = ctx.label;           // z.B. 20
-              const val    = Math.abs(ctx.raw);   // Wert positiv
+              const gender = ctx.dataset.label;
+              const ag     = ctx.label;
+              const val    = Math.abs(ctx.raw);
               return `${gender}${ag}: ${val}`;
             }
           }
