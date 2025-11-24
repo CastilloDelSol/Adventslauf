@@ -56,8 +56,8 @@ export async function renderGenderDonut(sectionName, canvasId) {
         type: "doughnut",
         plugins: [centerText],
         data: {
-            labels: ["W", "M"],
-            datasets: [{ data: [totalW, totalM], backgroundColor: ["#FF6384", "#4EA5E9"]}]
+            labels: ["M", "W"],
+            datasets: [{ data: [totalM, totalW], backgroundColor: ["#4EA5E9", "#FF6384"]}]
         },
         options: {
             responsive: true,
