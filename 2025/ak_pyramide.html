@@ -86,6 +86,11 @@ async function renderAgePyramid(sectionName, canvasId, containerId) {
           min: -maxValue,
           max:  maxValue,
           ticks: { callback: v => Math.abs(v) }
+        },
+        y: {
+          type: 'category',
+          offset: true,
+          reverse: false,  // Reverse NICHT hier machen!
         }
       },
       plugins: {
