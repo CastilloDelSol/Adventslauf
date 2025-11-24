@@ -31,8 +31,11 @@
     <canvas id="chartKinder"></canvas>
   </div>
 
-  <h2>Kurzstrecke – Donut</h2>
+  <h2>Donuts</h2>
+  <canvas id="donotTotal"></canvas>
   <canvas id="donotKurz"></canvas>
+  <canvas id="donotHaupt"></canvas>
+  <canvas id="donotKinder"></canvas>
 
   <!-- MODULES: IMMER RELATIV ZUR HTML !!! -->
   <script type="module">
@@ -43,7 +46,10 @@
     renderAgePyramid("Hauptlauf",   "chartHaupt", "boxHaupt");
     renderAgePyramid("Kinderlauf",  "chartKinder","boxKinder");
 
+    renderGenderDonut("TOTAL", "donotTotal");
     renderGenderDonut("Kurzstrecke", "donotKurz");
+    renderGenderDonut("Hauptstrecke", "donotHaupt");
+    renderGenderDonut("Kinderlauf", "donotKinder");
   </script>
 
 </body>
