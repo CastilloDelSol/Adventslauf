@@ -12,7 +12,6 @@ const centerText = {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
 
-        // Mittelpunkt des Chart-Bereichs (immer korrekt!)
         const x = (left + right) / 2;
         const y = (top + bottom) / 2;
 
@@ -21,10 +20,7 @@ const centerText = {
     }
 };
 
-
 export async function renderGenderDonut(sectionName, canvasId) {
-    window.devicePixelRatio = 2;
-    
     const data = await loadAgeData();
 
     let totalM = 0, totalW = 0;
@@ -37,7 +33,6 @@ export async function renderGenderDonut(sectionName, canvasId) {
             });
         }
     } else {
-        // Nur eine Strecke
         const group = data[sectionName];
         if (!group) return console.error("Section not found:", sectionName);
 
@@ -47,25 +42,35 @@ export async function renderGenderDonut(sectionName, canvasId) {
         });
     }
 
-    new Chart(document.getElementById(canvasId), {
-      type: "doughnut",
-      plugins: [centerText],
-      data: {
-          labels: ["W", "M"],
-          datasets: [{
-              data: [totalW, totalM],
-              backgroundColor: ["#4EA5E9", "#FF6384"]
-          }]
-      },
-      options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: "60%",
-          plugins: {
-              centerText: {
-                  value: totalM + totalW  // <-- wird direkt angezeigt!
-              }
-          }
-      }
-  });
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext("2d");
+
+    const ratio = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+
+    canvas.width  = rect.width  * ratio;
+    canvas.height = rect.height * ratio;
+    ctx.scale(ratio, ratio);
+
+    new Chart(ctx, {
+        type: "doughnut",
+        plugins: [centerText],
+        data: {
+            labels: ["M", "W"],
+            datasets: [{
+                data: [totalM, totalW],
+                backgroundColor: ["#4EA5E9", "#FF6384"]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "60%",
+            plugins: {
+                centerText: {
+                    value: totalM + totalW
+                }
+            }
+        }
+    });
 }
