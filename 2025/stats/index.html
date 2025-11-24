@@ -31,13 +31,20 @@
     <canvas id="chartKinder"></canvas>
   </div>
 
-  <script src="js/agePyramid.js"></script>
+  <h2>Kinderlauf – Pyramidenchart (Chart.js)</h2>
+  <canvas id="donotKurz"></canvas>
 
-  <script>
+  <script type="module">
+    import { renderAgePyramid } from "./js/agePyramid.js";
+    import { renderGenderDonut } from "./js/donutGender.js";
+
     renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
     renderAgePyramid("Hauptlauf",   "chartHaupt", "boxHaupt");
     renderAgePyramid("Kinderlauf",  "chartKinder","boxKinder");
+
+    renderGenderDonut("Kurzstrecke", "donutKurz");
   </script>
+
 
 </body>
 </html>
