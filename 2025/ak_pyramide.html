@@ -18,43 +18,38 @@
 
 <script>
 async function renderAgePyramid(sectionName, canvasId) {
-  // JSON laden
   const resp = await fetch("./age_buckets_by_distance.json");
   const data = await resp.json();
   const group = data[sectionName];
 
-  if (!group) {
-    console.error("Section not found:", sectionName);
-    return;
-  }
+  if (!group) return console.error("Section not found:", sectionName);
 
   // -------------------------------
-  // 💠 1. Fixe Zeilenhöhe + dynamische Gesamt-Höhe
+  // 🟦 Fixe Zeilenhöhe
   // -------------------------------
-  const rows      = group.length;
-  const rowHeight = 22;    // px pro Zeile (Höhe eines Balkens)
-  const padding   = 60;    // EIN Wert für Titel/Legende/Achse
+  const rows = group.length;
+  const rowHeight = 26;     // <- Höhe pro Altergruppe
+  const topBottomPadding = 80; // Platz für Legende + Titel
 
   const canvas = document.getElementById(canvasId);
-  canvas.height = rows * rowHeight + padding;   // <<< DIE MAGISCHE FORMEL
-  // -------------------------------
+  canvas.height = rows * rowHeight + topBottomPadding;
 
+  // Chart.js darf nicht automatisch skalieren!
+  // (Dies war der Fehler!)
+  Chart.defaults.maintainAspectRatio = false;
+
+  // -------------------------------
   const agegroups = group.map(e => e.AG).reverse();
   const males     = group.map(e => -e.M).reverse();
   const females   = group.map(e =>  e.W).reverse();
 
-  // maxValue bestimmen
-  let maxValue = Math.max(
-    ...males.map(v => Math.abs(v)),
-    ...females
-  );
+  let maxValue = Math.max(...males.map(v => Math.abs(v)), ...females);
   maxValue = Math.ceil(maxValue / 10) * 10;
 
   const ctx = canvas.getContext("2d");
 
   new Chart(ctx, {
     type: "bar",
-
     data: {
       labels: agegroups,
       datasets: [
@@ -63,40 +58,31 @@ async function renderAgePyramid(sectionName, canvasId) {
           data: males,
           backgroundColor: "rgba(54, 162, 235, 0.7)",
           grouped: false,
-          barThickness: 14,    // Fixe Dicke → identisch in allen Charts
-          maxBarThickness: 14
+          barThickness: 20,
+          maxBarThickness: 20
         },
         {
           label: "W",
           data: females,
           backgroundColor: "rgba(255, 99, 132, 0.7)",
           grouped: false,
-          barThickness: 14,
-          maxBarThickness: 14
+          barThickness: 20,
+          maxBarThickness: 20
         }
       ]
     },
-
     options: {
-      maintainAspectRatio: false,   // <<< ESSENTIELL FÜR DYNAMISCHE HÖHE
       indexAxis: "y",
-
+      maintainAspectRatio: false,  // <- absolut notwendig!
       scales: {
         x: {
           min: -maxValue,
           max:  maxValue,
-          ticks: {
-            callback: v => Math.abs(v)
-          }
-        },
-        y: {
-          grid: { display: false }
+          ticks: { callback: v => Math.abs(v) }
         }
       },
-
       plugins: {
         legend: { display: true },
-
         tooltip: {
           callbacks: {
             title: () => "",
