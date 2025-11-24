@@ -1,16 +1,27 @@
-import { loadAgeData, getSection } from "./dataLoader.js";
+import { loadAgeData } from "./dataLoader.js";
 
 export async function renderGenderDonut(sectionName, canvasId) {
-    await loadAgeData();
-
-    const group = getSection(sectionName);
+    const data = await loadAgeData();
 
     let totalM = 0, totalW = 0;
 
-    group.forEach(e => {
-        totalM += e.M;
-        totalW += e.W;
-    });
+    if (sectionName === "TOTAL") {
+        for (const key of Object.keys(data)) {
+            data[key].forEach(e => {
+                totalM += e.M;
+                totalW += e.W;
+            });
+        }
+    } else {
+        // Nur eine Strecke
+        const group = data[sectionName];
+        if (!group) return console.error("Section not found:", sectionName);
+
+        group.forEach(e => {
+            totalM += e.M;
+            totalW += e.W;
+        });
+    }
 
     new Chart(document.getElementById(canvasId), {
         type: "doughnut",
