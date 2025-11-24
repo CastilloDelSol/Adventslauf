@@ -23,6 +23,8 @@ const centerText = {
 
 
 export async function renderGenderDonut(sectionName, canvasId) {
+    window.devicePixelRatio = 2;
+    
     const data = await loadAgeData();
 
     let totalM = 0, totalW = 0;
@@ -45,29 +47,13 @@ export async function renderGenderDonut(sectionName, canvasId) {
         });
     }
 
-    /*
-    new Chart(document.getElementById(canvasId), {
-        type: "doughnut",
-        data: {
-            labels: ["M", "W"],
-            datasets: [{
-                data: [totalM, totalW],
-                backgroundColor: ["#4EA5E9", "#FF6384"]
-            }]
-        },
-        options: {
-            responsive: true
-        },
-        plugins: [centerTextPlugin]
-    });
-  */
     new Chart(document.getElementById(canvasId), {
       type: "doughnut",
       plugins: [centerText],
       data: {
-          labels: ["M", "W"],
+          labels: ["W", "M"],
           datasets: [{
-              data: [totalM, totalW],
+              data: [totalW, totalM],
               backgroundColor: ["#4EA5E9", "#FF6384"]
           }]
       },
