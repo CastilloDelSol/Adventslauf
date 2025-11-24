@@ -1,5 +1,5 @@
 async function renderAgePyramid(sectionName, canvasId, containerId) {
-  const resp = await fetch("../data/age_buckets_by_distance.json");
+  const resp = await fetch("data/age_buckets_by_distance.json");
   const data = await resp.json();
   const group = data[sectionName];
 
