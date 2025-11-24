@@ -29,14 +29,14 @@ export async function renderAgePyramid(sectionName, canvasId, containerId) {
         {
           label: "M",
           data: males,
-          backgroundColor: "rgba(54, 162, 235, 0.7)",
+          backgroundColor: "rgba(54, 162, 235, 1.0)",
           stack: "same",
           barThickness: barThicknessPixel
         },
         {
           label: "W",
           data: females,
-          backgroundColor: "rgba(255, 99, 132, 0.7)",
+          backgroundColor: "rgba(255, 99, 132, 1.0)",
           stack: "same",
           barThickness: barThicknessPixel
         }
