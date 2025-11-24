@@ -41,8 +41,9 @@ async function renderAgePyramid(sectionName, canvasId, containerId) {
 
   // fixe Zeilenhöhe pro Altersgruppe
   const rows = group.length;
-  const rowHeight = 26;
+  const rowHeight = 24;
   const topBottomPadding = 90;
+  const barThicknessPixel = 18;
 
   // WICHTIG: Container statt Canvas skalieren
   const box = document.getElementById(containerId);
@@ -66,7 +67,7 @@ async function renderAgePyramid(sectionName, canvasId, containerId) {
           backgroundColor: "rgba(54, 162, 235, 0.7)",
           grouped: false,
           stack: "same",
-          barThickness: 20
+          barThickness: barThicknessPixel
         },
         {
           label: "W",
@@ -74,7 +75,7 @@ async function renderAgePyramid(sectionName, canvasId, containerId) {
           backgroundColor: "rgba(255, 99, 132, 0.7)",
           grouped: false,
           stack: "same",
-          barThickness: 20
+          barThickness: barThicknessPixel
         }
       ]
     },
