@@ -20,7 +20,7 @@
       font-size: 28px;
     }
 
-    /* KPI GRID */
+    /* --- KPI GRID --- */
     .kpi-grid {
       display: grid;
       gap: 16px;
@@ -32,7 +32,7 @@
 
     .kpi-box {
       background: white;
-      padding: 20px;
+      padding: 18px;
       border-radius: 12px;
       text-align: center;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
@@ -42,49 +42,58 @@
       font-weight: bold;
     }
     .kpi-label {
-      font-size: 14px;
+      font-size: 13px;
       color: #666;
       margin-top: 6px;
     }
 
-    /* TABS */
-    .tabs {
+    /* --- TABS (Browser Style) --- */
+    .tab-wrapper {
       max-width: 1200px;
-      margin: 30px auto;
+      margin: 25px auto;
       padding: 0 20px;
     }
 
+    /* Hide radio buttons */
     input[type="radio"] { display: none; }
 
-    .tab-labels {
+    /* Tab headers like browser tabs */
+    .tab-headers {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+      gap: 6px;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 6px;
       margin-bottom: 15px;
+      overflow-x: auto;
     }
 
-    .tab-labels label {
+    .tab-headers label {
       padding: 10px 18px;
       background: #ddd;
-      border-radius: 8px;
+      border-radius: 8px 8px 0 0;
       cursor: pointer;
       user-select: none;
       transition: 0.2s;
+      white-space: nowrap;
     }
 
-    /* active tab */
+    /* Active tab */
     input:checked + label {
-      background: #007bff;
-      color: white;
+      background: #fff;
+      border-bottom: 2px solid white;
+      color: #007bff;
       font-weight: bold;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
     }
 
+    /* Tab content boxes */
     .tab-content {
       display: none;
       background: white;
       padding: 20px;
-      border-radius: 12px;
+      border-radius: 0 12px 12px 12px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      min-height: 250px;
     }
 
     #tab1:checked ~ .content1,
@@ -94,22 +103,29 @@
       display: block;
     }
 
-    .dummy-box {
+    /* Dummy boxes */
+    .dummy {
+      background: #e8e8e8;
+      border-radius: 10px;
       height: 300px;
-      background: #e5e5e5;
-      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 20px;
-      color: #666;
+      color: #555;
       margin-bottom: 20px;
+    }
+
+    /* Donuts 2×2 */
+    .donut-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
 
     @media(max-width: 600px) {
       h1 { font-size: 22px; }
     }
-
   </style>
 </head>
 
@@ -137,42 +153,44 @@
   </div>
 </div>
 
-
 <!-- TABS -->
-<div class="tabs">
+<div class="tab-wrapper">
 
   <!-- RADIO BUTTONS -->
-  <input type="radio" name="tab" id="tab1" checked>
-  <label for="tab1">Nationalitäten</label>
+  <div class="tab-headers">
+    <input type="radio" name="tab" id="tab1" checked>
+    <label for="tab1">Nationalitäten</label>
 
-  <input type="radio" name="tab" id="tab2">
-  <label for="tab2">Geschlechter</label>
+    <input type="radio" name="tab" id="tab2">
+    <label for="tab2">Geschlechter</label>
 
-  <input type="radio" name="tab" id="tab3">
-  <label for="tab3">Altersstruktur</label>
+    <input type="radio" name="tab" id="tab3">
+    <label for="tab3">Altersstruktur</label>
 
-  <input type="radio" name="tab" id="tab4">
-  <label for="tab4">Strecken</label>
+    <input type="radio" name="tab" id="tab4">
+    <label for="tab4">Strecken</label>
+  </div>
 
-
-  <!-- CONTENT PANELS -->
+  <!-- TAB CONTENT -->
   <div class="tab-content content1">
-    <div class="dummy-box">Tabelle / Länderübersicht</div>
+    <div class="dummy">Tabelle – Nationalitäten</div>
   </div>
 
   <div class="tab-content content2">
-    <div class="dummy-box">Donut – Gesamt</div>
-    <div class="dummy-box">Donut – Kurzstrecke</div>
-    <div class="dummy-box">Donut – Hauptlauf</div>
-    <div class="dummy-box">Donut – Kinderlauf</div>
+    <div class="donut-grid">
+      <div class="dummy">Donut – Gesamt</div>
+      <div class="dummy">Donut – Kurz</div>
+      <div class="dummy">Donut – Haupt</div>
+      <div class="dummy">Donut – Kinder</div>
+    </div>
   </div>
 
   <div class="tab-content content3">
-    <div class="dummy-box">Pyramide – Dropdown für Strecken</div>
+    <div class="dummy">Pyramide – Dropdown für Strecke</div>
   </div>
 
   <div class="tab-content content4">
-    <div class="dummy-box">Histogramm / Balkendiagramm</div>
+    <div class="dummy">Histogramm / Balkendiagramm</div>
   </div>
 
 </div>
