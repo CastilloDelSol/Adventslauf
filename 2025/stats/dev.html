@@ -163,7 +163,7 @@
   import { renderAgePyramid } from "./js/agePyramid.js";
   import { renderGenderDonut } from "./js/donutGender.js";
 
-  //renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
+  renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
   renderAgePyramid("Hauptlauf", "chartHaupt", "boxHaupt");
   //renderAgePyramid("Kinderlauf",  "chartKinder","boxKinder");
 
@@ -241,6 +241,9 @@
     <div class="pyramid-chart-box">
         <div class="pyramid-chart-container" id="boxHaupt">
           <canvas id="chartHaupt"></canvas>
+        </div>
+        <div class="pyramid-chart-container" id="boxKurz">
+          <canvas id="chartKurz"></canvas>
         </div>
     </div>
   </div>
