@@ -110,21 +110,24 @@
     gap: 20px;
   }
 
-  .donut-box {
+.donut-box {
     height: 260px;
     background: #fafafa;
     border-radius: 12px;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;        /* WICHTIG */
+    align-items: center;           /* zentriert horizontal */
+    justify-content: flex-start;   /* oben beginnen */
+    padding: 10px 0;               /* etwas Luft */
     box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-  }
+}
 
-  .donut-title {
-  font-size: 18px;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 10px;
+.donut-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+    width: 100%;
 }
 
 </style>
@@ -173,13 +176,27 @@
 
   <div class="tab-content content1">
     <div class="donut-grid">
+    
       <div class="donut-box">
         <div class="donut-title">Gesamt</div>
         <canvas id="donutTotal"></canvas>
       </div>
-      <div class="donut-box"><canvas id="donutKurz"></canvas></div>
-      <div class="donut-box"><canvas id="donutHaupt"></canvas></div>
-      <div class="donut-box"><canvas id="donutKinder"></canvas></div>
+    
+      <div class="donut-box">
+        <div class="donut-title">Küchensee</div>
+        <canvas id="donutKurz"></canvas>
+      </div>
+    
+      <div class="donut-box">
+        <div class="donut-title">Hauptlauf</div>
+        <canvas id="donutHaupt"></canvas>
+      </div>
+    
+      <div class="donut-box">
+        <div class="donut-title">Kinderlauf</div>
+        <canvas id="donutKinder"></canvas>
+      </div>
+    
     </div>
   </div>
   
