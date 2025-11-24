@@ -43,11 +43,11 @@
 
   /* ========================== TABS ========================== */
 
-  .tabs {
+.tabs {
     max-width: 1200px;
-    margin: 20px auto;
+    margin: 25px auto 0 auto;   /* vorher: 20px → jetzt 25px */
     padding: 0 20px;
-  }
+}
 
   /* Inputs hidden */
   input[type="radio"] {
@@ -75,12 +75,12 @@
 
   /* Content Boxes */
   .tab-content {
-    display: none;
-    background: white;
-    padding: 25px;
-    margin-top: 12px;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: none;
+      background: white;
+      padding: 30px;          /* EINHEITLICH für alle Tabs */
+      margin-top: 20px;       /* EINHEITLICH Abstand zu Tabs */
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   }
 
   /* Activated tabs */
@@ -122,8 +122,9 @@
 .donut-box {
     background: #fafafa;
     border-radius: 12px;
-    padding: 10px;
+    padding: 15px;          /* vorher 10px → etwas harmonischer */
     box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    margin: 0;              /* WICHTIG: Entfernt ungleichmäßige Abstände */
 }
 
 /* Hier ist die Magie */
@@ -142,21 +143,17 @@
 .pyramid-chart-box {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 20px;
-    margin-top: 10px;
+    gap: 20px;              /* passt perfekt zu donut-grid */
+    margin-top: 0;          /* vorher: 10px → entfernt */
 }
 
 /* Same styling as donut-box but flexible height */
 .pyramid-chart-container {
     background: #fafafa;
     border-radius: 12px;
-    padding: 10px;
+    padding: 15px;          /* vorher 10px → vereinheitlicht */
     box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    overflow: hidden;
+    margin: 0;              /* NEU → gleiche Abstände wie Donuts */
 }
 
   .pyramid-chart-inner {
