@@ -122,6 +122,19 @@
 
 </head>
 <body>
+<script type="module">
+  //import { renderAgePyramid } from "./js/agePyramid.js";
+  import { renderGenderDonut } from "./js/donutGender.js";
+
+  //renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
+  //renderAgePyramid("Hauptlauf",   "chartHaupt", "boxHaupt");
+  //renderAgePyramid("Kinderlauf",  "chartKinder","boxKinder");
+
+  renderGenderDonut("TOTAL", "donutTotal");
+  renderGenderDonut("Kurzstrecke", "donutKurz");
+  renderGenderDonut("Hauptlauf", "donutHaupt");
+  renderGenderDonut("Kinderlauf", "donutKinder");
+</script>
 
 <h1>🎄 Adventslauf – Statistik 2025</h1>
 
@@ -152,10 +165,10 @@
   <!-- TAB CONTENT BOXES (must be siblings!) -->
   <div class="tab-content content1">
     <div class="donut-grid">
-      <div class="donut-box">Donut Gesamt</div>
-      <div class="donut-box">Donut Kurz</div>
-      <div class="donut-box">Donut Haupt</div>
-      <div class="donut-box">Donut Kinder</div>
+      <div class="donut-box"><canvas id="donutTotal"></canvas></div>
+      <div class="donut-box"><canvas id="donutKurz"></canvas></div>
+      <div class="donut-box"><canvas id="donutHaupt"></canvas></div>
+      <div class="donut-box"><canvas id="donutKinder"></canvas></div>
     </div>
   </div>
   
