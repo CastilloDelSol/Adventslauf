@@ -136,16 +136,22 @@
     inset: 0;
 }
 
+.pyramid-chart-container {
+      width: 900px;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
 </style>
 
 </head>
 <body>
 <script type="module">
-  //import { renderAgePyramid } from "./js/agePyramid.js";
+  import { renderAgePyramid } from "./js/agePyramid.js";
   import { renderGenderDonut } from "./js/donutGender.js";
 
   //renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
-  //renderAgePyramid("Hauptlauf",   "chartHaupt", "boxHaupt");
+  renderAgePyramid("Hauptlauf",   "chartHaupt", "boxHaupt");
   //renderAgePyramid("Kinderlauf",  "chartKinder","boxKinder");
 
   renderGenderDonut("TOTAL", "donutTotal");
@@ -219,7 +225,11 @@
   </div>
 
   <div class="tab-content content3">
-    <div class="dummy-box">Pyramiden Charts – Dropdown für Strecke Auswahl</div>
+    <div class="dummy-box">
+        <div class="pyramid-chart-container" id="boxHaupt">
+          <canvas id="chartHaupt"></canvas>
+        </div>
+    </div>
   </div>
 
   <div class="tab-content content4">
