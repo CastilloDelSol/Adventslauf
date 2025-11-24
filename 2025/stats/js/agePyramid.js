@@ -1,6 +1,4 @@
-import { loadAgeData, getSection } from "./dataLoader.js";
-
-export async function renderAgePyramid(sectionName, canvasId, containerId) {
+export async function renderAgePyramid(sectionName, canvasId, containerId, title) {
   await loadAgeData();
 
   const group = getSection(sectionName);
@@ -11,6 +9,7 @@ export async function renderAgePyramid(sectionName, canvasId, containerId) {
   const topBottomPadding = 90;
   const barThicknessPixel = 18;
 
+  // Dynamische Höhe
   const box = document.getElementById(containerId);
   box.style.height = (rows * rowHeight + topBottomPadding) + "px";
 
@@ -29,14 +28,14 @@ export async function renderAgePyramid(sectionName, canvasId, containerId) {
         {
           label: "M",
           data: males,
-          backgroundColor: "rgba(54, 162, 235, 1.0)",
+          backgroundColor: "rgba(54, 162, 235, 1)",
           stack: "same",
           barThickness: barThicknessPixel
         },
         {
           label: "W",
           data: females,
-          backgroundColor: "rgba(255, 99, 132, 1.0)",
+          backgroundColor: "rgba(255, 99, 132, 1)",
           stack: "same",
           barThickness: barThicknessPixel
         }
@@ -53,12 +52,18 @@ export async function renderAgePyramid(sectionName, canvasId, containerId) {
         },
         y: {
           type: 'category',
-          offset: true,
-          reverse: false
+          offset: true
         }
       },
       plugins: {
         legend: { display: true },
+        title: {
+          display: true,
+          text: title,
+          font: { size: 20, weight: "bold" },
+          padding: { top: 10, bottom: 20 }
+        },
+
         tooltip: {
           callbacks: {
             title: () => "",
