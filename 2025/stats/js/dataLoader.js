@@ -1,4 +1,4 @@
-const URL = "/stats/data/age_buckets_by_distance.json";
+const URL = "./data/age_buckets_by_distance.json";
 
 let AGE_DATA = null;
 
