@@ -158,7 +158,7 @@
 
   .pyramid-chart-inner {
     width: 100%;
-    height: 460px; /* adjustable */
+    height: 400px; /* adjustable */
 }
 
 /* The pyramid charts need a fixed height or responsive aspect-ratio */
@@ -175,8 +175,8 @@
   import { renderAgePyramid } from "./js/agePyramid.js";
   import { renderGenderDonut } from "./js/donutGender.js";
 
-  renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz", "7,5km Küchensee");
-  renderAgePyramid("Hauptlauf", "chartHaupt", "boxHaupt", "26km Ratzeburger See");
+  renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
+  renderAgePyramid("Hauptlauf", "chartHaupt", "boxHaupt");
   //renderAgePyramid("Kinderlauf",  "chartKinder","boxKinder");
 
   renderGenderDonut("TOTAL", "donutTotal");
@@ -252,11 +252,17 @@
   <div class="tab-content content3">
     <div class="pyramid-chart-box">
       <div class="pyramid-chart-container">
+          <div class="chart-title">
+            Hauptlauf
+          </div>
           <div class="pyramid-chart-inner" id="boxHaupt">
               <canvas id="chartHaupt"></canvas>
           </div>
       </div>
       <div class="pyramid-chart-container">
+          <div class="chart-title">
+            Kurzstrecke
+          </div>
           <div class="pyramid-chart-inner" id="boxKurz">
               <canvas id="chartKurz"></canvas>
           </div>
