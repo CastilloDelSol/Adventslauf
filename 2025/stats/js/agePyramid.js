@@ -6,10 +6,11 @@ async function renderAgePyramid(sectionName, canvasId, containerId) {
 
   // fixe Zeilenhöhe pro Altersgruppe
   const rows = group.length;
-  const rowHeight = 26;
+  const rowHeight = 18;
   const topBottomPadding = 90;
+  const barThicknessPixel = 18;
 
-  // WICHTIG: Container skalieren, nicht das Canvas
+  // WICHTIG: Container statt Canvas skalieren
   const box = document.getElementById(containerId);
   box.style.height = (rows * rowHeight + topBottomPadding) + "px";
 
@@ -29,17 +30,17 @@ async function renderAgePyramid(sectionName, canvasId, containerId) {
           label: "M",
           data: males,
           backgroundColor: "rgba(54, 162, 235, 0.7)",
-          barThickness: 20,
-          categoryPercentage: 1.0,
-          barPercentage: 1.0
+          grouped: false,
+          stack: "same",
+          barThickness: barThicknessPixel
         },
         {
           label: "W",
           data: females,
           backgroundColor: "rgba(255, 99, 132, 0.7)",
-          barThickness: 20,
-          categoryPercentage: 1.0,
-          barPercentage: 1.0
+          grouped: false,
+          stack: "same",
+          barThickness: barThicknessPixel
         }
       ]
     },
@@ -54,7 +55,8 @@ async function renderAgePyramid(sectionName, canvasId, containerId) {
         },
         y: {
           type: 'category',
-          offset: true
+          offset: true,
+          reverse: false,  // Reverse NICHT hier machen!
         }
       },
       plugins: {
