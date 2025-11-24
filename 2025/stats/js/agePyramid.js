@@ -2,7 +2,9 @@ async function renderAgePyramid(sectionName, canvasId, containerId) {
   const resp = await fetch("../data/age_buckets_by_distance.json");
   const data = await resp.json();
   const group = data[sectionName];
-  if (!group) return;
+
+  // Fehler wenn json nicht gefunden
+  if (!group) return console.error("Section not found:", sectionName);
 
   // fixe Zeilenhöhe pro Altersgruppe
   const rows = group.length;
