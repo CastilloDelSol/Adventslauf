@@ -20,7 +20,7 @@
     font-size: 28px;
   }
 
-  /* ========================== KPI BOXEN ========================== */
+  /* ========================== KPI BOX GRID ========================== */
   .kpi-grid {
     display: grid;
     gap: 16px;
@@ -40,7 +40,7 @@
   .kpi-value { font-size: 26px; font-weight: bold; }
   .kpi-label { color: #666; margin-top: 6px; }
 
-  /* ========================== TABS (BUTTON STYLE!) ========================== */
+  /* ========================== TABS ========================== */
 
   .tabs {
     max-width: 1200px;
@@ -48,14 +48,13 @@
     padding: 0 20px;
   }
 
-  .tab-buttons {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
+  /* Inputs hidden */
+  input[type="radio"] {
+    display: none;
   }
 
-  .tab-buttons label {
+  /* Tab buttons */
+  .tabs label {
     padding: 10px 18px;
     background: #ddd;
     border-radius: 6px;
@@ -63,24 +62,27 @@
     user-select: none;
     transition: 0.2s;
     font-weight: bold;
+    margin-right: 10px;
+    display: inline-block;
   }
 
-  input[type="radio"] { display: none; }
-
+  /* Active = blue */
   input:checked + label {
     background: #007bff;
     color: white;
   }
 
+  /* Content Boxes */
   .tab-content {
     display: none;
     background: white;
     padding: 25px;
-    margin-top: 5px;
+    margin-top: 12px;
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   }
 
+  /* Activated tabs */
   #tab1:checked ~ .content1,
   #tab2:checked ~ .content2,
   #tab3:checked ~ .content3,
@@ -88,7 +90,7 @@
     display: block;
   }
 
-  /* DUMMY BOX */
+  /* Dummy blocks */
   .dummy-box {
     height: 200px;
     background: #e5e5e5;
@@ -100,7 +102,7 @@
     margin-bottom: 20px;
   }
 
-  /* 2×2 Donut-Grid */
+  /* 2×2 donut grid */
   .donut-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -108,7 +110,7 @@
   }
 
   .donut-box {
-    height: 250px;
+    height: 260px;
     background: #fafafa;
     border-radius: 12px;
     display: flex;
@@ -116,8 +118,8 @@
     justify-content: center;
     box-shadow: 0 1px 4px rgba(0,0,0,0.1);
   }
-
 </style>
+
 </head>
 <body>
 
@@ -131,27 +133,25 @@
   <div class="kpi-box"><div class="kpi-value">2166 km</div><div class="kpi-label">Maximum</div></div>
 </div>
 
-<!-- TABS -->
+<!-- ======================== TABS ======================== -->
 <div class="tabs">
 
-  <!-- BUTTON TABS -->
-  <div class="tab-buttons">
-    <input type="radio" id="tab1" name="tab" checked>
-    <label for="tab1">Nationalitäten</label>
+  <!-- TAB BUTTONS + INPUTS -->
+  <input type="radio" id="tab1" name="tab" checked>
+  <label for="tab1">Nationalitäten</label>
 
-    <input type="radio" id="tab2" name="tab">
-    <label for="tab2">Geschlechter</label>
+  <input type="radio" id="tab2" name="tab">
+  <label for="tab2">Geschlechter</label>
 
-    <input type="radio" id="tab3" name="tab">
-    <label for="tab3">Altersstruktur</label>
+  <input type="radio" id="tab3" name="tab">
+  <label for="tab3">Altersstruktur</label>
 
-    <input type="radio" id="tab4" name="tab">
-    <label for="tab4">Strecken</label>
-  </div>
+  <input type="radio" id="tab4" name="tab">
+  <label for="tab4">Strecken</label>
 
-  <!-- CONTENT -->
+  <!-- TAB CONTENT BOXES (must be siblings!) -->
   <div class="tab-content content1">
-    <div class="dummy-box">Tabelle der Nationen</div>
+    <div class="dummy-box">🌍 Tabelle der Nationen</div>
   </div>
 
   <div class="tab-content content2">
@@ -164,11 +164,11 @@
   </div>
 
   <div class="tab-content content3">
-    <div class="dummy-box">Pyramiden Charts – Dropdown Streckenauswahl</div>
+    <div class="dummy-box">Pyramiden Charts – Dropdown für Strecke Auswahl</div>
   </div>
 
   <div class="tab-content content4">
-    <div class="dummy-box">Histogramm / Entfernungen</div>
+    <div class="dummy-box">Histogramm / Entfernungsdaten</div>
   </div>
 
 </div>
