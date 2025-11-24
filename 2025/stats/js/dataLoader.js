@@ -1,9 +1,11 @@
+const URL = "/stats/data/age_buckets_by_distance.json";
+
 let AGE_DATA = null;
 
 export async function loadAgeData() {
-    if (AGE_DATA) return AGE_DATA; // cached already
+    if (AGE_DATA) return AGE_DATA;
 
-    const resp = await fetch("data/age_buckets_by_distance.json");
+    const resp = await fetch(URL);
     AGE_DATA = await resp.json();
     return AGE_DATA;
 }
