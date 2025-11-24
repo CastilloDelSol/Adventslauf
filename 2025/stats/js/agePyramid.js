@@ -1,20 +1,16 @@
 import { loadAgeData, getSection } from "./dataLoader.js";
 
 export async function renderAgePyramid(sectionName, canvasId, containerId) {
-  await loadAgeData(); // ensures data ready
+  await loadAgeData();
 
   const group = getSection(sectionName);
-
-  // Fehler wenn json nicht gefunden
   if (!group) return console.error("Section not found:", sectionName);
 
-  // fixe Zeilenhöhe pro Altersgruppe
   const rows = group.length;
   const rowHeight = 18;
   const topBottomPadding = 90;
   const barThicknessPixel = 18;
 
-  // WICHTIG: Container statt Canvas skalieren
   const box = document.getElementById(containerId);
   box.style.height = (rows * rowHeight + topBottomPadding) + "px";
 
@@ -34,7 +30,6 @@ export async function renderAgePyramid(sectionName, canvasId, containerId) {
           label: "M",
           data: males,
           backgroundColor: "rgba(54, 162, 235, 0.7)",
-          grouped: false,
           stack: "same",
           barThickness: barThicknessPixel
         },
@@ -42,7 +37,6 @@ export async function renderAgePyramid(sectionName, canvasId, containerId) {
           label: "W",
           data: females,
           backgroundColor: "rgba(255, 99, 132, 0.7)",
-          grouped: false,
           stack: "same",
           barThickness: barThicknessPixel
         }
@@ -60,7 +54,7 @@ export async function renderAgePyramid(sectionName, canvasId, containerId) {
         y: {
           type: 'category',
           offset: true,
-          reverse: false,  // Reverse NICHT hier machen!
+          reverse: false
         }
       },
       plugins: {
