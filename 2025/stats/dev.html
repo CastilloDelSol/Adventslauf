@@ -109,16 +109,24 @@
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 20px;
   }
-
+  
   .donut-box {
-    height: 260px;
-    background: #fafafa;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  background: #fafafa;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  padding: 10px;
+  display: flex;
+  flex-direction: column; /* Titel oben, Canvas unten */
+  align-items: center;
+  justify-content: flex-start;
   }
+
+  .donut-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
 </style>
 
 </head>
@@ -163,16 +171,28 @@
   <input type="radio" id="tab4" name="tab">
   <label for="tab4">Geodaten</label>
 
-  <!-- TAB CONTENT BOXES (must be siblings!) -->
-  <div class="tab-content content1">
-    <div class="donut-grid">
-      <div class="donut-box"><h2>Gesamt</h2><br><canvas id="donutTotal"></canvas></div>
-      <div class="donut-box"><h2>Küchensee</h2><br><canvas id="donutKurz"></canvas></div>
-      <div class="donut-box"><h2>Hauptlauf</h2><br><canvas id="donutHaupt"></canvas></div>
-      <div class="donut-box"><h2>Kinderlauf</h2><br><canvas id="donutKinder"></canvas></div>
+  <div class="donut-grid">
+    <div class="donut-box">
+      <div class="donut-title">Gesamt</div>
+      <canvas id="donutTotal"></canvas>
+    </div>
+  
+    <div class="donut-box">
+      <div class="donut-title">Küchensee</div>
+      <canvas id="donutKurz"></canvas>
+    </div>
+  
+    <div class="donut-box">
+      <div class="donut-title">Hauptlauf</div>
+      <canvas id="donutHaupt"></canvas>
+    </div>
+  
+    <div class="donut-box">
+      <div class="donut-title">Kinderlauf</div>
+      <canvas id="donutKinder"></canvas>
     </div>
   </div>
-  
+
   <div class="tab-content content2">
     <div class="dummy-box">🌍 Tabelle der Nationen</div>
   </div>
