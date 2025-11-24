@@ -26,7 +26,7 @@ export async function renderGenderDonut(sectionName, canvasId) {
     new Chart(document.getElementById(canvasId), {
         type: "doughnut",
         data: {
-            labels: ["Männlich", "Weiblich"],
+            labels: ["M", "W"],
             datasets: [{
                 data: [totalM, totalW],
                 backgroundColor: ["#4EA5E9", "#FF6384"]
