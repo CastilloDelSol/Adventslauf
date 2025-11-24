@@ -8,7 +8,7 @@ export async function renderAgePyramid(sectionName, canvasId, containerId, title
 
   const rows = group.length;
   const rowHeight = 18;
-  const topBottomPadding = 90;
+  const topBottomPadding = 120;
   const barThicknessPixel = 18;
 
   // Dynamische Höhe
