@@ -25,6 +25,64 @@
     font-size: 28px;
   }
 
+  /* === TAB-BAR WRAPPER ===================================================== */
+  .tab-bar {
+      max-width: 1200px;
+      margin: 0 auto 20px;
+      padding: 0 20px;
+  }
+  
+  /* === GRID (responsive) =================================================== */
+  .tab-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;                  /* Abstand zwischen den Tabs */
+      margin-top: 10px;
+  }
+  
+  /* === RADIO BUTTONS HIDDEN =============================================== */
+  input[type="radio"] {
+      display: none;
+  }
+  
+  /* === LABELS AS BUTTONS =================================================== */
+  .tab-row label {
+      padding: 12px 16px;
+      background: #e7e7e7;
+      color: #222;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  
+  /* Hover state */
+  .tab-row label:hover {
+      background: #dcdcdc;
+  }
+  
+  /* ACTIVE STATE → matches content */
+  input:checked + label {
+      background: #007bff;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  
+  /* === MOBILE FINE-TUNING ================================================= */
+  @media (max-width: 480px) {
+      .tab-row {
+          grid-template-columns: 1fr;   /* jede Zeile 1 Tab */
+          gap: 8px;
+      }
+  
+      .tab-row label {
+          padding: 12px;
+      }
+  }
+
+
   /* ========================== KPI BOX GRID ========================== */
   /* GEO: KPI Grid */
   .geo-kpi-grid {
@@ -58,9 +116,8 @@
 
   /* ========================== TABS ========================== */
   .tabs {
-      max-width: 1200px;
-      margin: 25px auto 0 auto;   /* vorher: 20px → jetzt 25px */
-      padding: 0 20px;
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
   /* Inputs hidden */
@@ -317,19 +374,28 @@
 </script>
 
 <h1>🎄 Adventslauf – Statistik 2025 🎄</h1>
+
+<!-- ======================== TAB BAR (Navigation) ======================== -->
+<div class="tab-bar">
+  <div class="tab-row">
+
+    <input type="radio" id="tab1" name="tab" checked>
+    <label for="tab1">Teilnehmer & Läufe</label>
+
+    <input type="radio" id="tab2" name="tab">
+    <label for="tab2">Nationalität</label>
+
+    <input type="radio" id="tab3" name="tab">
+    <label for="tab3">Altersstruktur</label>
+
+    <input type="radio" id="tab4" name="tab">
+    <label for="tab4">Anreise & Herkunft</label>
+
+  </div>
+</div>
   
 <!-- ======================== TABS ======================== -->
 <div class="tabs">
-
-  <input type="radio" id="tab1" name="tab" checked>
-  <label for="tab1">Übersicht</label>
-  <input type="radio" id="tab2" name="tab">
-  <label for="tab2">Nationen</label>
-  <input type="radio" id="tab3" name="tab">
-  <label for="tab3">Altersklassen</label>
-  <input type="radio" id="tab4" name="tab">
-  <label for="tab4">Geodaten</label>
-
   <!-- ============== DONUT TEILNEHMER CHARTS ============ -->
   <div class="tab-content content1">
     <div class="donut-grid">
