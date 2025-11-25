@@ -220,11 +220,15 @@
   renderGenderDonut("Kinderlauf", "donutKinder");
 
   import { renderNationalityTable } from "./js/nationalityTable.js";
+  renderNationalityTable();
+
+  import { renderFederalStateTable } from "./js/federalStateTable.js";
+  renderFederalStateTable();
+
+  import { renderAgePyramid } from "./js/agePyramid.js";
   renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
   renderAgePyramid("Hauptlauf", "chartHaupt", "boxHaupt");
-  
-  import { renderAgePyramid } from "./js/agePyramid.js";
-  renderNationalityTable();
+
 </script>
 
 <h1>🎄 Adventslauf – Statistik 2025</h1>
@@ -288,6 +292,7 @@
   </div>
   
   <div class="tab-content content2">
+    <!--
     <table id="nationalityTable" class="nat-table">
       <thead>
         <tr>
@@ -298,6 +303,19 @@
       <tbody></tbody>
     </table>
   </div>
+-->
+
+    <table id="federalStateTable" class="nat-table">
+        <thead>
+            <tr>
+                <th>Bundesland</th>
+                <th class="count">Anzahl</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
 
   <div class="tab-content content3">
     <div class="pyramid-chart-box">
