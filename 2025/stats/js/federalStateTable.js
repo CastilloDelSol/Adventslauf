@@ -76,7 +76,7 @@ function buildFederalStateTable(geo) {
 
     list.push({
         code: "intl",
-        name: "International",
+        name: "Ausland",
         count: internationalCount,
         flag: "./img/flags/world/int.png"
     });
