@@ -1,9 +1,9 @@
 // distanceHistogram.js
 
-import { loadGeoStats } from "./dataLoader.js";
+import { loadGeoData } from "./dataLoader.js";
 
 export async function renderDistanceHistogram(canvasId) {
-    const geo = await loadGeoStats();
+    const geo = await loadGeoData();
 
     if (!geo || !geo.distance_histogram) {
         console.error("No histogram data found");
