@@ -287,6 +287,8 @@
   renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
   renderAgePyramid("Hauptlauf", "chartHaupt", "boxHaupt");
 
+  import { renderDistancePercentile } from "./js/distancePercentile.js";
+  renderDistancePercentile("distancePercentile");
   import { renderDistanceHistogram } from "./js/distanceHistogram.js";
   renderDistanceHistogram("distanceHistogram");
 </script>
@@ -398,19 +400,18 @@
   <!-- ==== PERCENTILVERTEILUNG ANREISE DISTANZ ====== -->
   <div class="tab-content content4">
     <div class="geo-chart-container">
-        <div class="chart-title">Anreise-Entfernungs Histogramm</div>
+        <div class="chart-title">Anreise-Entfernung – Perzentile</div>
+        <div class="geo-chart-inner">
+            <canvas id="distancePercentile"></canvas>
+        </div>
+    </div>
+    <div class="geo-chart-container">
+        <div class="chart-title">Anreise-Entfernung - Histogramm</div>
         <div class="geo-chart-inner">
             <canvas id="distanceHistogram"></canvas>
         </div>
     </div>
-
-    <div class="geo-chart-container">
-        <div class="chart-title">Zweites Diagramm (coming soon)</div>
-        <div class="geo-chart-inner dummy-geo">
-            <!-- später -->
-        </div>
-    </div>
-</div>
+  </div>
 
 
 </div>
