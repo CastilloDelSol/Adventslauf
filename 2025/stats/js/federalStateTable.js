@@ -21,7 +21,6 @@ export async function renderFederalStateTable() {
 function buildFederalStateTable(geo) {
 
     const bundeslaender = geo.bundesland_buckets;
-    const totalGermany = geo.land_buckets?.Deutschland ?? null;
 
     const table = document.querySelector("#federalStateTable");
     if (!table) {
@@ -64,16 +63,25 @@ function buildFederalStateTable(geo) {
     }
 
     // --------------------------------------------------
-    //  Add last row "International"
+    //  Add last row "International" (correct calculation)
     // --------------------------------------------------
-    if (totalGermany !== null) {
-        list.push({
-            code: "intl",
-            name: "International",
-            count: totalGermany - sumStates,
-            flag: "./img/flags/world/int.png" // you provide this icon (e.g. globe)
-        });
+    let totalAllCountries = 0;
+    for (const c of Object.values(geo.land_buckets)) {
+        totalAllCountries += c;
     }
+    
+    const totalGermany = geo.land_buckets?.Deutschland ?? 0;
+    
+    // International = total – Germany
+    const internationalCount = totalAllCountries - totalGermany;
+    
+    list.push({
+        code: "intl",
+        name: "International",
+        count: internationalCount,
+        flag: "./img/flags/world/int.png"
+    });
+
 
     // --------------------------------------------------
     //  Sort descending by count
