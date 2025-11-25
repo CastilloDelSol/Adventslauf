@@ -167,22 +167,60 @@
     height: 400px !important; /* You can adjust */
 }
 
+/* Nationality table */
+.nat-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+}
+
+.nat-table th {
+    text-align: left;
+    padding: 8px;
+    font-weight: bold;
+    border-bottom: 2px solid #ddd;
+}
+
+.nat-table td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.flag-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nationality-flag {
+    width: 26px;
+    height: 18px;
+    border-radius: 3px;
+    object-fit: cover;
+}
+
+.count {
+    font-weight: bold;
+    text-align: right;
+}
+
 </style>
 
 </head>
 <body>
 <script type="module">
-  import { renderAgePyramid } from "./js/agePyramid.js";
   import { renderGenderDonut } from "./js/donutGender.js";
-
-  renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
-  renderAgePyramid("Hauptlauf", "chartHaupt", "boxHaupt");
-  //renderAgePyramid("Kinderlauf",  "chartKinder","boxKinder");
-
   renderGenderDonut("TOTAL", "donutTotal");
   renderGenderDonut("Kurzstrecke", "donutKurz");
   renderGenderDonut("Hauptlauf", "donutHaupt");
   renderGenderDonut("Kinderlauf", "donutKinder");
+
+  import { renderNationalityTable } from "./js/nationalityTable.js";
+  renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
+  renderAgePyramid("Hauptlauf", "chartHaupt", "boxHaupt");
+  
+  import { renderAgePyramid } from "./js/agePyramid.js";
+  renderNationalityTable();
 </script>
 
 <h1>🎄 Adventslauf – Statistik 2025</h1>
@@ -246,7 +284,16 @@
   </div>
   
   <div class="tab-content content2">
-    <div class="dummy-box">🌍 Tabelle der Nationen</div>
+    <!--<div class="dummy-box">🌍 Tabelle der Nationen</div>-->
+    <table id="nationalityTable" class="nat-table">
+      <thead>
+        <tr>
+          <th>Land</th>
+          <th>Anzahl</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
 
   <div class="tab-content content3">
