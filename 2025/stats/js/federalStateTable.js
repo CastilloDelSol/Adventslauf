@@ -61,32 +61,25 @@ function buildFederalStateTable(geo) {
             flag: `./img/flags/deu/${code}.png`  // you provide these flags
         });
     }
+    
+    // --------------------------------------------------
+    //  Sort descending by count
+    // --------------------------------------------------
+    list.sort((a, b) => b.count - a.count);
 
     // --------------------------------------------------
-    //  Add last row "International" (correct calculation)
+    //  Add last row "International"
     // --------------------------------------------------
-    let totalAllCountries = 0;
-    for (const c of Object.values(geo.land_buckets)) {
-        totalAllCountries += c;
-    }
-    
-    const totalGermany = geo.land_buckets?.Deutschland ?? 0;
-    
-    // International = total – Germany
-    const internationalCount = totalAllCountries - totalGermany;
-    
+    const internationalCount = Object.entries(geo.land_buckets)
+    .filter(([country]) => country !== "Deutschland")
+    .reduce((sum, [, count]) => sum + count, 0);
+
     list.push({
         code: "intl",
         name: "International",
         count: internationalCount,
         flag: "./img/flags/world/int.png"
     });
-
-
-    // --------------------------------------------------
-    //  Sort descending by count
-    // --------------------------------------------------
-    list.sort((a, b) => b.count - a.count);
 
     // --------------------------------------------------
     //  Render rows
