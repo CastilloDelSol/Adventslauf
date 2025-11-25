@@ -252,6 +252,9 @@
   import { renderAgePyramid } from "./js/agePyramid.js";
   renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
   renderAgePyramid("Hauptlauf", "chartHaupt", "boxHaupt");
+
+  import { renderDistanceHistogram } from "./js/distanceHistogram.js";
+  renderDistanceHistogram("distanceHistogram");
 </script>
 
 <h1>🎄 Adventslauf – Statistik 2025</h1>
@@ -360,7 +363,9 @@
 
   <!-- ==== PERCENTILVERTEILUNG ANREISE DISTANZ ====== -->
   <div class="tab-content content4">
-    <div class="dummy-box">Histogramm / Entfernungsdaten</div>
+    <div class="dummy-box" style="height:420px;">
+      <canvas id="distanceHistogram"></canvas>
+    </div>
   </div>
 
 </div>
