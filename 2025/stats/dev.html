@@ -14,6 +14,10 @@
     color: #222;
   }
 
+  html {
+    scrollbar-gutter: stable;
+  }
+
   h1 {
     text-align: center;
     padding: 25px 0 10px;
@@ -145,7 +149,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 20px;              /* passt perfekt zu donut-grid */
-    margin-top: 0;          /* vorher: 10px → entfernt */
+    margin-top: 0;
 }
 
 /* Same styling as donut-box but flexible height */
@@ -365,6 +369,9 @@
   <!-- ==== PERCENTILVERTEILUNG ANREISE DISTANZ ====== -->
   <div class="tab-content content4">
     <div class="dummy-box">
+      <div class="chart-title">
+        Anreise Entfernungs Histogramm
+      </div>
       <canvas id="distanceHistogram"></canvas>
     </div>
   </div>
