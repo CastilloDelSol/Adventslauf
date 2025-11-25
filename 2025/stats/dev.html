@@ -168,24 +168,24 @@
 }
 
 /* Nationality table */
-.nat-table {
+.flag-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 16px;
 }
 
-.nat-table th {
+.flag-table th {
     text-align: left;
     padding: 8px;
     font-weight: bold;
     border-bottom: 2px solid #ddd;
 }
   
-.nat-table th:last-child {
+.flag-table th:last-child {
     text-align: right;
 }
 
-.nat-table td {
+.flag-table td {
     padding: 8px;
     border-bottom: 1px solid #eee;
 }
@@ -232,7 +232,6 @@
     text-align: center;
     margin-bottom: 12px;
 }
-
 </style>
 
 </head>
@@ -253,7 +252,6 @@
   import { renderAgePyramid } from "./js/agePyramid.js";
   renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
   renderAgePyramid("Hauptlauf", "chartHaupt", "boxHaupt");
-
 </script>
 
 <h1>🎄 Adventslauf – Statistik 2025</h1>
@@ -269,84 +267,76 @@
 <!-- ======================== TABS ======================== -->
 <div class="tabs">
 
-  <!-- TAB BUTTONS + INPUTS -->
   <input type="radio" id="tab1" name="tab" checked>
   <label for="tab1">Übersicht</label>
-
   <input type="radio" id="tab2" name="tab">
   <label for="tab2">Nationen</label>
-
   <input type="radio" id="tab3" name="tab">
   <label for="tab3">Altersklassen</label>
-
   <input type="radio" id="tab4" name="tab">
   <label for="tab4">Geodaten</label>
 
+  <!-- ============== DONUT TEILNEHMER CHARTS ============ -->
   <div class="tab-content content1">
     <div class="donut-grid">
-    
-    <div class="donut-box">
-        <div class="chart-title">Gesamt</div>
-        <div class="donut-chart-wrapper">
-            <canvas id="donutTotal"></canvas>
-        </div>
-    </div>
-    
+      <div class="donut-box">
+          <div class="chart-title">Gesamt</div>
+          <div class="donut-chart-wrapper">
+              <canvas id="donutTotal"></canvas>
+          </div>
+      </div>
       <div class="donut-box">
         <div class="chart-title">Hauptlauf</div>
         <div class="donut-chart-wrapper">
             <canvas id="donutHaupt"></canvas>
         </div>
       </div>
-    
       <div class="donut-box">
         <div class="chart-title">Küchensee</div>
         <div class="donut-chart-wrapper">
             <canvas id="donutKurz"></canvas>
         </div>
       </div>
-    
       <div class="donut-box">
         <div class="chart-title">Kinderlauf</div>
         <div class="donut-chart-wrapper">
             <canvas id="donutKinder"></canvas>
         </div>
+      </div> 
+    </div>
+  </div>
+
+  <!-- ======== TEILNEHMER NATION/BUNDESLAND TABELLE  ========== -->
+  <div class="tab-content content2">
+    <div class="table-grid">
+      <div class="table-box">
+        <h3 class="chart-title">Nationalität (Selbstangabe)</h3>
+        <table id="nationalityTable" class="flag-table">
+          <thead>
+            <tr>
+              <th>Land</th>
+              <th class="count">Anzahl</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
-    
+      <div class="table-box">
+        <h3 class="chart-title">Bundesland (Meldeadresse)</h3>
+        <table id="federalStateTable" class="flag-table">
+          <thead>
+            <tr>
+              <th>Bundesland</th>
+              <th class="count">Anzahl</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
   </div>
-  
-<div class="tab-content content2">
-  <div class="table-grid">
-    <div class="table-box">
-      <h3 class="chart-title">Nationalitäten</h3>
-      <table id="nationalityTable" class="nat-table">
-        <thead>
-          <tr>
-            <th>Land</th>
-            <th class="count">Anzahl</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <div class="table-box">
-      <h3 class="chart-title">Bundesländer</h3>
-      <table id="federalStateTable" class="nat-table">
-        <thead>
-          <tr>
-            <th>Bundesland</th>
-            <th class="count">Anzahl</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-</div>
 
-
-
+  <!-- ==== PYRAMIDEN: TEILNEHMER JE LAUF UND ALTERSKLASSE ====== -->
   <div class="tab-content content3">
     <div class="pyramid-chart-box">
       <div class="pyramid-chart-container">
@@ -368,7 +358,7 @@
     </div>
   </div>
 
-
+  <!-- ==== PERCENTILVERTEILUNG ANREISE DISTANZ ====== -->
   <div class="tab-content content4">
     <div class="dummy-box">Histogramm / Entfernungsdaten</div>
   </div>
