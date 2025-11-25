@@ -58,7 +58,7 @@ function buildFederalStateTable(geo) {
             code,
             name: cleanedName,
             count,
-            flag: `./img/flags/deu/${code}.png`  // you provide these flags
+            flag: `./img/flags/deu/${code}.png`
         });
     }
     
@@ -68,7 +68,7 @@ function buildFederalStateTable(geo) {
     list.sort((a, b) => b.count - a.count);
 
     // --------------------------------------------------
-    //  Add last row "International"
+    //  Add last row "Ausland"
     // --------------------------------------------------
     const internationalCount = Object.entries(geo.land_buckets)
     .filter(([country]) => country !== "Deutschland")
