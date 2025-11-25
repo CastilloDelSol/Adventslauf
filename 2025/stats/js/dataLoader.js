@@ -1,25 +1,30 @@
-// -------------------------------
-//  GLOBAL CACHES
-// -------------------------------
+// ============================================================
+//  GLOBAL CACHES (all only load ONCE)
+// ============================================================
 let AGE_DATA = null;
 let AGE_PROMISE = null;
 
 let NAT_DATA = null;
 let NAT_PROMISE = null;
 
-// -------------------------------
-//  URLS (RELATIVE TO index.html)
-// -------------------------------
+let GEO_DATA = null;
+let GEO_PROMISE = null;
+
+// ============================================================
+//  URLS (relative to index.html)
+// ============================================================
 const AGE_URL = "./data/age_buckets_by_distance.json";
 const NAT_URL = "./data/nationality.json";
+const GEO_URL = "./data/geo-stats.json";
+
 
 // ============================================================
 //  AGE DATA
 // ============================================================
 export async function loadAgeData() {
 
-    if (AGE_DATA) return AGE_DATA;          // already cached
-    if (AGE_PROMISE) return AGE_PROMISE;    // already loading
+    if (AGE_DATA) return AGE_DATA;
+    if (AGE_PROMISE) return AGE_PROMISE;
 
     console.log("Load AGE JSON (once)…");
 
@@ -47,8 +52,8 @@ export function getSection(sectionName) {
 // ============================================================
 export async function loadNationalityData() {
 
-    if (NAT_DATA) return NAT_DATA;          // cached
-    if (NAT_PROMISE) return NAT_PROMISE;    // loading
+    if (NAT_DATA) return NAT_DATA;
+    if (NAT_PROMISE) return NAT_PROMISE;
 
     console.log("Load NATIONALITY JSON (once)…");
 
@@ -64,4 +69,39 @@ export async function loadNationalityData() {
         });
 
     return NAT_PROMISE;
+}
+
+export function getNationalityList() {
+    if (!NAT_DATA) throw new Error("NATIONALITY data not loaded yet");
+    return NAT_DATA;
+}
+
+
+// ============================================================
+//  GEO DATA (distance, histogram, percentiles, wind rose, etc.)
+// ============================================================
+export async function loadGeoData() {
+
+    if (GEO_DATA) return GEO_DATA;
+    if (GEO_PROMISE) return GEO_PROMISE;
+
+    console.log("Load GEO JSON (once)…");
+
+    GEO_PROMISE = fetch(GEO_URL)
+        .then(r => r.json())
+        .then(json => {
+            GEO_DATA = json;
+            return GEO_DATA;
+        })
+        .catch(err => {
+            console.error("Failed to load GEO data", err);
+            throw err;
+        });
+
+    return GEO_PROMISE;
+}
+
+export function getGeoData() {
+    if (!GEO_DATA) throw new Error("GEO_DATA not loaded yet");
+    return GEO_DATA;
 }
