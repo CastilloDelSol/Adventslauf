@@ -241,6 +241,11 @@
   /* ============================================
    GEO-DIAGRAMME (Gleicher Stil wie Pyramiden)
    ============================================ */
+  /* Extra Abstand über Geo-KPI-Grid */
+  .geo-kpi {
+      margin-bottom: 25px;
+  }
+    
 .geo-chart-container {
     background: #fafafa;
     border-radius: 12px;
@@ -286,6 +291,14 @@
   import { renderAgePyramid } from "./js/agePyramid.js";
   renderAgePyramid("Kurzstrecke", "chartKurz", "boxKurz");
   renderAgePyramid("Hauptlauf", "chartHaupt", "boxHaupt");
+
+  import { loadGeoData } from "./js/dataLoader.js";
+  loadGeoData().then(geo => {
+      document.getElementById("geoMin").textContent    = geo.distance_min_km.toFixed(1) + " km";
+      document.getElementById("geoAvg").textContent    = geo.distance_avg_km.toFixed(1) + " km";
+      document.getElementById("geoMedian").textContent = geo.distance_median_km.toFixed(1) + " km";
+      document.getElementById("geoMax").textContent    = geo.distance_max_km.toFixed(0) + " km";
+  });
 
   import { renderDistancePercentile } from "./js/distancePercentile.js";
   renderDistancePercentile("distancePercentile");
@@ -399,6 +412,15 @@
 
   <!-- ==== PERCENTILVERTEILUNG ANREISE DISTANZ ====== -->
   <div class="tab-content content4">
+
+    <!-- GEO–KPI GRID (neu) -->
+    <div class="kpi-grid geo-kpi">
+      <div class="kpi-box"><div class="kpi-value" id="geoMin">–</div><div class="kpi-label">Minimum</div></div>
+      <div class="kpi-box"><div class="kpi-value" id="geoAvg">–</div><div class="kpi-label">Durchschnitt</div></div>
+      <div class="kpi-box"><div class="kpi-value" id="geoMedian">–</div><div class="kpi-label">Median</div></div>
+      <div class="kpi-box"><div class="kpi-value" id="geoMax">–</div><div class="kpi-label">Maximum</div></div>
+    </div>
+    
     <div class="geo-chart-container">
         <div class="chart-title">Anreise-Entfernung – Perzentile</div>
         <div class="geo-chart-inner">
