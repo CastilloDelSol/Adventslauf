@@ -59,7 +59,7 @@ function buildFederalStateTable(geo) {
             code,
             name: cleanedName,
             count,
-            flag: `./flags/${code}.png`  // you provide these flags
+            flag: `./img/flags/deu/${code}.png`  // you provide these flags
         });
     }
 
@@ -71,7 +71,7 @@ function buildFederalStateTable(geo) {
             code: "intl",
             name: "International",
             count: totalGermany - sumStates,
-            flag: "./flags/int.png" // you provide this icon (e.g. globe)
+            flag: "./img/flags/world/int.png" // you provide this icon (e.g. globe)
         });
     }
 
