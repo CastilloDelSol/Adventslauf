@@ -26,32 +26,42 @@
   }
 
   /* ========================== KPI BOX GRID ========================== */
-  .kpi-grid {
-    display: grid;
-    gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    padding: 20px;
-    max-width: 1200px;
-    margin: auto;
+  /* GEO: KPI Grid */
+  .geo-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-bottom: 25px;
+  
+      /* NEU → gleiche Innenbreite wie Diagramme */
+      padding: 0 10px;
   }
-
-  .kpi-box {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  
+  /* GEO: KPI Boxes */
+  .geo-kpi-box {
+      background: #fafafa;
+      padding: 18px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.10);
   }
-  .kpi-value { font-size: 26px; font-weight: bold; }
-  .kpi-label { color: #666; margin-top: 6px; }
+  
+  .geo-kpi-value {
+      font-size: 24px;
+      font-weight: bold;
+  }
+  
+  .geo-kpi-label {
+      color: #666;
+      margin-top: 6px;
+  }
 
   /* ========================== TABS ========================== */
-
-.tabs {
-    max-width: 1200px;
-    margin: 25px auto 0 auto;   /* vorher: 20px → jetzt 25px */
-    padding: 0 20px;
-}
+  .tabs {
+      max-width: 1200px;
+      margin: 25px auto 0 auto;   /* vorher: 20px → jetzt 25px */
+      padding: 0 20px;
+  }
 
   /* Inputs hidden */
   input[type="radio"] {
@@ -404,13 +414,24 @@
 
   <!-- ==== PERCENTILVERTEILUNG ANREISE DISTANZ ====== -->
   <div class="tab-content content4">
-
-    <!-- GEO–KPI GRID (neu) -->
-    <div class="kpi-grid geo-kpi">
-      <div class="kpi-box"><div class="kpi-value" id="geoMin">–</div><div class="kpi-label">Minimum</div></div>
-      <div class="kpi-box"><div class="kpi-value" id="geoAvg">–</div><div class="kpi-label">Durchschnitt</div></div>
-      <div class="kpi-box"><div class="kpi-value" id="geoMedian">–</div><div class="kpi-label">Median</div></div>
-      <div class="kpi-box"><div class="kpi-value" id="geoMax">–</div><div class="kpi-label">Maximum</div></div>
+    
+    <div class="geo-kpi-grid">
+        <div class="geo-kpi-box">
+            <div class="geo-kpi-value" id="geoMin"></div>
+            <div class="geo-kpi-label">Minimum</div>
+        </div>
+        <div class="geo-kpi-box">
+            <div class="geo-kpi-value" id="geoAvg"></div>
+            <div class="geo-kpi-label">Durchschnitt</div>
+        </div>
+        <div class="geo-kpi-box">
+            <div class="geo-kpi-value" id="geoMedian"></div>
+            <div class="geo-kpi-label">Median</div>
+        </div>
+        <div class="geo-kpi-box">
+            <div class="geo-kpi-value" id="geoMax"></div>
+            <div class="geo-kpi-label">Maximum</div>
+        </div>
     </div>
     
     <div class="geo-chart-container">
@@ -419,12 +440,14 @@
             <canvas id="distancePercentile"></canvas>
         </div>
     </div>
+    
     <div class="geo-chart-container">
         <div class="chart-title">Anreise-Entfernung - Histogramm</div>
         <div class="geo-chart-inner">
             <canvas id="distanceHistogram"></canvas>
         </div>
     </div>
+    
   </div>
 
 
