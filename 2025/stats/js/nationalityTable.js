@@ -1,4 +1,5 @@
 // nationalityTable.js
+
 import { loadNationalityData } from "./dataLoader.js";
 
 // ======================================================================
