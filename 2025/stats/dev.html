@@ -25,7 +25,6 @@
     font-size: 28px;
   }
 
-  /* ========================== KPI BOX GRID ========================== */
   .geo-kpi-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -43,12 +42,10 @@
       text-align: center;
       box-shadow: 0 1px 4px rgba(0,0,0,0.10);
   }
+  
   .geo-kpi-value { font-size: 24px; font-weight: bold; }
   .geo-kpi-label { color: #666; margin-top: 6px; }
 
-  /* ========================== TABS ========================== */
-
-  /* Hidden radios */
   input[type="radio"] {
       display: none;
   }
@@ -59,7 +56,6 @@
       padding: 0px 20px;
   }
 
-  /* grid layout for tab buttons */
   .tab-buttons {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -67,7 +63,6 @@
       margin-bottom: 20px;
   }
 
-  /* Tab labels – default inactive style */
   .tab-buttons label {
       padding: 10px;
       text-align: center;
@@ -81,7 +76,6 @@
       margin: 0;
   }
 
-  /* Active state per tab (because labels are no longer adjacent siblings) */
   #tab1:checked ~ .tab-buttons label[for="tab1"],
   #tab2:checked ~ .tab-buttons label[for="tab2"],
   #tab3:checked ~ .tab-buttons label[for="tab3"],
@@ -90,7 +84,6 @@
       color: #fff;
   }
 
-  /* CONTENT BOXES */
   .tab-content {
       display: none;
       background: white;
@@ -255,12 +248,6 @@
       width: 100% !important;
       height: 100% !important;
   }
-
-  .dummy-geo {
-      background: #e5e5e5;
-      border-radius: 10px;
-  }
-
 </style>
 
 </head>
@@ -315,7 +302,7 @@
       <label for="tab4">Anreise & Herkunft</label>
   </div>
 
-  <!-- TAB CONTENT 1 -->
+  <!-- TAB 1: TEILNEHMER & LÄUFE ÜBERSICHT -->
   <div class="tab-content content1">
     <div class="donut-grid">
       <div class="donut-box">
@@ -325,13 +312,13 @@
           </div>
       </div>
       <div class="donut-box">
-        <div class="chart-title">Hauptlauf</div>
+        <div class="chart-title">Ratzeburger See - 26km</div>
         <div class="donut-chart-wrapper">
             <canvas id="donutHaupt"></canvas>
         </div>
       </div>
       <div class="donut-box">
-        <div class="chart-title">Küchensee</div>
+        <div class="chart-title">Küchensee - 7,5km</div>
         <div class="donut-chart-wrapper">
             <canvas id="donutKurz"></canvas>
         </div>
@@ -345,7 +332,7 @@
     </div>
   </div>
 
-  <!-- TAB CONTENT 2 -->
+  <!-- TAB 2: NATIONALITÄTEN -->
   <div class="tab-content content2">
     <div class="table-grid">
       <div class="table-box">
@@ -375,17 +362,17 @@
     </div>
   </div>
 
-  <!-- TAB CONTENT 3 -->
+  <!-- TAB 3: ALTERSKLASSENVERTEILUNG -->
   <div class="tab-content content3">
     <div class="pyramid-chart-box">
       <div class="pyramid-chart-container">
-          <div class="chart-title">Hauptlauf</div>
+          <div class="chart-title">Ratzeburger See - 26km</div>
           <div class="pyramid-chart-inner" id="boxHaupt">
               <canvas id="chartHaupt"></canvas>
           </div>
       </div>
       <div class="pyramid-chart-container">
-          <div class="chart-title">Kurzstrecke</div>
+          <div class="chart-title">Küchensee - 7,5km</div>
           <div class="pyramid-chart-inner" id="boxKurz">
               <canvas id="chartKurz"></canvas>
           </div>
@@ -393,7 +380,7 @@
     </div>
   </div>
 
-  <!-- TAB CONTENT 4 -->
+  <!-- TAB 4: ENTFERNUNGS STATISTIK -->
   <div class="tab-content content4">
     
     <div class="geo-kpi-grid">
@@ -423,7 +410,7 @@
     </div>
     
     <div class="geo-chart-container">
-        <div class="chart-title">Anreise-Entfernung - Histogramm</div>
+        <div class="chart-title">Anreise-Entfernung – Histogramm</div>
         <div class="geo-chart-inner">
             <canvas id="distanceHistogram"></canvas>
         </div>
