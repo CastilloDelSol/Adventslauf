@@ -40,11 +40,24 @@ export async function renderDistancePercentile(canvasId) {
                 tension: 0.25              // leicht geglättet
             }]
         },
-
+    
         options: {
             responsive: true,
             maintainAspectRatio: false,
-
+            animation: {
+                duration: 900,
+                easing: "easeOutQuad"
+            },
+            animations: {
+                x: false,
+                y: false,
+                opacity: {
+                    duration: 900,
+                    easing: "easeOutQuad",
+                    from: 0,
+                    to: 1
+                }
+            },
             scales: {
                 x: {
                     title: {
@@ -55,7 +68,6 @@ export async function renderDistancePercentile(canvasId) {
                         maxTicksLimit: 11   // zeigt 0,10,20,…100%
                     }
                 },
-
                 y: {
                     title: {
                         display: true,
@@ -64,20 +76,16 @@ export async function renderDistancePercentile(canvasId) {
                     type: "logarithmic",   // <- Log-Achse wie gewünscht
                     min: 0.1,
                     ticks: {
-                        callback: (v) => {
-                            // 1, 10, 100, 1000
-                            return Number(v).toLocaleString() + " km";
-                        }
+                        callback: (v) => Number(v).toLocaleString() + " km"
                     }
                 }
             },
-
+    
             plugins: {
                 legend: { display: false },
                 tooltip: {
                     callbacks: {
-                        label: ctx => 
-                            `Distanz: ${ctx.raw.toFixed(2)} km`
+                        label: ctx => `Distanz: ${ctx.raw.toFixed(2)} km`
                     }
                 }
             }
