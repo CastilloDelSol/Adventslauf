@@ -46,30 +46,29 @@ export async function renderDistancePercentile(canvasId) {
             responsive: true,
             maintainAspectRatio: false,
         
-            // ⭐ EMPFOHLENE, KORREKT FIXTE ANIMATION
-            animation: {
-                duration: 0      // keine Positionsanimation
+            // Keine Positionsanimation
+            animation: false,
+        
+            // ⭐ Die tatsächliche sanfte Einblendung (Linienstärke von 0 → 3)
+            transitions: {
+                show: {
+                    animations: {
+                        borderWidth: {
+                            duration: 900,
+                            easing: 'easeOutQuad',
+                            from: 0,
+                            to: 3
+                        }
+                    }
+                }
             },
         
             animations: {
-                // verhindert Startposition = (0,0)
                 numbers: {
                     type: 'number',
                     duration: 0,
                     from: undefined
-                },
-        
-                // weicher Fade-In (ohne Bewegung!)
-                opacity: {
-                    duration: 800,
-                    easing: "easeOutQuad",
-                    from: 0,
-                    to: 1
-                },
-        
-                // alles andere aus
-                x: false,
-                y: false
+                }
             },
         
             scales: {
@@ -83,7 +82,7 @@ export async function renderDistancePercentile(canvasId) {
                     type: "logarithmic",
                     min: 0.1,
                     ticks: {
-                        callback: (v) => Number(v).toLocaleString() + " km"
+                        callback: v => Number(v).toLocaleString() + " km"
                     }
                 }
             },
