@@ -20,13 +20,12 @@
 
   h1 {
     text-align: center;
-    padding: 25px 0 10px;
+    padding: 10px 0px 0px 0px;
     margin: 0;
     font-size: 28px;
   }
 
   /* ========================== KPI BOX GRID ========================== */
-  /* GEO: KPI Grid */
   .geo-kpi-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -34,12 +33,9 @@
       margin-bottom: 25px;
       margin-left: -10px;
       margin-right: -10px;
-  
-      /* NEU → gleiche Innenbreite wie Diagramme */
       padding: 0 10px;
   }
-  
-  /* GEO: KPI Boxes */
+
   .geo-kpi-box {
       background: #fafafa;
       padding: 15px;
@@ -47,59 +43,63 @@
       text-align: center;
       box-shadow: 0 1px 4px rgba(0,0,0,0.10);
   }
-  
-  .geo-kpi-value {
-      font-size: 24px;
-      font-weight: bold;
-  }
-  
-  .geo-kpi-label {
-      color: #666;
-      margin-top: 6px;
-  }
+  .geo-kpi-value { font-size: 24px; font-weight: bold; }
+  .geo-kpi-label { color: #666; margin-top: 6px; }
 
   /* ========================== TABS ========================== */
+
+  /* Hidden radios */
+  input[type="radio"] {
+      display: none;
+  }
+
   .tabs {
       max-width: 1200px;
       margin: 25px auto 25px auto;
       padding: 0px 20px;
   }
 
-  /* Inputs hidden */
-  input[type="radio"] {
-    display: none;
+  /* grid layout for tab buttons */
+  .tab-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px 15px;
+      margin-bottom: 20px;
   }
 
-  /* Tab buttons */
-  .tabs label {
-    padding: 10px 10px;
-    background: #ddd;
-    border-radius: 6px;
-    cursor: pointer;
-    user-select: none;
-    transition: 0.2s;
-    font-weight: bold;
-    margin-right: 10px;
-    display: inline-block;
+  /* Tab labels – default inactive style */
+  .tab-buttons label {
+      padding: 10px;
+      text-align: center;
+      background: #ddd;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: 0.2s;
+      font-weight: bold;
+      display: block;
+      margin: 0;
   }
 
-  /* Active = blue */
-  input:checked + label {
-    background: #007bff;
-    color: white;
+  /* Active state per tab (because labels are no longer adjacent siblings) */
+  #tab1:checked ~ .tab-buttons label[for="tab1"],
+  #tab2:checked ~ .tab-buttons label[for="tab2"],
+  #tab3:checked ~ .tab-buttons label[for="tab3"],
+  #tab4:checked ~ .tab-buttons label[for="tab4"] {
+      background: #007bff;
+      color: #fff;
   }
 
-  /* Content Boxes */
+  /* CONTENT BOXES */
   .tab-content {
       display: none;
       background: white;
-      padding: 30px;          /* EINHEITLICH für alle Tabs */
-      margin-top: 20px;       /* EINHEITLICH Abstand zu Tabs */
+      padding: 30px;
+      margin-top: 20px;
       border-radius: 12px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   }
 
-  /* Activated tabs */
   #tab1:checked ~ .content1,
   #tab2:checked ~ .content2,
   #tab3:checked ~ .content3,
@@ -107,7 +107,6 @@
     display: block;
   }
 
-  /* Global chart title */
   .chart-title {
       font-size: 20px;
       font-weight: bold;
@@ -116,177 +115,157 @@
       width: 100%;
   }
 
-  /* Dummy blocks */
   .dummy-box {
-    width: 100% !important;
-    height: 100% !important;
-    background: #e5e5e5;
-    border-radius: 12px;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
+      width: 100% !important;
+      height: 100% !important;
+      background: #e5e5e5;
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
   }
 
-  /* 2×2 donut grid */
   .donut-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
   }
 
-.donut-box {
-    background: #fafafa;
-    border-radius: 12px;
-    padding: 15px;          /* vorher 10px → etwas harmonischer */
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    margin: 0;              /* WICHTIG: Entfernt ungleichmäßige Abstände */
-}
+  .donut-box {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      margin: 0;
+  }
 
-/* Hier ist die Magie */
-.donut-chart-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;     /* IMMER ein Quadrat → perfekter Donut */
-    position: relative;
-}
+  .donut-chart-wrapper {
+      width: 100%;
+      aspect-ratio: 1/1;
+      position: relative;
+  }
+  .donut-chart-wrapper canvas {
+      position: absolute;
+      inset: 0;
+  }
 
-.donut-chart-wrapper canvas {
-    position: absolute;
-    inset: 0;
-}
+  .pyramid-chart-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      margin-top: 0;
+  }
 
-/* 2-column layout like donut grid */
-.pyramid-chart-box {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 20px;              /* passt perfekt zu donut-grid */
-    margin-top: 0;
-}
-
-/* Same styling as donut-box but flexible height */
-.pyramid-chart-container {
-    background: #fafafa;
-    border-radius: 12px;
-    padding: 15px;          /* vorher 10px → vereinheitlicht */
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    margin: 0;              /* NEU → gleiche Abstände wie Donuts */
-}
+  .pyramid-chart-container {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      margin: 0;
+  }
 
   .pyramid-chart-inner {
-    width: 100%;
-    height: 400px; /* adjustable */
-}
-
-/* The pyramid charts need a fixed height or responsive aspect-ratio */
-.pyramid-chart-container canvas {
-    width: 100% !important;
-    height: 400px !important; /* You can adjust */
-}
-
-/* Nationality table */
-.flag-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 16px;
-}
-
-.flag-table th {
-    text-align: left;
-    padding: 8px;
-    font-weight: bold;
-    border-bottom: 2px solid #ddd;
-}
-  
-.flag-table th:last-child {
-    text-align: right;
-}
-
-.flag-table td {
-    padding: 8px;
-    border-bottom: 1px solid #eee;
-}
-
-.flag-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.nationality-flag {
-    width: 26px;
-    height: 18px;
-    border-radius: 3px;
-    object-fit: cover;
-}
-
-.count {
-    font-weight: bold;
-    text-align: right;
-}
-
-/* === 2-column table layout (like pyramid charts) === */
-.table-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 20px;
-    margin-top: 0;
-}
-
-/* Table box styling – identical to pyramid-chart-container */
-.table-box {
-    background: #fafafa;
-    border-radius: 12px;
-    padding: 15px;           /* same as pyramid-chart-container */
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    margin: 0;               /* unify spacing */
-}
-
-/* Title styling (shared with chart-title) */
-.table-box .chart-title {
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 12px;
-}
-
-  /* ============================================
-   GEO-DIAGRAMME (Gleicher Stil wie Pyramiden)
-   ============================================ */
-  /* Extra Abstand über Geo-KPI-Grid */
-  .geo-kpi {
-      margin-bottom: 25px;
+      width: 100%;
+      height: 400px;
   }
-    
-.geo-chart-container {
-    background: #fafafa;
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    margin-bottom: 20px;      /* Abstand zwischen den zwei Diagrammen */
-}
 
-.geo-chart-inner {
-    width: 100%;
-    height: 400px;            /* gleiche Höhe wie Pyramidendiagramme */
-    position: relative;
-}
+  .pyramid-chart-container canvas {
+      width: 100% !important;
+      height: 400px !important;
+  }
 
-.geo-chart-inner canvas {
-    width: 100% !important;
-    height: 100% !important;
-}
+  .flag-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 16px;
+  }
 
-/* Dummy Box für zweites Diagramm */
-.dummy-geo {
-    background: #e5e5e5;
-    border-radius: 10px;
-}
+  .flag-table th {
+      text-align: left;
+      padding: 8px;
+      font-weight: bold;
+      border-bottom: 2px solid #ddd;
+  }
+  .flag-table th:last-child {
+      text-align: right;
+  }
+  .flag-table td {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+  }
+
+  .flag-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+  }
+
+  .nationality-flag {
+      width: 26px;
+      height: 18px;
+      border-radius: 3px;
+      object-fit: cover;
+  }
+
+  .count {
+      font-weight: bold;
+      text-align: right;
+  }
+
+  .table-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      margin-top: 0;
+  }
+
+  .table-box {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      margin: 0;
+  }
+
+  .table-box .chart-title {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 12px;
+  }
+
+  .geo-kpi { margin-bottom: 25px; }
+
+  .geo-chart-container {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+  }
+
+  .geo-chart-inner {
+      width: 100%;
+      height: 400px;
+      position: relative;
+  }
+  .geo-chart-inner canvas {
+      width: 100% !important;
+      height: 100% !important;
+  }
+
+  .dummy-geo {
+      background: #e5e5e5;
+      border-radius: 10px;
+  }
 
 </style>
 
 </head>
 <body>
+
 <script type="module">
   import { renderGenderDonut } from "./js/genderDonut.js";
   renderGenderDonut("TOTAL", "donutTotal");
@@ -319,20 +298,24 @@
 </script>
 
 <h1>🎄 Adventslauf – Statistik 2025 🎄</h1>
-  
-<!-- ======================== TABS ======================== -->
+
 <div class="tabs">
 
+  <!-- Hidden radios -->
   <input type="radio" id="tab1" name="tab" checked>
-  <label for="tab1">Teilnehmer & Läufe</label>
   <input type="radio" id="tab2" name="tab">
-  <label for="tab2">Nationalität</label>
   <input type="radio" id="tab3" name="tab">
-  <label for="tab3">Altersstruktur</label>
   <input type="radio" id="tab4" name="tab">
-  <label for="tab4">Anreise & Herkunft</label>
 
-  <!-- ============== DONUT TEILNEHMER CHARTS ============ -->
+  <!-- GRID BUTTONS -->
+  <div class="tab-buttons">
+      <label for="tab1">Teilnehmer & Läufe</label>
+      <label for="tab2">Nationalität</label>
+      <label for="tab3">Altersstruktur</label>
+      <label for="tab4">Anreise & Herkunft</label>
+  </div>
+
+  <!-- TAB CONTENT 1 -->
   <div class="tab-content content1">
     <div class="donut-grid">
       <div class="donut-box">
@@ -362,7 +345,7 @@
     </div>
   </div>
 
-  <!-- ======== TEILNEHMER NATION/BUNDESLAND TABELLE  ========== -->
+  <!-- TAB CONTENT 2 -->
   <div class="tab-content content2">
     <div class="table-grid">
       <div class="table-box">
@@ -392,21 +375,17 @@
     </div>
   </div>
 
-  <!-- ==== PYRAMIDEN: TEILNEHMER JE LAUF UND ALTERSKLASSE ====== -->
+  <!-- TAB CONTENT 3 -->
   <div class="tab-content content3">
     <div class="pyramid-chart-box">
       <div class="pyramid-chart-container">
-          <div class="chart-title">
-            Hauptlauf
-          </div>
+          <div class="chart-title">Hauptlauf</div>
           <div class="pyramid-chart-inner" id="boxHaupt">
               <canvas id="chartHaupt"></canvas>
           </div>
       </div>
       <div class="pyramid-chart-container">
-          <div class="chart-title">
-            Kurzstrecke
-          </div>
+          <div class="chart-title">Kurzstrecke</div>
           <div class="pyramid-chart-inner" id="boxKurz">
               <canvas id="chartKurz"></canvas>
           </div>
@@ -414,7 +393,7 @@
     </div>
   </div>
 
-  <!-- ==== PERCENTILVERTEILUNG ANREISE DISTANZ ====== -->
+  <!-- TAB CONTENT 4 -->
   <div class="tab-content content4">
     
     <div class="geo-kpi-grid">
@@ -451,7 +430,6 @@
     </div>
     
   </div>
-
 
 </div>
 
