@@ -40,47 +40,54 @@ export async function renderDistancePercentile(canvasId) {
                 tension: 0.25              // leicht geglättet
             }]
         },
-    
+
+        //here
         options: {
             responsive: true,
             maintainAspectRatio: false,
+        
+            // ⭐ EMPFOHLENE, KORREKT FIXTE ANIMATION
             animation: {
-                duration: 900,
-                easing: "easeOutQuad"
+                duration: 0      // keine Positionsanimation
             },
+        
             animations: {
-                x: false,
-                y: false,
+                // verhindert Startposition = (0,0)
+                numbers: {
+                    type: 'number',
+                    duration: 0,
+                    from: undefined
+                },
+        
+                // weicher Fade-In (ohne Bewegung!)
                 opacity: {
-                    duration: 900,
+                    duration: 800,
                     easing: "easeOutQuad",
                     from: 0,
                     to: 1
-                }
+                },
+        
+                // alles andere aus
+                x: false,
+                y: false
             },
+        
             scales: {
                 x: {
-                    title: {
-                        display: true,
-                        text: "Perzentil (%)"
-                    },
-                    ticks: {
-                        maxTicksLimit: 11   // zeigt 0,10,20,…100%
-                    }
+                    title: { display: true, text: "Perzentil (%)" },
+                    ticks: { maxTicksLimit: 11 }
                 },
+        
                 y: {
-                    title: {
-                        display: true,
-                        text: "Entfernung (km, log10)"
-                    },
-                    type: "logarithmic",   // <- Log-Achse wie gewünscht
+                    title: { display: true, text: "Entfernung (km, log10)" },
+                    type: "logarithmic",
                     min: 0.1,
                     ticks: {
                         callback: (v) => Number(v).toLocaleString() + " km"
                     }
                 }
             },
-    
+        
             plugins: {
                 legend: { display: false },
                 tooltip: {
