@@ -1,3 +1,4 @@
+
 // distancePercentile.js
 
 import { loadGeoData } from "./dataLoader.js";
@@ -23,24 +24,21 @@ export async function renderDistancePercentile(canvasId) {
     const labels = entries.map(e => e.percentile + "%");
     const values = entries.map(e => e.value);
 
-    // Canvas element
-    const ctx = document.getElementById(canvasId);
-
     // -------------------------------------------------------------
-    // 2. Create Chart.js Percentile Line Chart (without animation)
+    // 2. Create Chart.js Percentile Line Chart
     // -------------------------------------------------------------
-    const chart = new Chart(ctx, {
+    new Chart(document.getElementById(canvasId), {
         type: "line",
         data: {
             labels: labels,
             datasets: [{
                 label: "Entfernung (km)",
                 data: values,
-                borderColor: "rgba(54, 162, 235, 1.0)",
+                borderColor: "rgba(54, 162, 235, 1.0)",  // Pyramiden-Blau
                 backgroundColor: "rgba(54, 162, 235, 0.2)",
                 borderWidth: 3,
                 pointRadius: 0,
-                tension: 0.25
+                tension: 0.33 // leicht geglättet
             }]
         },
 
@@ -48,19 +46,6 @@ export async function renderDistancePercentile(canvasId) {
             responsive: true,
             maintainAspectRatio: false,
 
-            // Keine Positionsanimation
-            animation: false,
-
-            // Entfernt das "fliegen" von 0,0
-            animations: {
-                numbers: {
-                    type: 'number',
-                    duration: 0,
-                    from: undefined
-                }
-            },
-
-            // Skalen
             scales: {
                 x: {
                     title: {
@@ -80,7 +65,9 @@ export async function renderDistancePercentile(canvasId) {
                     type: "logarithmic",
                     min: 0.1,
                     ticks: {
-                        callback: (v) => Number(v).toLocaleString() + " km"
+                        callback: (v) => {
+                            return Number(v).toLocaleString() + " km";
+                        }
                     }
                 }
             },
@@ -89,28 +76,11 @@ export async function renderDistancePercentile(canvasId) {
                 legend: { display: false },
                 tooltip: {
                     callbacks: {
-                        label: (ctx) =>
+                        label: ctx => 
                             `Distanz: ${ctx.raw.toFixed(2)} km`
                     }
                 }
             }
         }
     });
-
-    // -------------------------------------------------------------
-    // 3. ⭐ Manuelle SANFTE Animation (funktioniert IMMER)
-    //    → Einblendung durch borderWidth 0 → 3
-    // -------------------------------------------------------------
-    // Erst borderWidth auf 0 setzen
-    chart.data.datasets[0].borderWidth = 0;
-    chart.update();
-
-    // Sanft auf borderWidth 3 animieren
-    setTimeout(() => {
-        chart.data.datasets[0].borderWidth = 3;
-        chart.update({
-            duration: 900,
-            easing: "easeOutQuad"
-        });
-    }, 250); // kurze Verzögerung, bis Chart wirklich sichtbar ist
 }
