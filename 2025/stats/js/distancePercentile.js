@@ -23,46 +23,35 @@ export async function renderDistancePercentile(canvasId) {
     const labels = entries.map(e => e.percentile + "%");
     const values = entries.map(e => e.value);
 
+    // Canvas element
+    const ctx = document.getElementById(canvasId);
+
     // -------------------------------------------------------------
-    // 2. Create Chart.js Percentile Line Chart
+    // 2. Create Chart.js Percentile Line Chart (without animation)
     // -------------------------------------------------------------
-    new Chart(document.getElementById(canvasId), {
+    const chart = new Chart(ctx, {
         type: "line",
         data: {
             labels: labels,
             datasets: [{
                 label: "Entfernung (km)",
                 data: values,
-                borderColor: "rgba(54, 162, 235, 1.0)",   // Pyramiden-Blau
+                borderColor: "rgba(54, 162, 235, 1.0)",
                 backgroundColor: "rgba(54, 162, 235, 0.2)",
                 borderWidth: 3,
                 pointRadius: 0,
-                tension: 0.25              // leicht geglättet
+                tension: 0.25
             }]
         },
 
-        //here
         options: {
             responsive: true,
             maintainAspectRatio: false,
-        
+
             // Keine Positionsanimation
             animation: false,
-        
-            // ⭐ Die tatsächliche sanfte Einblendung (Linienstärke von 0 → 3)
-            transitions: {
-                show: {
-                    animations: {
-                        borderWidth: {
-                            duration: 900,
-                            easing: 'easeOutQuad',
-                            from: 0,
-                            to: 3
-                        }
-                    }
-                }
-            },
-        
+
+            // Entfernt das "fliegen" von 0,0
             animations: {
                 numbers: {
                     type: 'number',
@@ -70,31 +59,58 @@ export async function renderDistancePercentile(canvasId) {
                     from: undefined
                 }
             },
-        
+
+            // Skalen
             scales: {
                 x: {
-                    title: { display: true, text: "Perzentil (%)" },
-                    ticks: { maxTicksLimit: 11 }
+                    title: {
+                        display: true,
+                        text: "Perzentil (%)"
+                    },
+                    ticks: {
+                        maxTicksLimit: 11
+                    }
                 },
-        
+
                 y: {
-                    title: { display: true, text: "Entfernung (km, log10)" },
+                    title: {
+                        display: true,
+                        text: "Entfernung (km, log10)"
+                    },
                     type: "logarithmic",
                     min: 0.1,
                     ticks: {
-                        callback: v => Number(v).toLocaleString() + " km"
+                        callback: (v) => Number(v).toLocaleString() + " km"
                     }
                 }
             },
-        
+
             plugins: {
                 legend: { display: false },
                 tooltip: {
                     callbacks: {
-                        label: ctx => `Distanz: ${ctx.raw.toFixed(2)} km`
+                        label: (ctx) =>
+                            `Distanz: ${ctx.raw.toFixed(2)} km`
                     }
                 }
             }
         }
     });
+
+    // -------------------------------------------------------------
+    // 3. ⭐ Manuelle SANFTE Animation (funktioniert IMMER)
+    //    → Einblendung durch borderWidth 0 → 3
+    // -------------------------------------------------------------
+    // Erst borderWidth auf 0 setzen
+    chart.data.datasets[0].borderWidth = 0;
+    chart.update();
+
+    // Sanft auf borderWidth 3 animieren
+    setTimeout(() => {
+        chart.data.datasets[0].borderWidth = 3;
+        chart.update({
+            duration: 900,
+            easing: "easeOutQuad"
+        });
+    }, 250); // kurze Verzögerung, bis Chart wirklich sichtbar ist
 }
