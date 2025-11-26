@@ -10,9 +10,6 @@ export async function renderDistancePercentile(canvasId) {
         return;
     }
 
-    // -------------------------------------------------------------
-    // 1. Percentiles -> arrays
-    // -------------------------------------------------------------
     const entries = Object.entries(geo.percentiles_km)
         .map(([p, val]) => ({
             percentile: parseFloat(p.replace("%", "")),
@@ -23,14 +20,29 @@ export async function renderDistancePercentile(canvasId) {
     const labels = entries.map(e => e.percentile + "%");
     const values = entries.map(e => e.value);
 
-    // -------------------------------------------------------------
-    // 2. Y-Max automatisch an Daten anpassen (auf nächste 10er-Potenz)
-    // -------------------------------------------------------------
+    // Y-Max berechnen (zur nächsten 10er-Potenz aufrunden)
     const maxValue = Math.max(...values);
     const yMax = Math.pow(10, Math.ceil(Math.log10(maxValue)));
 
     // -------------------------------------------------------------
-    // 3. Chart.js – Percentile Line Chart
+    // LOG-TICKS GENERIEREN (mit minor steps)
+    // -------------------------------------------------------------
+    const logTicks = [];
+
+    // z.B. 10^-1 bis 10^3 → 0.1 bis 1000
+    for (let exp = -1; exp <= 3; exp++) {
+        for (let m = 1; m < 10; m++) {
+            const val = m * Math.pow(10, exp);
+            if (val >= 0.1 && val <= yMax) {
+                logTicks.push(val);
+            }
+        }
+    }
+
+    const mainTicks = [0.1, 1, 10, 100, 1000];
+
+    // -------------------------------------------------------------
+    // CHART
     // -------------------------------------------------------------
     new Chart(document.getElementById(canvasId), {
         type: "line",
@@ -56,9 +68,6 @@ export async function renderDistancePercentile(canvasId) {
                     title: {
                         display: true,
                         text: "Perzentil (%)"
-                    },
-                    ticks: {
-                        maxTicksLimit: 11
                     }
                 },
 
@@ -67,23 +76,28 @@ export async function renderDistancePercentile(canvasId) {
                     min: 0.1,
                     max: yMax,
 
-                    title: {
-                        display: true,
-                        text: "Entfernung (km, log10)"
-                    },
-
-                    // --- ONLY show 0.1 / 1 / 10 / 100 / 1000 ---
+                    // WICHTIG: wir überschreiben TICK-Werte selbst
                     ticks: {
-                        callback: (value) => {
-                            const allowed = [0.1, 1, 10, 100, 1000];
-                            return allowed.includes(value) ? value + " km" : "";
-                        }
+                        callback: (value) =>
+                            mainTicks.includes(value) ? value + " km" : "",
+                        values: logTicks  // erzeugt MINOR GRIDLINES
                     },
 
                     grid: {
+                        // ALLE Gridlines zeichnen – auch die Minor
                         drawTicks: true,
-                        minorTicks: {
-                            display: true
+                        color: (ctx) => {
+                            const v = ctx.tick.value;
+
+                            // Hauptlinie = dunkler
+                            if (mainTicks.includes(v)) return "#999";
+
+                            // Minorlinie = sehr hell
+                            return "rgba(0,0,0,0.10)";
+                        },
+                        lineWidth: (ctx) => {
+                            const v = ctx.tick.value;
+                            return mainTicks.includes(v) ? 1.4 : 0.6;
                         }
                     }
                 }
@@ -93,7 +107,7 @@ export async function renderDistancePercentile(canvasId) {
                 legend: { display: false },
                 tooltip: {
                     callbacks: {
-                        label: ctx => `Distanz: ${ctx.raw.toFixed(2)} km`
+                        label: (ctx) => `Distanz: ${ctx.raw.toFixed(2)} km`
                     }
                 }
             }
