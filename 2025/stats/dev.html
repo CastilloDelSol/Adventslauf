@@ -59,9 +59,15 @@
   /* ========================== TABS ========================== */
   .tabs {
       max-width: 1200px;
-      margin: 25px auto 0 auto;   /* vorher: 20px → jetzt 25px */
+      margin: 25px auto 0 auto;
       padding: 0 20px;
+  
+      /* NEU → sorgt dafür, dass die Labels schön in einem Grid stehen */
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;        /* Abstand horizontal & vertikal */
   }
+
 
   /* Inputs hidden */
   input[type="radio"] {
@@ -70,22 +76,43 @@
 
   /* Tab buttons */
   .tabs label {
-    padding: 10px 18px;
-    background: #ddd;
-    border-radius: 6px;
+    padding: 12px 16px;
+    background: #e7e7e7;
+    color: #222;
+    border-radius: 10px;
+    text-align: center;
     cursor: pointer;
-    user-select: none;
+    font-weight: 600;
     transition: 0.2s;
-    font-weight: bold;
-    margin-right: 10px;
-    display: inline-block;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+
+    /* NEU: statt inline-block → volle Grid-Breite */
+    display: block;
+    width: 100%;
+  }
+  
+  .tabs label:hover {
+    background: #dcdcdc;
   }
 
-  /* Active = blue */
-  input:checked + label {
+  .tabs input:checked + label {
     background: #007bff;
     color: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   }
+
+  @media (max-width: 600px) {
+    .tabs {
+        grid-template-columns: 1fr 1fr;  /* immer 2 pro Zeile */
+    }
+  }
+
+  @media (max-width: 380px) {
+    .tabs {
+        grid-template-columns: 1fr;      /* kleinste Geräte: 1 pro Zeile */
+    }
+  }
+
 
   /* Content Boxes */
   .tab-content {
