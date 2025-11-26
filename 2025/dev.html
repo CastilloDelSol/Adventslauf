@@ -86,14 +86,6 @@ body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Ro
 }
   
 .map-button:hover { background:#f0f0f0; }
-
-/*
-.stats-box {
-  position:absolute; bottom:90px; left:20px; background:white; padding:12px;
-  border-radius:8px; font-size:13px; box-shadow:0 2px 6px rgba(0,0,0,0.25);
-  max-width:260px; z-index:9903;
-}
-  */
   
 .legend {
   background:white; padding:10px; border-radius:6px;
@@ -115,8 +107,6 @@ body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Ro
   <div id="btnMapType" class="map-button">CARTO Light Grey</div>
   <div id="btnRes" class="map-button">Feine Auflösung (r7)</div>
 </div>
-
-<!-- <div id="stats" class="stats-box">Lade Statistik…</div>*/ -->
 
   <!-- COPYRIGHT + DSGVO -->
 <div class="copyright-box">
@@ -370,36 +360,6 @@ function loadHex(file, pane, cb) {
     return div;
   };
   legend.addTo(map);
-
-
-  /* ============================================================
-     STATISTICS BOX
-     ============================================================ */
-  /*
-  fetch("statistics.json")
-    .then(r => r.json())
-    .then(s => {
-      document.getElementById("stats").innerHTML = `
-        <b>Statistiken</b>
-        <table>
-          <tr><td class="label">Anmeldungen:</td><td>${s.total_participants}</td></tr>
-          <tr><td class="label">Min Distanz:</td><td>${s.distance_min_km} km</td></tr>
-          <tr><td class="label">Max Distanz:</td><td>${s.distance_max_km} km</td></tr>
-          <tr><td class="label">Ø Distanz:</td><td>${s.distance_avg_km} km</td></tr>
-          <tr><td class="label">Median:</td><td>${s.distance_median_km} km</td></tr>
-        </table>
-
-        <br><b>Anreise-Entfernungen</b>
-        <table>
-          ${Object.entries(s.distance_buckets)
-            .map(([k,v]) => `<tr><td class="label">${k}:</td><td>${v}</td></tr>`).join("")}
-        </table>
-      `;
-    })
-    .catch(() => {
-      document.getElementById("stats").innerHTML = "Keine Statistikdaten gefunden.";
-    });
-  */
 
 } // END initMap()
 
