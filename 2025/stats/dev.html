@@ -326,10 +326,6 @@
   renderDistancePercentile("distancePercentile");
   import { renderDistanceHistogram } from "./js/distanceHistogram.js";
   renderDistanceHistogram("distanceHistogram");
-  
-  /* ---------------------- PRIVACY ---------------------- */
-  function openPrivacy(){ document.getElementById("privacyBox").style.display="block"; }
-  function closePrivacy(){ document.getElementById("privacyBox").style.display="none"; }
 </script>
 
 <h1>🎄 Adventslauf – Statistik 2025 🎄</h1>
@@ -506,6 +502,16 @@
     <button onclick="closePrivacy()">Fenster Schließen</button>
   </center>
 </div>
+
+<script>
+	function openPrivacy() {
+	    document.getElementById("privacyBox").style.display = "block";
+	}
+	
+	function closePrivacy() {
+	    document.getElementById("privacyBox").style.display = "none";
+	}
+</script>
 
 </body>
 <footer class="footer">
