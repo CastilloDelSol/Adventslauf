@@ -79,7 +79,11 @@
   #tab1:checked ~ .tab-buttons label[for="tab1"],
   #tab2:checked ~ .tab-buttons label[for="tab2"],
   #tab3:checked ~ .tab-buttons label[for="tab3"],
-  #tab4:checked ~ .tab-buttons label[for="tab4"] {
+  #tab4:checked ~ .tab-buttons label[for="tab4"],
+  #tab5:checked ~ .tab-buttons label[for="tab5"],
+  #tab6:checked ~ .tab-buttons label[for="tab6"],
+  #tab7:checked ~ .tab-buttons label[for="tab7"],
+  #tab8:checked ~ .tab-buttons label[for="tab8"] {
       background: #007bff;
       color: #fff;
   }
@@ -96,7 +100,11 @@
   #tab1:checked ~ .content1,
   #tab2:checked ~ .content2,
   #tab3:checked ~ .content3,
-  #tab4:checked ~ .content4 {
+  #tab4:checked ~ .content4,
+  #tab5:checked ~ .content5,
+  #tab6:checked ~ .content6,
+  #tab7:checked ~ .content7,
+  #tab8:checked ~ .content8 {
     display: block;
   }
 
@@ -211,7 +219,7 @@
 
   .table-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 20px;
       margin-top: 0;
   }
@@ -251,6 +259,38 @@
       width: 100% !important;
       height: 100% !important;
   }
+  
+  .race-select-box {
+  margin: 0 auto 20px auto;
+  text-align: center;
+  }
+
+  .race-select {
+    padding: 10px 14px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background-color: #fafafa;
+    min-width: 240px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    max-width: 900px;
+  }
+
+  .card h2 {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+  }
+
 
   .footer {
     text-align: center;
@@ -336,19 +376,27 @@
 
 <div class="tabs">
 
-  <!-- VERSTECKTE RADIO BUTTONS -->
-  <input type="radio" id="tab1" name="tab" checked>
-  <input type="radio" id="tab2" name="tab">
-  <input type="radio" id="tab3" name="tab">
-  <input type="radio" id="tab4" name="tab">
+	<!-- VERSTECKTE RADIO BUTTONS -->
+	<input type="radio" id="tab1" name="tab" checked>
+	<input type="radio" id="tab2" name="tab">
+	<input type="radio" id="tab3" name="tab">
+	<input type="radio" id="tab4" name="tab">
+	<input type="radio" id="tab5" name="tab">
+	<input type="radio" id="tab6" name="tab">
+	<input type="radio" id="tab7" name="tab">
+	<input type="radio" id="tab8" name="tab">
 
-  <!-- MENÜ BUTTONS -->
-  <div class="tab-buttons">
-      <label for="tab1">Teilnehmer & Läufe</label>
-      <label for="tab2">Nationalität</label>
-      <label for="tab3">Altersstruktur</label>
-      <label for="tab4">Anreise & Herkunft</label>
-  </div>
+	<!-- MENÜ BUTTONS -->
+	<div class="tab-buttons">
+	  <label for="tab1">Teilnehmer & Läufe</label>
+	  <label for="tab2">Nationalität</label>
+	  <label for="tab3">Altersstruktur</label>
+	  <label for="tab4">Anreise & Herkunft</label>
+	  <label for="tab5">Teilnehmerstatus </label>
+	  <label for="tab6">Top 6</label>
+	  <label for="tab7">Zeiten-Histogramme</label>
+	  <label for="tab8">Altersklassen</label>
+	</div>
 
   <!-- TAB 1: TEILNEHMER & LÄUFE ÜBERSICHT -->
   <div class="tab-content content1">
@@ -463,32 +511,99 @@
         </div>
     </div>
   </div>
+  
+  
+  <!-- TAB 5: TEILNEHMERSTATUS -->
+  <div class="tab-content content5">
+    <div class="donut-grid">
+      <div class="donut-box">
+          <div class="chart-title">Ratzeburger See - 26km</div>
+          <div class="donut-chart-wrapper">
+              <canvas id="donutTotal"></canvas>
+          </div>
+      </div>
+      <div class="donut-box">
+        <div class="chart-title">Küchensee - 7,5km</div>
+        <div class="donut-chart-wrapper">
+            <canvas id="donutHaupt"></canvas>
+        </div>
+      </div>
+  	</div>
+  </div>
+  
+<!-- TAB 6: TOP 6 -->
+<div class="tab-content content6">
+
+  <!-- Strecke Auswahl -->
+  <div class="race-select-box">
+    <label for="top6Select">Strecke:</label>
+    <select id="top6Select" class="race-select">
+      <option value="hauptlauf">Ratzeburger See – 26km</option>
+      <option value="kurzstrecke">Küchensee – 7,5km</option>
+    </select>
+  </div>
+
+  <!-- Männer Block -->
+  <div class="card">
+    <h2>Männer – Defizitdiagramm</h2>
+    <canvas id="deficitChartM"></canvas>
+
+    <h2>Top 6 – Männer</h2>
+    <div id="top6TableM"></div>
+  </div>
+
+  <!-- Frauen Block -->
+  <div class="card">
+    <h2>Frauen – Defizitdiagramm</h2>
+    <canvas id="deficitChartW"></canvas>
+
+    <h2>Top 6 – Frauen</h2>
+    <div id="top6TableW"></div>
+  </div>
 
 </div>
 
-<!-- POPUP DATENSCHUTZ -->
+  
+  <!-- TAB 7: ZEITEN HISTOGRAMME -->
+  <div class="tab-content content7">
+    <div class="dummy-box">
+    	<p>--- Zeiten Histogramme ---</p>
+    </div>
+  </div>
+  
+   <!-- TAB 8: ALTERSKLASSEN -->
+  <div class="tab-content content8">
+    <div class="dummy-box">
+    	<p>--- Altersklassen ---</p>
+    </div>
+  </div>
+  
+
+</div>
+
+<!-- POPUP DATENSCHUTZHINWEIS -->
 <div id="privacyBox">
 	<h1>Datenschutzhinweis</h1>
 	<p>
-	Die hier angezeigten Statistiken basieren auf den im Rahmen der Anmeldung
-	übermittelten Informationen (z. B. Altersklasse, Geschlecht,
-	Nationalität, Wohnortangabe). Es werden <b>keine Namen</b>, 
-	<b>keine Adressen</b>, <b>keine exakten Koordinaten</b> und 
-	<b>keine personenbezogenen Daten</b> veröffentlicht.
+		Die hier angezeigten Statistiken basieren auf den im Rahmen der Anmeldung
+		übermittelten Informationen (z. B. Altersklasse, Geschlecht,
+		Nationalität, Wohnortangabe). Es werden <b>keine Namen</b>, 
+		<b>keine Adressen</b>, <b>keine exakten Koordinaten</b> und 
+		<b>keine personenbezogenen Daten</b> veröffentlicht.
 	</p>
 	<p>
-	Alle Auswertungen – darunter Altersstruktur, Nationalität, Herkunft
-	(Bundesland/Land) sowie Anreiseentfernung – erfolgen ausschließlich 
-	<b>aggregiert und anonymisiert</b>. Eine Rückverfolgung Einzelner ist nicht möglich.
+		Alle Auswertungen – darunter Altersstruktur, Nationalität, Herkunft
+		(Bundesland/Land) sowie Anreiseentfernung – erfolgen ausschließlich 
+		<b>aggregiert und anonymisiert</b>. Eine Rückverfolgung Einzelner ist nicht möglich.
 	</p>
 	<p>
-	Als Datenquellen dienen:
-	<br>• Öffentliche Teilnehmerliste auf <a href="https://my.raceresult.com/335470/participants" target="_blank">my.raceresult.com</a>
-	<br>• Wohnortangaben aus der Anmeldung (nicht öffentlich)
+		Als Datenquellen dienen:
+		<br>• Öffentliche Teilnehmerliste auf <a href="https://my.raceresult.com/335470/participants" target="_blank">my.raceresult.com</a>
+		<br>• Wohnortangaben aus der Anmeldung (nicht öffentlich)
 	</p>
 	<p>
-	Die Daten werden ausschließlich für statistische Zwecke genutzt.
-	Es findet <b>keine Profilbildung</b> und keine Weitergabe der Rohdaten statt.
+		Die Daten werden ausschließlich für statistische Zwecke genutzt.
+		Es findet <b>keine Profilbildung</b> und keine Weitergabe der Rohdaten statt.
 	</p>
 	<center>
 	  <button onclick="closePrivacy()">Fenster schließen</button>
