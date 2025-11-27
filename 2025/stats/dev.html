@@ -22,7 +22,7 @@
     text-align: center;
     padding: 10px 0px 0px 0px;
     margin: 0;
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .geo-kpi-grid {
@@ -181,9 +181,11 @@
       font-weight: bold;
       border-bottom: 2px solid #ddd;
   }
+	
   .flag-table th:last-child {
       text-align: right;
   }
+	
   .flag-table td {
       padding: 8px;
       border-bottom: 1px solid #eee;
@@ -244,6 +246,7 @@
       height: 400px;
       position: relative;
   }
+	
   .geo-chart-inner canvas {
       width: 100% !important;
       height: 100% !important;
@@ -251,7 +254,7 @@
 
   .footer {
     text-align: center;
-    font-size: 14px;
+    font-size: 10px;
     color: #666;
     padding: 10px 0 10px 0;
     margin-top: 20px;
@@ -266,6 +269,7 @@
 
   /* PRIVACY POPUP */
   #privacyBox {
+	font-size: 12px;
     display:none;
     position: fixed;
     left:50%;
@@ -332,13 +336,13 @@
 
 <div class="tabs">
 
-  <!-- Hidden radios -->
+  <!-- VERSTECKTE RADIO BUTTONS -->
   <input type="radio" id="tab1" name="tab" checked>
   <input type="radio" id="tab2" name="tab">
   <input type="radio" id="tab3" name="tab">
   <input type="radio" id="tab4" name="tab">
 
-  <!-- GRID BUTTONS -->
+  <!-- MENÜ BUTTONS -->
   <div class="tab-buttons">
       <label for="tab1">Teilnehmer & Läufe</label>
       <label for="tab2">Nationalität</label>
@@ -426,7 +430,6 @@
 
   <!-- TAB 4: ENTFERNUNGS STATISTIK -->
   <div class="tab-content content4">
-    
     <div class="geo-kpi-grid">
         <div class="geo-kpi-box">
             <div class="geo-kpi-value" id="geoMin"></div>
@@ -459,7 +462,6 @@
             <canvas id="distanceHistogram"></canvas>
         </div>
     </div>
-    
   </div>
 
 </div>
@@ -469,7 +471,7 @@
 	<h1>Datenschutzhinweis</h1>
 	<p>
 	Die hier angezeigten Statistiken basieren auf den im Rahmen der Anmeldung
-	freiwillig übermittelten Informationen (z. B. Altersklasse, Geschlecht,
+	übermittelten Informationen (z. B. Altersklasse, Geschlecht,
 	Nationalität, Wohnortangabe). Es werden <b>keine Namen</b>, 
 	<b>keine Adressen</b>, <b>keine exakten Koordinaten</b> und 
 	<b>keine personenbezogenen Daten</b> veröffentlicht.
