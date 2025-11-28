@@ -456,8 +456,15 @@
         await renderDeficitCharts(raceName);
     }
 
-	console.log("Calling loadTop6 from module…");
-	loadTop6("hauptlauf");
+    // ---------- DROPDOWN LOGIC FOR TAB 6 ----------
+    const top6Select = document.getElementById("top6Select");
+    top6Select.addEventListener("change", () => {
+        loadTop6(top6Select.value);
+    });
+
+    // ---------- INITIAL LOAD ----------
+    console.log("Calling loadTop6 from module…");
+    loadTop6("hauptlauf");
     
   import { renderRaceHistograms } from "./js/raceHistogram.js";
   const histSelect = document.getElementById("histSelect");
