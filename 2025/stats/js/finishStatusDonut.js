@@ -1,4 +1,3 @@
-// finishStatusDonut.js
 import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
 const centerText = {
@@ -8,7 +7,7 @@ const centerText = {
         const { top, bottom, left, right } = chart.chartArea;
 
         ctx.save();
-        ctx.font = "bold 26px Arial";
+        ctx.font = "bold 28px Arial";
         ctx.fillStyle = "#333";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -16,15 +15,16 @@ const centerText = {
         const x = (left + right) / 2;
         const y = (top + bottom) / 2;
 
-        ctx.fillText(options.value, x, y);
-        ctx.font = "normal 14px Arial";
-        ctx.fillText("Finisher", x, y + 20);
+        ctx.fillText(options.value, x, y - 14);
+        ctx.font = "16px Arial";
+        ctx.fillText("Finisher", x, y + 12);
 
         ctx.restore();
     }
 };
 
 export async function renderFinishStatusDonut(raceName, canvasId) {
+
     await loadRaceStats(raceName);
     const race = getRaceStats(raceName);
     if (!race) return;
@@ -34,6 +34,8 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
     const dnf = race.dnf ?? 0;
     const dsq = race.dsq ?? 0;
 
+    const total = fin + dns + dnf + dsq;
+
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
 
@@ -42,14 +44,14 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
         plugins: [centerText],
 
         data: {
-            labels: ["FINISHER", "DNS", "DNF", "DSQ"],
+            labels: ["FIN", "DNS", "DNF", "DSQ"],
             datasets: [{
                 data: [fin, dns, dnf, dsq],
                 backgroundColor: [
-                    "#52C47A",
-                    "#EFA93F",
-                    "#D9574A",
-                    "#9063CD"
+                    "#4EA5E9",
+                    "#FFB347",
+                    "#FF6384",
+                    "#9B59B6"
                 ],
                 borderWidth: 0
             }]
@@ -59,21 +61,16 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
             responsive: true,
             maintainAspectRatio: false,
             cutout: "60%",
-            rotation: 0,
-            circumference: 360,
-            animation: {
-                animateRotate: true,
-                animateScale: true,
-                duration: 800
-            },
+
+            animation: false,
 
             plugins: {
                 legend: {
+                    display: true,
                     position: "bottom",
                     labels: {
                         usePointStyle: true,
-                        pointStyle: "circle",
-                        padding: 16
+                        pointStyle: "circle"
                     }
                 },
                 centerText: { value: fin }
