@@ -3,7 +3,7 @@
 import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
 // ======================================================================
-//  PUBLIC: Render tables for M + W
+// RENDER TABLES (M/W)
 // ======================================================================
 export async function renderTop6Tables(raceName) {
     await loadRaceStats(raceName);
@@ -14,7 +14,7 @@ export async function renderTop6Tables(raceName) {
 }
 
 // ======================================================================
-//  INTERNAL: Render one table
+// INTERNAL RENDER FUNCTION
 // ======================================================================
 function renderOne(containerId, top6, splitMeta) {
     const box = document.getElementById(containerId);
@@ -25,20 +25,28 @@ function renderOne(containerId, top6, splitMeta) {
         return;
     }
 
-    // Extract split labels from race.splits[]
-    const splitLabels = splitMeta.map(s => s.name);
+    // Fix uppercase (ẞ statt ß)
+    const toUppercaseName = (str) =>
+        str
+            .replace(/ß/g, "ẞ")
+            .toUpperCase();
 
-    // ------------------------------------------------------------------
-    // Build table
-    // ------------------------------------------------------------------
+    // Final split caption (e.g.: Rothenhusen, 12.5 km)
+    const splitLabels = splitMeta.map(s =>
+        `${s.name}, ${s.distance_km} km`
+    );
+
+    // --------------------------------------------------------
+    // BUILD TABLE
+    // --------------------------------------------------------
     let html = `
         <table class="top6-table">
             <thead>
                 <tr>
-                    <th>Pl.</th>
-                    <th>BIB</th>
-                    <th>AK-Pl.</th>
-                    <th>AK</th>
+                    <th class="top6-col-small">Pl.</th>
+                    <th class="top6-col-small">#</th>
+                    <th class="top6-col-small">AK-Pl.</th>
+                    <th class="top6-col-small">AK</th>
                     <th>Name</th>
                     <th>Verein</th>
     `;
@@ -48,29 +56,32 @@ function renderOne(containerId, top6, splitMeta) {
     });
 
     html += `
-            </tr>
-        </thead>
-        <tbody>
+                </tr>
+            </thead>
+            <tbody>
     `;
 
     top6.forEach(r => {
+        const ln = toUppercaseName(r.last_name || "");
+        const fn = r.first_name || "";
+
         html += `
             <tr>
-                <td>${r.pos_gender ?? ""}</td>
-                <td>${r.bib}</td>
-                <td>${r.pos_ag}</td>
-                <td>${r.age_group}</td>
+                <td class="top6-col-small">${r.pos_gender ?? ""}</td>
+                <td class="top6-col-small">${r.bib}</td>
+               <td class="top6-col-small">${r.pos_ag}</td>
+               <td class="top6-col-small">${r.age_group}</td>
 
                 <td>
-                    <span class="top6-lastname">${r.last_name}</span>
-                    <span class="top6-name">${r.first_name}</span>
+                    <span class="top6-lastname">${ln}</span>
+                    <span class="top6-firstname">${fn}</span>
                 </td>
 
                 <td>${r.club ?? ""}</td>
         `;
 
-        // Add splits
-        splitLabels.forEach((_, idx) => {
+        // SPLITS
+        splitMeta.forEach((_, idx) => {
             const s = r.splits[idx];
             html += `<td>${s ? s.time : "-"}</td>`;
         });
