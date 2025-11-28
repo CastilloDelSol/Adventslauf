@@ -381,11 +381,8 @@
         await renderDeficitCharts(raceName);
     }
 
-    // make it global
-    window.loadTop6 = loadTop6;
-
-    console.log("Module loaded, loadTop6 exported");
-
+	console.log("Calling loadTop6 from module…");
+	loadTop6("hauptlauf");
 </script>
 
 <h1>🎄 Adventslauf – Statistik 2025 🎄</h1>
@@ -636,9 +633,6 @@
 	function closePrivacy() {
 	    document.getElementById("privacyBox").style.display = "none";
 	}
-
-	console.log("Calling loadTop6…");
-    loadTop6("hauptlauf");
 </script>
 
 </body>
