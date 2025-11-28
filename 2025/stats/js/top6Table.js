@@ -49,8 +49,8 @@ function renderOne(containerId, top6, splitMeta) {
         <table class="top6-table">
             <thead>
                 <tr>
-                    <th class="col-center">🏆</th>
-                    <th class="col-center">AK-🏆</th>
+                    <th class="col-center">#</th>
+                    <th class="col-center">AK-#</th>
                     <th class="col-right">AK</th>
                     <th class="col-center">BIB</th>
                     <th class="col-left">Name</th>
