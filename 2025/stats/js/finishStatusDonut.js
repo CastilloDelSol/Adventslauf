@@ -1,5 +1,8 @@
+// finishStatusDonut.js
 import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
+// exakt gleiches Plugin-Muster wie beim Gender-Donut,
+// nur mit zweizeiligem Text (Zahl + "Finisher")
 const centerText = {
     id: "centerText",
     afterDraw(chart, args, options) {
@@ -7,7 +10,7 @@ const centerText = {
         const { top, bottom, left, right } = chart.chartArea;
 
         ctx.save();
-        ctx.font = "bold 28px Arial";
+        ctx.font = "bold 26px Arial";
         ctx.fillStyle = "#333";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -15,16 +18,17 @@ const centerText = {
         const x = (left + right) / 2;
         const y = (top + bottom) / 2;
 
-        ctx.fillText(options.value, x, y - 14);
-        ctx.font = "16px Arial";
-        ctx.fillText("Finisher", x, y + 12);
+        // Zeile 1: Zahl
+        ctx.fillText(options.value, x, y);
+        // Zeile 2: "Finisher"
+        ctx.font = "normal 14px Arial";
+        ctx.fillText("Finisher", x, y + 20);
 
         ctx.restore();
     }
 };
 
 export async function renderFinishStatusDonut(raceName, canvasId) {
-
     await loadRaceStats(raceName);
     const race = getRaceStats(raceName);
     if (!race) return;
@@ -33,8 +37,6 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
     const dns = race.dns ?? 0;
     const dnf = race.dnf ?? 0;
     const dsq = race.dsq ?? 0;
-
-    const total = fin + dns + dnf + dsq;
 
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
@@ -48,12 +50,11 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
             datasets: [{
                 data: [fin, dns, dnf, dsq],
                 backgroundColor: [
-                    "#4EA5E9",
-                    "#FFB347",
-                    "#FF6384",
-                    "#9B59B6"
-                ],
-                borderWidth: 0
+                    "#52C47A", // FIN – grün
+                    "#EFA93F", // DNS – orange
+                    "#D9574A", // DNF – rot
+                    "#9063CD"  // DSQ – violett
+                ]
             }]
         },
 
@@ -61,20 +62,7 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
             responsive: true,
             maintainAspectRatio: false,
             cutout: "60%",
-
-            animation: false,
-
-            plugins: {
-                legend: {
-                    display: true,
-                    position: "bottom",
-                    labels: {
-                        usePointStyle: true,
-                        pointStyle: "circle"
-                    }
-                },
-                centerText: { value: fin }
-            }
+            plugins: { centerText: { value: fin } }
         }
     });
 }
