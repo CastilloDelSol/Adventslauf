@@ -1,93 +1,95 @@
 // deficitLineChart.js
-
 import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
 // ============================================================
-//  Render M + W deficit charts
+// PUBLIC: Render M + W deficit charts
 // ============================================================
-export async function renderDeficitCharts(raceName) {
+export async function renderDeficitCharts(raceName, numResults = 6) {
+
     await loadRaceStats(raceName);
     const race = getRaceStats(raceName);
 
-    // Ensure data exists
     if (!race || !race.M || !race.W) {
-        console.warn("No race data found for", raceName);
+        console.warn("No race data for:", raceName);
         return;
     }
 
-    // Take only Top 6 (fallback to fewer if not enough data)
-    const M_top6 = (race.M.Top10 || []).slice(0, 6);
-    const W_top6 = (race.W.Top10 || []).slice(0, 6);
+    const M_top = (race.M.Top10 || []).slice(0, numResults);
+    const W_top = (race.W.Top10 || []).slice(0, numResults);
 
-    renderOne("#deficitChartM", M_top6);
-    renderOne("#deficitChartW", W_top6);
+    renderOne("#deficitChartM", M_top);
+    renderOne("#deficitChartW", W_top);
 }
 
 // ============================================================
-//  INTERNAL: Render one chart
+// INTERNAL: Render a single deficit chart
 // ============================================================
-function renderOne(canvasId, top6) {
+function renderOne(canvasId, runners) {
 
-    if (!top6 || !Array.isArray(top6) || top6.length === 0) {
-        console.warn("No Top6 data for", canvasId);
+    if (!Array.isArray(runners) || runners.length === 0) {
+        console.warn("No runners for", canvasId);
         return;
     }
 
-    // And also: prevent crash if a runner has NO splits
-    const filtered = top6.filter(r => r.Splits && r.Splits.length > 0);
+    // Filter athletes that have "splits" and at least 1 split
+    const filtered = runners.filter(r => Array.isArray(r.splits) && r.splits.length > 0);
 
     if (filtered.length === 0) {
-        console.warn("Top6 have no split data:", canvasId);
+        console.warn("No split data for", canvasId);
         return;
     }
 
-    top6 = filtered;
+    runners = filtered;
 
-    // -------------------------------------------------------------
-    // Collect all split labels from runner 1 (they are identical)
-    // -------------------------------------------------------------
-    const labels = top6[0].Splits.map(s => s.name);
+    // ---------------------------------------------------------
+    // Labels = split names  (your JSON always has EXACTLY 1 split)
+    // ---------------------------------------------------------
+    const labels = runners[0].splits.map(s => s.name);
 
-    // -------------------------------------------------------------
-    // Build dataset per athlete
-    // -------------------------------------------------------------
-    const datasets = [];
-
-    labels.forEach((label, splitIndex) => {
-        // For each split → collect times
-    });
-
-    // Now create arrays split-wise:
-    const splitTimes = labels.map((_, splitIndex) => 
-        top6.map(r => r.Splits?.[splitIndex]?.sec ?? null)
+    // ---------------------------------------------------------
+    // Build split-time matrix:
+    // timesPerSplit[i] = [runner1_sec, runner2_sec, ...]
+    // ---------------------------------------------------------
+    const timesPerSplit = labels.map((_, splitIndex) =>
+        runners.map(r => r.splits[splitIndex]?.sec ?? null)
     );
 
-    // Find best split (minimum sec)
-    const best = splitTimes.map(times => 
-        Math.min(...times.filter(x => x !== null))
+    // ---------------------------------------------------------
+    // Best time per split = minimum non-null
+    // ---------------------------------------------------------
+    const best = timesPerSplit.map(times =>
+        Math.min(...times.filter(t => t !== null))
     );
 
-    // Build one dataset per athlete
-    top6.forEach((runner, rIndex) => {
+    // ---------------------------------------------------------
+    // Build Chart.js datasets
+    // ---------------------------------------------------------
+    const datasets = runners.map((r, rIndex) => {
 
-        const deficits = runner.Splits.map((s, splitIdx) => {
+        const deficits = r.splits.map((s, splitIndex) => {
             if (!s || s.sec == null) return null;
-            return s.sec - best[splitIdx];
+            return s.sec - best[splitIndex];
         });
 
-        datasets.push({
-            label: runner.first_name + " " + runner.last_name,
+        return {
+            label: r.first_name + " " + r.last_name,
             data: deficits,
             borderWidth: 3,
-            tension: 0.33,
+            tension: 0.33,     // light smoothing
             fill: false
-        });
+        };
     });
 
-    // -------------------------------------------------------------
-    // Create the chart
-    // -------------------------------------------------------------
-    new Chart(ctx, {
+    // ---------------------------------------------------------
+    // Render chart
+    // ---------------------------------------------------------
+    const canvas = document.querySelector(canvasId);
+    if (!canvas) {
+        console.error("Canvas not found:", canvasId);
+        return;
+    }
+
+    new Chart(canvas, {
         type: "line",
         data: {
             labels: labels,
@@ -99,8 +101,11 @@ function renderOne(canvasId, top6) {
 
             scales: {
                 y: {
-                    title: { display: true, text: "Defizit (Sekunden)" },
-                    beginAtZero: true
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "Defizit (Sekunden)"
+                    }
                 }
             },
 
@@ -108,7 +113,11 @@ function renderOne(canvasId, top6) {
                 legend: { position: "bottom" },
                 tooltip: {
                     callbacks: {
-                        label: ctx => `${ctx.dataset.label}: ${ctx.raw.toFixed(1)} s`
+                        label: (ctx) => {
+                            const v = ctx.raw;
+                            if (v == null) return "Keine Daten";
+                            return `${ctx.dataset.label}: ${v.toFixed(1)} s`;
+                        }
                     }
                 }
             }
