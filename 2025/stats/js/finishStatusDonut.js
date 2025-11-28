@@ -1,8 +1,6 @@
 // finishStatusDonut.js
 import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
-// exakt gleiches Plugin-Muster wie beim Gender-Donut,
-// nur mit zweizeiligem Text (Zahl + "Finisher")
 const centerText = {
     id: "centerText",
     afterDraw(chart, args, options) {
@@ -18,9 +16,7 @@ const centerText = {
         const x = (left + right) / 2;
         const y = (top + bottom) / 2;
 
-        // Zeile 1: Zahl
         ctx.fillText(options.value, x, y);
-        // Zeile 2: "Finisher"
         ctx.font = "normal 14px Arial";
         ctx.fillText("Finisher", x, y + 20);
 
@@ -43,18 +39,19 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
 
     new Chart(canvas, {
         type: "doughnut",
-        plugins: [centerText],  // genau wie beim Gender-Donut
+        plugins: [centerText],
 
         data: {
             labels: ["FINISHER", "DNS", "DNF", "DSQ"],
             datasets: [{
                 data: [fin, dns, dnf, dsq],
                 backgroundColor: [
-                    "#52C47A", // FINISHER – grün
-                    "#EFA93F", // DNS – orange
-                    "#D9574A", // DNF – rot
-                    "#9063CD"  // DSQ – violett
-                ]
+                    "#52C47A",
+                    "#EFA93F",
+                    "#D9574A",
+                    "#9063CD"
+                ],
+                borderWidth: 0
             }]
         },
 
@@ -62,7 +59,25 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
             responsive: true,
             maintainAspectRatio: false,
             cutout: "60%",
-            plugins: { centerText: { value: fin } }
+            rotation: 0,
+            circumference: 360,
+            animation: {
+                animateRotate: true,
+                animateScale: true,
+                duration: 800
+            },
+
+            plugins: {
+                legend: {
+                    position: "bottom",
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: "circle",
+                        padding: 16
+                    }
+                },
+                centerText: { value: fin }
+            }
         }
     });
 }
