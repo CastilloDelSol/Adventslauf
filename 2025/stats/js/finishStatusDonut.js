@@ -21,12 +21,11 @@ const centerText = {
     }
 };
 
-// KEY FIX: Disable tiny-arc collapsing
 const stableDonut = {
     id: "stableDonut",
-    beforeDatasetUpdate(chart, args, opts) {
+    beforeDatasetUpdate(chart) {
         chart.getDatasetMeta(0).data.forEach(arc => {
-            arc.circumference = arc.circumference; // freeze natural size
+            arc.circumference = arc.circumference;
             arc.startAngle = arc.startAngle;
             arc.endAngle = arc.endAngle;
         });
@@ -78,15 +77,8 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
             },
 
             plugins: {
-                legend: {
-                    position: "bottom",
-                    labels: {
-                        usePointStyle: true,
-                        pointStyle: "circle",
-                        padding: 16
-                    }
-                },
                 centerText: { value: fin }
+                // NO LEGEND CONFIG → IDENTICAL TO GENDER DONUT
             }
         }
     });
