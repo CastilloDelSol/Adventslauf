@@ -4,10 +4,11 @@ import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
 // Emoji medals (WhatsApp style)
 function medalEmoji(rank) {
-    if (rank === 1) return "🥇";
-    if (rank === 2) return "🥈";
-    if (rank === 3) return "🥉";
-    return rank; // 4,5,6 → plain number
+    const n = Number(rank);  // <<< important fix!
+    if (n === 1) return "🥇";
+    if (n === 2) return "🥈";
+    if (n === 3) return "🥉";
+    return n; // 4–6 : show number
 }
 
 // ======================================================================
@@ -33,11 +34,11 @@ function renderOne(containerId, top6, splitMeta) {
         return;
     }
 
-    // Uppercase with ß → ẞ fix
+    // Name uppercase + ß → ẞ
     const toUppercaseName = (str) =>
         str.replace(/ß/g, "ẞ").toUpperCase();
 
-    // Split headers reduced: e.g. "12.5 km"
+    // Only distances (e.g. "12.5 km")
     const splitLabels = splitMeta.map(s =>
         `${s.distance_km} km`
     );
@@ -52,7 +53,7 @@ function renderOne(containerId, top6, splitMeta) {
                     <th class="col-center">#</th>
                     <th class="col-center">AK-#</th>
                     <th class="col-right">AK</th>
-                    <th class="col-center">BIB</th>
+                    <th class="col-left">BIB</th>
                     <th class="col-left">Name</th>
                     <th class="col-left">Verein</th>
     `;
@@ -76,8 +77,8 @@ function renderOne(containerId, top6, splitMeta) {
                 <td class="col-center">${medalEmoji(r.pos_gender)}</td>
                 <td class="col-center">${medalEmoji(r.pos_ag)}</td>
                 <td class="col-right">${r.age_group}</td>
-                <td class="col-center">${r.bib}</td>
-                
+                <td class="col-left">${r.bib}</td>
+
                 <td class="col-left">
                     <span class="top6-lastname">${ln}</span>
                     <span class="top6-firstname">${fn}</span>
@@ -86,7 +87,6 @@ function renderOne(containerId, top6, splitMeta) {
                 <td class="col-left">${r.club ?? ""}</td>
         `;
 
-        // SPLITS (times)
         splitMeta.forEach((_, idx) => {
             const s = r.splits[idx];
             html += `<td class="col-right">${s ? s.time : "-"}</td>`;
@@ -96,6 +96,5 @@ function renderOne(containerId, top6, splitMeta) {
     });
 
     html += "</tbody></table>";
-
     box.innerHTML = html;
 }
