@@ -374,10 +374,13 @@
   import { renderTop6Tables } from "./js/top6Table.js";
   import { renderDeficitCharts } from "./js/deficitLineChart.js";
 
+/* TOP 6 */
   async function loadTop6(raceName) {
-    await renderTop6Tables(raceName);
-    await renderDeficitCharts(raceName);
+	await renderTop6Tables(raceName);
+	await renderDeficitCharts(raceName);
 }
+
+window.loadTop6 = loadTop6;
 
 </script>
 
