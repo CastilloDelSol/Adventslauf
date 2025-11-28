@@ -40,7 +40,7 @@ function renderOne(containerId, top6, splitMeta) {
 
     // Only distances (e.g. "12.5 km")
     const splitLabels = splitMeta.map(s =>
-        `${s.distance_km} km`
+        `${s.distance_km}km`
     );
 
     // --------------------------------------------------------
