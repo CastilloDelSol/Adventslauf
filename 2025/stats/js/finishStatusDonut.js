@@ -1,36 +1,21 @@
 // finishStatusDonut.js
-
 import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
-// ------------------------------------------------------------
-// Renders a donut for a given race (hauptlauf / kurzstrecke)
-// ------------------------------------------------------------
 export async function renderFinishStatusDonut(raceName, canvasId) {
 
     await loadRaceStats(raceName);
     const race = getRaceStats(raceName);
 
-    if (!race) {
-        console.warn("No race data for", raceName);
-        return;
-    }
+    if (!race) return;
 
     const fin = race.finisher ?? 0;
     const dns = race.dns ?? 0;
     const dnf = race.dnf ?? 0;
     const dsq = race.dsq ?? 0;
-
     const total = fin + dns + dnf + dsq;
-    if (total === 0) {
-        console.warn("Race has no status data:", raceName);
-        return;
-    }
 
     const ctx = document.getElementById(canvasId);
-    if (!ctx) {
-        console.error("Canvas not found:", canvasId);
-        return;
-    }
+    if (!ctx) return;
 
     new Chart(ctx, {
         type: "doughnut",
@@ -38,21 +23,24 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
             labels: ["Finisher", "DNS", "DNF", "DSQ"],
             datasets: [{
                 data: [fin, dns, dnf, dsq],
+
+                // NEW pleasant palette
                 backgroundColor: [
-                    "rgba(54, 162, 235, 0.85)",  // FIN – blue
-                    "#cccccc",                    // DNS – grey
-                    "rgba(255, 99, 132, 0.85)",   // DNF – red
-                    "rgba(255, 159, 64, 0.85)"    // DSQ – orange
+                    "#2ecc71",  // FIN – green
+                    "#f39c12",  // DNS – orange
+                    "#e74c3c",  // DNF – red
+                    "#9b59b6"   // DSQ – purple
                 ],
-                borderWidth: 2
+
+                borderWidth: 2,
+                hoverOffset: 8
             }]
         },
 
         options: {
             responsive: true,
             maintainAspectRatio: false,
-
-            cutout: "60%",  // nice donut look
+            cutout: "58%",   // nice donut look
 
             plugins: {
                 legend: {
@@ -67,7 +55,7 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
                         label: ctx => {
                             const label = ctx.label;
                             const value = ctx.raw;
-                            const pct = (value / total * 100).toFixed(1);
+                            const pct = ((value / total) * 100).toFixed(1);
                             return `${label}: ${value} (${pct}%)`;
                         }
                     }
