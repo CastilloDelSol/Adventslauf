@@ -474,6 +474,23 @@
 
   // initial
   renderRaceHistograms("hauptlauf");
+
+	/* ALTERSKLASSE BAR CHARS */
+	import { renderAKCharts } from "./js/akBarChart.js";
+
+	async function loadAKCharts() {
+	    const race = document.getElementById("akSelect").value;
+	    const type = document.getElementById("resultDataType").value;
+	    renderAKCharts(race, type);
+	}
+	
+	// Connect dropdowns
+	document.getElementById("akSelect").addEventListener("change", loadAKCharts);
+	document.getElementById("resultDataType").addEventListener("change", loadAKCharts);
+	
+	// Initial load
+	loadAKCharts();
+
 </script>
 
 <h1>🎄 Adventslauf – Statistik 2025 🎄</h1>
@@ -706,9 +723,42 @@
   
    <!-- TAB 8: ALTERSKLASSEN -->
   <div class="tab-content content8">
-    <div class="dummy-box">
-    	<p>--- Altersklassen ---</p>
+    <!-- Strecke Auswahl -->
+    <div class="race-select-box">
+      <label for="akSelect">Strecke:</label>
+      <select id="akSelect" class="race-select">
+        <option value="hauptlauf">Ratzeburger See – 26km</option>
+        <option value="kurzstrecke">Küchensee – 7,5km</option>
+      </select>
     </div>
+    <div class="race-select-box">
+      <label for="resultDataType">Typ:</label>
+      <select id="resultDataType" class="race-select">
+        <option value="winner">Sieger</option>
+        <option value="podium">Podium</option>
+        <option value="percentile_10">10. Perzentil</option>
+        <option value="percentile_25">1. Quartil</option>
+        <option value="median">Median</option>
+        <option value="average">Mittelwert</option>
+      </select>
+    </div>
+
+    <!-- Männer Block -->
+    <div class="card">
+      <h2>Männer – Barchart</h2>
+      <div class="chart-box">
+        <canvas id="akBarsM"></canvas>
+      </div>
+    </div>
+
+    <!-- Frauen Block -->
+    <div class="card">
+      <h2>Frauen – Barchart</h2>
+      <div class="chart-box">
+        <canvas id="akBarsW"></canvas>
+      </div>
+    </div>
+
   </div>
   
 
