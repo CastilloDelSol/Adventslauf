@@ -275,14 +275,14 @@
   }
 
   .card {
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    margin: 20px auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    background: #fafafa;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
     max-width: 900px;
   }
-
+  
   .card h2 {
     margin-top: 10px;
     margin-bottom: 15px;
@@ -370,6 +370,15 @@
   renderDistancePercentile("distancePercentile");
   import { renderDistanceHistogram } from "./js/distanceHistogram.js";
   renderDistanceHistogram("distanceHistogram");
+
+  import { renderTop6Tables } from "./js/top6Table.js";
+  import { renderDeficitCharts } from "./js/deficitLineChart.js";
+
+  async function loadTop6(raceName) {
+    await renderTop6Tables(raceName);
+    await renderDeficitCharts(raceName);
+}
+
 </script>
 
 <h1>🎄 Adventslauf – Statistik 2025 🎄</h1>
@@ -543,6 +552,8 @@
     </select>
   </div>
 
+	
+
   <!-- Männer Block -->
   <div class="card">
     <h2>Männer – Defizitdiagramm</h2>
@@ -618,6 +629,8 @@
 	function closePrivacy() {
 	    document.getElementById("privacyBox").style.display = "none";
 	}
+
+	loadTop6("hauptlauf");
 </script>
 
 </body>
