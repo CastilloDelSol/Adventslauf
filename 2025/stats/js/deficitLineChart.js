@@ -9,24 +9,39 @@ export async function renderDeficitCharts(raceName) {
     await loadRaceStats(raceName);
     const race = getRaceStats(raceName);
 
-    renderOne("#deficitChartM", race.M.Top10);
-    renderOne("#deficitChartW", race.W.Top10);
+    // Ensure data exists
+    if (!race || !race.M || !race.W) {
+        console.warn("No race data found for", raceName);
+        return;
+    }
+
+    // Take only Top 6 (fallback to fewer if not enough data)
+    const M_top6 = (race.M.Top10 || []).slice(0, 6);
+    const W_top6 = (race.W.Top10 || []).slice(0, 6);
+
+    renderOne("#deficitChartM", M_top6);
+    renderOne("#deficitChartW", W_top6);
 }
 
 // ============================================================
 //  INTERNAL: Render one chart
 // ============================================================
-function renderOne(canvasId, top10) {
+function renderOne(canvasId, top6) {
 
-    const ctx = document.querySelector(canvasId);
-    if (!ctx) {
-        console.error("deficit canvas missing:", canvasId);
+    if (!top6 || !Array.isArray(top6) || top6.length === 0) {
+        console.warn("No Top6 data for", canvasId);
         return;
     }
 
-    const top6 = (top10 || []).slice(0, 6);
+    // And also: prevent crash if a runner has NO splits
+    const filtered = top6.filter(r => r.Splits && r.Splits.length > 0);
 
-    if (top6.length === 0) return;
+    if (filtered.length === 0) {
+        console.warn("Top6 have no split data:", canvasId);
+        return;
+    }
+
+    top6 = filtered;
 
     // -------------------------------------------------------------
     // Collect all split labels from runner 1 (they are identical)
