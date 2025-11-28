@@ -1,16 +1,14 @@
-// donutGender.js
-
-import { loadAgeData } from "./dataLoader.js";
+// finishStatusDonut.js
+import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
 const centerText = {
     id: "centerText",
-    afterDraw(chart, args, options)
-    {
+    afterDraw(chart, args, options) {
         const ctx = chart.ctx;
         const { top, bottom, left, right } = chart.chartArea;
 
         ctx.save();
-        ctx.font = "bold 28px Arial";
+        ctx.font = "bold 26px Arial";
         ctx.fillStyle = "#333";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -19,46 +17,67 @@ const centerText = {
         const y = (top + bottom) / 2;
 
         ctx.fillText(options.value, x, y);
+        ctx.font = "normal 14px Arial";
+        ctx.fillText("Finisher", x, y + 20);
+
         ctx.restore();
     }
 };
 
-export async function renderGenderDonut(sectionName, canvasId)
-{
-    const data = await loadAgeData();
+export async function renderFinishStatusDonut(raceName, canvasId) {
+    await loadRaceStats(raceName);
+    const race = getRaceStats(raceName);
+    if (!race) return;
 
-    let totalM = 0, totalW = 0;
-
-    if (sectionName === "TOTAL")
-    {
-        for (const key of Object.keys(data))
-        {
-            data[key].forEach(e => { totalM += e.M; totalW += e.W; });
-        }
-    }
-    else
-    {
-        const group = data[sectionName];
-        if (!group) return console.error("Section not found:", sectionName);
-        group.forEach(e => { totalM += e.M; totalW += e.W; });
-    }
+    const fin = race.finisher ?? 0;
+    const dns = race.dns ?? 0;
+    const dnf = race.dnf ?? 0;
+    const dsq = race.dsq ?? 0;
 
     const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
 
-    new Chart(canvas,{
+    new Chart(canvas, {
         type: "doughnut",
         plugins: [centerText],
-        data:
-        {
-            labels: ["M", "W"],
-            datasets: [{ data: [totalM, totalW], backgroundColor: ["#4EA5E9", "#FF6384"]}]
+
+        data: {
+            labels: ["FINISHER", "DNS", "DNF", "DSQ"],
+            datasets: [{
+                data: [fin, dns, dnf, dsq],
+                backgroundColor: [
+                    "#52C47A",
+                    "#EFA93F",
+                    "#D9574A",
+                    "#9063CD"
+                ],
+                borderWidth: 0
+            }]
         },
-        options:
-        {
+
+        options: {
             responsive: true,
             maintainAspectRatio: false,
             cutout: "60%",
-            plugins: { centerText: { value: totalM + totalW } }
+            rotation: 0,
+            circumference: 360,
+            animation: {
+                animateRotate: true,
+                animateScale: true,
+                duration: 800
+            },
+
+            plugins: {
+                legend: {
+                    position: "bottom",
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: "circle",
+                        padding: 16
+                    }
+                },
+                centerText: { value: fin }
+            }
         }
     });
 }
