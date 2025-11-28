@@ -2,51 +2,83 @@
 
 import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
-// ============================================================
-//  Render BOTH tables (M + W) for a given race
-// ============================================================
+// ======================================================================
+//  PUBLIC: Render tables for M + W
+// ======================================================================
 export async function renderTop6Tables(raceName) {
     await loadRaceStats(raceName);
     const race = getRaceStats(raceName);
 
-    buildTable("#top6TableM", race.M.Top10);
-    buildTable("#top6TableW", race.W.Top10);
+    renderOne("top6TableM", race.M.Top10.slice(0, 6), race.splits);
+    renderOne("top6TableW", race.W.Top10.slice(0, 6), race.splits);
 }
 
-// ============================================================
-//  INTERNAL: Build <tbody> rows
-// ============================================================
-function buildTable(selector, top10) {
+// ======================================================================
+//  INTERNAL: Render one table
+// ======================================================================
+function renderOne(containerId, top6, splitMeta) {
+    const box = document.getElementById(containerId);
+    if (!box) return;
 
-    const table = document.querySelector(selector);
-    if (!table) {
-        console.error("Top6 Table element not found:", selector);
+    if (!top6 || top6.length === 0) {
+        box.innerHTML = "<p>Keine Daten verfügbar.</p>";
         return;
     }
 
-    const tbody = table.querySelector("tbody") || table.appendChild(document.createElement("tbody"));
-    tbody.innerHTML = ""; 
+    // Extract split labels from race.splits[]
+    const splitLabels = splitMeta.map(s => s.name);
 
-    const top6 = (top10 || []).slice(0, 6);
+    // ------------------------------------------------------------------
+    // Build table
+    // ------------------------------------------------------------------
+    let html = `
+        <table class="top6-table">
+            <thead>
+                <tr>
+                    <th>Pl.</th>
+                    <th>BIB</th>
+                    <th>AK-Pl.</th>
+                    <th>AK</th>
+                    <th>Name</th>
+                    <th>Verein</th>
+    `;
 
-    top6.forEach(row => {
-        const tr = document.createElement("tr");
+    splitLabels.forEach(label => {
+        html += `<th>${label}</th>`;
+    });
 
-        const cells = [
-            row.pos_gender,
-            row.bib,
-            row.first_name + " " + row.last_name,
-            row.age_group,
-            row.finish_time,
-            row.Splits?.[0]?.time ?? "–"
-        ];
+    html += `
+            </tr>
+        </thead>
+        <tbody>
+    `;
 
-        cells.forEach(val => {
-            const td = document.createElement("td");
-            td.textContent = val;
-            tr.appendChild(td);
+    top6.forEach(r => {
+        html += `
+            <tr>
+                <td>${r.pos_gender ?? ""}</td>
+                <td>${r.bib}</td>
+                <td>${r.pos_ag}</td>
+                <td>${r.age_group}</td>
+
+                <td>
+                    <span class="top6-lastname">${r.last_name}</span>
+                    <span class="top6-name">${r.first_name}</span>
+                </td>
+
+                <td>${r.club ?? ""}</td>
+        `;
+
+        // Add splits
+        splitLabels.forEach((_, idx) => {
+            const s = r.splits[idx];
+            html += `<td>${s ? s.time : "-"}</td>`;
         });
 
-        tbody.appendChild(tr);
+        html += "</tr>";
     });
+
+    html += "</tbody></table>";
+
+    box.innerHTML = html;
 }
