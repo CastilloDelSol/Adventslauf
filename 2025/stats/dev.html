@@ -371,16 +371,20 @@
   import { renderDistanceHistogram } from "./js/distanceHistogram.js";
   renderDistanceHistogram("distanceHistogram");
 
-  import { renderTop6Tables } from "./js/top6Table.js";
-  import { renderDeficitCharts } from "./js/deficitLineChart.js";
+	/* TOP 6 */
+    import { renderTop6Tables } from "./js/top6Table.js";
+    import { renderDeficitCharts } from "./js/deficitLineChart.js";
 
-/* TOP 6 */
-  async function loadTop6(raceName) {
-	await renderTop6Tables(raceName);
-	await renderDeficitCharts(raceName);
-}
+    async function loadTop6(raceName) {
+        console.log("loadTop6 called:", raceName);
+        await renderTop6Tables(raceName);
+        await renderDeficitCharts(raceName);
+    }
 
-window.loadTop6 = loadTop6;
+    // make it global
+    window.loadTop6 = loadTop6;
+
+    console.log("Module loaded, loadTop6 exported");
 
 </script>
 
@@ -633,7 +637,8 @@ window.loadTop6 = loadTop6;
 	    document.getElementById("privacyBox").style.display = "none";
 	}
 
-	loadTop6("hauptlauf");
+	console.log("Calling loadTop6…");
+    loadTop6("hauptlauf");
 </script>
 
 </body>
