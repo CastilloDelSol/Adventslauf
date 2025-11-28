@@ -74,13 +74,8 @@ function renderOne(canvasSelector, key, runners, splits) {
                         axis.ticks = kmPoints.map(v => ({ value: v }));
                     },
 
-                    // Convert tick value → label
                     ticks: {
-                        callback: (value) => {
-                            if (value === 0) return "0 km";
-                            const s = splits.find(s => s.distance_km === value);
-                            return s ? `${s.name}` : value;
-                        }
+                        callback: (value) => value.toFixed(1) + " km"
                     },
 
                     min: 0,
