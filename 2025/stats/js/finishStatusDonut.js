@@ -46,11 +46,11 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
         plugins: [centerText],  // genau wie beim Gender-Donut
 
         data: {
-            labels: ["Finisher", "DNS"],
+            labels: ["FINISHER", "DNS", "DNF", "DSQ"],
             datasets: [{
-                data: [fin, dns],
+                data: [fin, dns, dnf, dsq],
                 backgroundColor: [
-                    "#52C47A", // Finisher – grün
+                    "#52C47A", // FINISHER – grün
                     "#EFA93F", // DNS – orange
                     "#D9574A", // DNF – rot
                     "#9063CD"  // DSQ – violett
@@ -58,17 +58,11 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
             }]
         },
 
-        // WICHTIG: exakt gleiche Struktur wie donutGender.js
         options: {
             responsive: true,
             maintainAspectRatio: false,
             cutout: "60%",
-            plugins: {
-                centerText: { value: fin }
-                // KEIN legend-Block → gleiche Default-Legende wie genderDonut
-                // KEIN animation-Block → gleiche Standard-Animation (Drehung)
-                // KEIN rotation, KEIN extra Plugin
-            }
+            plugins: { centerText: { value: fin } }
         }
     });
 }
