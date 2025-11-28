@@ -295,22 +295,34 @@
 	    max-height: 100%;
 	}
 	
-	/* ================================
-	   SELECT DROPDOWN FOR RACE SWITCHING
-	================================ */
+	/* ===============================
+	   DROPDOWN GRAUE BOX / ZENTRIERT
+	================================*/
+	.race-select-container {
+	    display: flex;
+	    justify-content: center;
+	    margin-bottom: 25px;
+	}
+	
 	.race-select-box {
-	    margin: 10px 0 20px 0;
+	    background: #fafafa;
+	    padding: 12px 20px;
+	    border-radius: 12px;
+	    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 	    display: flex;
 	    align-items: center;
-	    gap: 10px;
+	    gap: 12px;
 	}
 	
+	/* Label */
 	.race-select-box label {
 	    font-weight: 600;
+	    font-size: 16px;
 	}
 	
+	/* Select */
 	.race-select {
-	    padding: 6px 10px;
+	    padding: 6px 12px;
 	    font-size: 15px;
 	    border-radius: 6px;
 	    border: 1px solid #ccc;
@@ -318,10 +330,16 @@
 	    cursor: pointer;
 	}
 	
-	/* Nice hover/focus effects */
 	.race-select:hover {
 	    border-color: #888;
 	}
+	
+	.race-select:focus {
+	    outline: none;
+	    border-color: #2a7bf6;
+	    box-shadow: 0 0 4px rgba(42,123,246,0.4);
+	}
+
 	
 	.race-select:focus {
 	    outline: none;
@@ -668,12 +686,15 @@
 <div class="tab-content content6">
 
   <!-- Strecke Auswahl -->
-  <div class="race-select-box">
-    <label for="top6Select">Strecke:</label>
-    <select id="top6Select" class="race-select">
-      <option value="hauptlauf">Ratzeburger See – 26km</option>
-      <option value="kurzstrecke">Küchensee – 7,5km</option>
-    </select>
+  <!-- Dropdown in grauer Box, zentriert -->
+  <div class="race-select-container">
+      <div class="race-select-box">
+        <label for="top6Select">Strecke:</label>
+        <select id="top6Select" class="race-select">
+          <option value="hauptlauf">Ratzeburger See – 26km</option>
+          <option value="kurzstrecke">Küchensee – 7,5km</option>
+        </select>
+      </div>
   </div>
 
 	<!-- Männer Block -->
