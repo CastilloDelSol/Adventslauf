@@ -50,10 +50,10 @@ function renderOne(containerId, top6, splitMeta) {
         <table class="top6-table">
             <thead>
                 <tr>
-                    <th class="col-center">#</th>
-                    <th class="col-center">AK-#</th>
-                    <th class="col-right">AK</th>
-                    <th class="col-left">BIB</th>
+                    <th class="col-center">🏆</th>
+                    <th class="col-center">🎯</th>
+                    <th class="col-right">📊</th>
+                    <th class="col-left">🎽</th>
                     <th class="col-left">Name</th>
                     <th class="col-left">Verein</th>
     `;
@@ -75,7 +75,7 @@ function renderOne(containerId, top6, splitMeta) {
         html += `
             <tr>
                 <td class="col-center">${medalEmoji(r.pos_gender)}</td>
-                <td class="col-center">${medalEmoji(r.pos_ag)}</td>
+                <td class="col-center">${r.pos_ag}</td>
                 <td class="col-right">${r.age_group}</td>
                 <td class="col-left">${r.bib}</td>
 
