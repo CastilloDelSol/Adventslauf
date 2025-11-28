@@ -1,38 +1,38 @@
-// finishStatusDonut.js
 import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
-// ---------------------------------------------------------
-// Center text plugin (enhanced version of your gender donut)
-// ---------------------------------------------------------
-const centerStatusText = {
-    id: "centerStatusText",
+const centerText = {
+    id: "centerText",
     afterDraw(chart, args, options) {
         const ctx = chart.ctx;
         const { top, bottom, left, right } = chart.chartArea;
 
+        ctx.save();
+        ctx.font = "bold 26px Arial";
+        ctx.fillStyle = "#333";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
         const x = (left + right) / 2;
         const y = (top + bottom) / 2;
 
-        ctx.save();
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillStyle = "#333";
-
-        // Line 1: number
-        ctx.font = "bold 28px Arial";
-        ctx.fillText(options.value, x, y - 10);
-
-        // Line 2: label
-        ctx.font = "16px Arial";
-        ctx.fillText(options.label, x, y + 18);
-
+        ctx.fillText(options.value, x, y);
+        ctx.fillText("Finisher", x, y + 28);
         ctx.restore();
     }
 };
 
-// ---------------------------------------------------------
-// Render donut
-// ---------------------------------------------------------
+// KEY FIX: Disable tiny-arc collapsing
+const stableDonut = {
+    id: "stableDonut",
+    beforeDatasetUpdate(chart, args, opts) {
+        chart.getDatasetMeta(0).data.forEach(arc => {
+            arc.circumference = arc.circumference; // freeze natural size
+            arc.startAngle = arc.startAngle;
+            arc.endAngle = arc.endAngle;
+        });
+    }
+};
+
 export async function renderFinishStatusDonut(raceName, canvasId) {
 
     await loadRaceStats(raceName);
@@ -45,49 +45,37 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
     const dsq = race.dsq ?? 0;
 
     const total = fin + dns + dnf + dsq;
-
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
 
-    // Decide label under the number
-    let centerLabel = "Teilnehmer";
-    // but: if finisher is most important, show “Finisher”
-    if (fin > 0) centerLabel = fin === 1 ? "Finisher" : "Finisher";
-
     new Chart(ctx, {
         type: "doughnut",
-        plugins: [centerStatusText],
+        plugins: [centerText, stableDonut],
 
         data: {
             labels: ["Finisher", "DNS", "DNF", "DSQ"],
             datasets: [{
                 data: [fin, dns, dnf, dsq],
-
-                // Harmonized, premium, non-neon palette
                 backgroundColor: [
-                    "#2ecc71", // Finisher – soft green
-                    "#f1c40f", // DNS – warm yellow
-                    "#e74c3c", // DNF – deep red
-                    "#9b59b6"  // DSQ – elegant purple
+                    "#52C47A",
+                    "#EFA93F",
+                    "#D9574A",
+                    "#9063CD"
                 ],
-
-                borderWidth: 2,
-                hoverOffset: 6
+                borderWidth: 1
             }]
         },
 
         options: {
-            responsive: true,
             maintainAspectRatio: false,
-            cutout: "60%", // same as gender donut
+            cutout: "60%",
+            rotation: -90 * (Math.PI / 180),
 
             animation: {
-                animateRotate: false,   // IMPORTANT → stops weird arc animation
+                animateRotate: false,
                 animateScale: true,
-                duration: 800,
-                easing: "easeOutQuad"
+                duration: 500
             },
-            rotation: -90 * (Math.PI / 180),   // start at 12 o'clock like gender donut
 
             plugins: {
                 legend: {
@@ -95,25 +83,10 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
                     labels: {
                         usePointStyle: true,
                         pointStyle: "circle",
-                        font: { size: 14 }
+                        padding: 16
                     }
                 },
-
-                tooltip: {
-                    callbacks: {
-                        label: ctx => {
-                            const label = ctx.label;
-                            const value = ctx.raw;
-                            const pct = ((value / total) * 100).toFixed(1);
-                            return `${label}: ${value} (${pct}%)`;
-                        }
-                    }
-                },
-
-                centerStatusText: {
-                    value: fin,       // big number inside donut
-                    label: centerLabel
-                }
+                centerText: { value: fin }
             }
         }
     });
