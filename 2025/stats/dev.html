@@ -347,42 +347,52 @@
 	    box-shadow: 0 0 4px rgba(42,123,246,0.4);
 	}
 
-	/* TOP6 TABLE */
-	.top6-table {
-	    width: 100%;
-	    border-collapse: collapse;
-	    margin-top: 10px;
-	}
-	
-	.top6-table th {
-	    background: #f0f0f0;
-	    padding: 6px 8px;
-	    text-align: left;
-	    font-weight: 600;
-	}
-	
-	.top6-table td {
-	    padding: 6px 8px;
-	    border-top: 1px solid #e3e3e3;
-	}
-	
-	/* schmale Nummernspalten */
-	.top6-col-small {
-	    width: 45px;
-	    text-align: right;
-	}
-	
-	/* Name Formatting */
-	.top6-lastname {
-	    font-weight: 700;
-	    text-transform: uppercase;
-	}
-	
-	.top6-firstname {
-	    font-weight: 500;
-	    margin-left: 4px;
-	}
+/* TOP6 TABLE */
+.top6-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+}
 
+.top6-table th {
+    background: #f0f0f0;
+    padding: 6px 4px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.top6-table td {
+    padding: 6px 4px;
+    border-top: 1px solid #e3e3e3;
+    white-space: nowrap;
+}
+
+/* Column alignment */
+.col-center { text-align: center; }
+.col-right  { text-align: right; }
+.col-left   { text-align: left; }
+
+/* Name formatting */
+.top6-lastname {
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.top6-firstname {
+    margin-left: 3px;
+}
+
+/* Medal Emoji column */
+.medal {
+    font-size: 18px;
+}
+
+/* Verein text overflow ellipsis */
+.club-cell {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 
   .footer {
