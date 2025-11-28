@@ -2,76 +2,76 @@
   "splits": [
     {
       "name": "Ziel",
-      "distance_km": 26.0
+      "distance_km": 7.5
     }
   ],
-  "finisher": 1173,
-  "dns": 100,
-  "dnf": 25,
-  "dsq": 25,
+  "finisher": 669,
+  "dns": 0,
+  "dnf": 0,
+  "dsq": 0,
   "M": {
     "Top10": [
       {
         "pos_overall": "1",
         "pos_gender": 1,
         "pos_ag": "1",
-        "bib": "6473",
-        "first_name": "Simon",
-        "last_name": "Müller",
-        "club": "Tri-Sport Lübeck",
-        "age_group": "20",
+        "bib": "7944",
+        "first_name": "Björn",
+        "last_name": "Menges",
+        "club": "(Berlin)",
+        "age_group": "35",
         "splits": [
           {
-            "time": "1:28:28",
-            "sec": 5308
+            "time": "0:24:34",
+            "sec": 1474
           }
         ]
       },
       {
         "pos_overall": "2",
         "pos_gender": 2,
-        "pos_ag": "2",
-        "bib": "5498",
-        "first_name": "Julius",
-        "last_name": "Schröder",
-        "club": "(Hamburg)",
+        "pos_ag": "1",
+        "bib": "7945",
+        "first_name": "Erik",
+        "last_name": "Wiedemann",
+        "club": "Project Way More TestTeam",
         "age_group": "20",
         "splits": [
           {
-            "time": "1:28:54",
-            "sec": 5334
+            "time": "0:24:47",
+            "sec": 1487
           }
         ]
       },
       {
         "pos_overall": "3",
         "pos_gender": 3,
-        "pos_ag": "3",
-        "bib": "6277",
-        "first_name": "Jonas",
-        "last_name": "Weller",
-        "club": "Ratzeburger SV - Triathlon",
-        "age_group": "20",
+        "pos_ag": "1",
+        "bib": "7947",
+        "first_name": "Claudius",
+        "last_name": "Michalak",
+        "club": "Laufen in Bad Segeberg",
+        "age_group": "40",
         "splits": [
           {
-            "time": "1:31:30",
-            "sec": 5490
+            "time": "0:25:08",
+            "sec": 1508
           }
         ]
       },
       {
         "pos_overall": "4",
         "pos_gender": 4,
-        "pos_ag": "4",
-        "bib": "5008",
-        "first_name": "Leon",
-        "last_name": "Allers",
-        "club": "(Hamburg)",
-        "age_group": "20",
+        "pos_ag": "1",
+        "bib": "6850",
+        "first_name": "Jaron",
+        "last_name": "Kollmeier",
+        "club": "Tri-Sport Lübeck",
+        "age_group": "J U18",
         "splits": [
           {
-            "time": "1:36:49",
-            "sec": 5809
+            "time": "0:26:30",
+            "sec": 1590
           }
         ]
       },
@@ -79,31 +79,31 @@
         "pos_overall": "5",
         "pos_gender": 5,
         "pos_ag": "1",
-        "bib": "6176",
-        "first_name": "Sören",
-        "last_name": "Jeßen",
-        "club": "LT Haspa Marathon Hamburg",
-        "age_group": "35",
+        "bib": "5654",
+        "first_name": "Karl",
+        "last_name": "Hiddensen",
+        "club": "Athletik-Gemeinschaft Hamburg West",
+        "age_group": "J U20",
         "splits": [
           {
-            "time": "1:37:44",
-            "sec": 5864
+            "time": "0:27:32",
+            "sec": 1652
           }
         ]
       },
       {
         "pos_overall": "6",
         "pos_gender": 6,
-        "pos_ag": "5",
-        "bib": "6417",
-        "first_name": "Guillaume",
-        "last_name": "Würsch",
-        "club": "SV Werder Bremen",
-        "age_group": "20",
+        "pos_ag": "1",
+        "bib": "6026",
+        "first_name": "Christian",
+        "last_name": "Kröhan",
+        "club": "1. RC Obernwohlde",
+        "age_group": "45",
         "splits": [
           {
-            "time": "1:38:17",
-            "sec": 5897
+            "time": "0:27:37",
+            "sec": 1657
           }
         ]
       },
@@ -111,69 +111,134 @@
         "pos_overall": "7",
         "pos_gender": 7,
         "pos_ag": "1",
-        "bib": "5870",
-        "first_name": "Luigi",
-        "last_name": "Babusci",
-        "club": "BSG Siemens",
-        "age_group": "40",
+        "bib": "5685",
+        "first_name": "Flemming",
+        "last_name": "Grosse",
+        "club": "Ratzeburger SV - Triathlon",
+        "age_group": "J U16",
         "splits": [
           {
-            "time": "1:38:40",
-            "sec": 5920
+            "time": "0:28:20",
+            "sec": 1700
           }
         ]
       },
       {
         "pos_overall": "8",
         "pos_gender": 8,
-        "pos_ag": "1",
-        "bib": "5710",
-        "first_name": "Steffen",
-        "last_name": "Reichert",
-        "club": "(Salzhausen)",
-        "age_group": "45",
+        "pos_ag": "2",
+        "bib": "5445",
+        "first_name": "Morten",
+        "last_name": "Weber",
+        "club": "ATS Buntentor Bremen",
+        "age_group": "20",
         "splits": [
           {
-            "time": "1:39:41",
-            "sec": 5981
+            "time": "0:28:26",
+            "sec": 1706
           }
         ]
       },
       {
         "pos_overall": "9",
         "pos_gender": 9,
-        "pos_ag": "6",
-        "bib": "5750",
-        "first_name": "Elias",
-        "last_name": "Hoffmann",
-        "club": "Adidas Runners Hamburg",
-        "age_group": "20",
+        "pos_ag": "2",
+        "bib": "6515",
+        "first_name": "Wiesław",
+        "last_name": "Daleki",
+        "club": "Daleki Wiesław",
+        "age_group": "45",
         "splits": [
           {
-            "time": "1:39:52",
-            "sec": 5992
+            "time": "0:28:52",
+            "sec": 1732
           }
         ]
       },
       {
-        "pos_overall": "11",
+        "pos_overall": "10",
         "pos_gender": 10,
-        "pos_ag": "7",
-        "bib": "5398",
-        "first_name": "Peter",
-        "last_name": "Noren",
-        "club": "(Hamburg)",
-        "age_group": "20",
+        "pos_ag": "2",
+        "bib": "5818",
+        "first_name": "Marcus",
+        "last_name": "Noreck",
+        "club": "(Dümmer)",
+        "age_group": "35",
         "splits": [
           {
-            "time": "1:40:11",
-            "sec": 6011
+            "time": "0:29:25",
+            "sec": 1765
           }
         ]
       }
     ],
     "histogram": {
       "buckets": [
+        {
+          "range_start": 300,
+          "range_end": 600,
+          "count": 0
+        },
+        {
+          "range_start": 600,
+          "range_end": 900,
+          "count": 0
+        },
+        {
+          "range_start": 900,
+          "range_end": 1200,
+          "count": 0
+        },
+        {
+          "range_start": 1200,
+          "range_end": 1500,
+          "count": 2
+        },
+        {
+          "range_start": 1500,
+          "range_end": 1800,
+          "count": 8
+        },
+        {
+          "range_start": 1800,
+          "range_end": 2100,
+          "count": 24
+        },
+        {
+          "range_start": 2100,
+          "range_end": 2400,
+          "count": 57
+        },
+        {
+          "range_start": 2400,
+          "range_end": 2700,
+          "count": 84
+        },
+        {
+          "range_start": 2700,
+          "range_end": 3000,
+          "count": 63
+        },
+        {
+          "range_start": 3000,
+          "range_end": 3300,
+          "count": 50
+        },
+        {
+          "range_start": 3300,
+          "range_end": 3600,
+          "count": 21
+        },
+        {
+          "range_start": 3600,
+          "range_end": 3900,
+          "count": 6
+        },
+        {
+          "range_start": 3900,
+          "range_end": 4200,
+          "count": 1
+        },
         {
           "range_start": 4200,
           "range_end": 4500,
@@ -187,166 +252,21 @@
         {
           "range_start": 4800,
           "range_end": 5100,
-          "count": 0
+          "count": 1
         },
         {
           "range_start": 5100,
           "range_end": 5400,
-          "count": 2
+          "count": 0
         },
         {
           "range_start": 5400,
           "range_end": 5700,
-          "count": 1
+          "count": 0
         },
         {
           "range_start": 5700,
           "range_end": 6000,
-          "count": 6
-        },
-        {
-          "range_start": 6000,
-          "range_end": 6300,
-          "count": 16
-        },
-        {
-          "range_start": 6300,
-          "range_end": 6600,
-          "count": 19
-        },
-        {
-          "range_start": 6600,
-          "range_end": 6900,
-          "count": 32
-        },
-        {
-          "range_start": 6900,
-          "range_end": 7200,
-          "count": 41
-        },
-        {
-          "range_start": 7200,
-          "range_end": 7500,
-          "count": 45
-        },
-        {
-          "range_start": 7500,
-          "range_end": 7800,
-          "count": 54
-        },
-        {
-          "range_start": 7800,
-          "range_end": 8100,
-          "count": 61
-        },
-        {
-          "range_start": 8100,
-          "range_end": 8400,
-          "count": 71
-        },
-        {
-          "range_start": 8400,
-          "range_end": 8700,
-          "count": 73
-        },
-        {
-          "range_start": 8700,
-          "range_end": 9000,
-          "count": 79
-        },
-        {
-          "range_start": 9000,
-          "range_end": 9300,
-          "count": 58
-        },
-        {
-          "range_start": 9300,
-          "range_end": 9600,
-          "count": 63
-        },
-        {
-          "range_start": 9600,
-          "range_end": 9900,
-          "count": 45
-        },
-        {
-          "range_start": 9900,
-          "range_end": 10200,
-          "count": 41
-        },
-        {
-          "range_start": 10200,
-          "range_end": 10500,
-          "count": 29
-        },
-        {
-          "range_start": 10500,
-          "range_end": 10800,
-          "count": 29
-        },
-        {
-          "range_start": 10800,
-          "range_end": 11100,
-          "count": 15
-        },
-        {
-          "range_start": 11100,
-          "range_end": 11400,
-          "count": 14
-        },
-        {
-          "range_start": 11400,
-          "range_end": 11700,
-          "count": 9
-        },
-        {
-          "range_start": 11700,
-          "range_end": 12000,
-          "count": 7
-        },
-        {
-          "range_start": 12000,
-          "range_end": 12300,
-          "count": 7
-        },
-        {
-          "range_start": 12300,
-          "range_end": 12600,
-          "count": 4
-        },
-        {
-          "range_start": 12600,
-          "range_end": 12900,
-          "count": 0
-        },
-        {
-          "range_start": 12900,
-          "range_end": 13200,
-          "count": 1
-        },
-        {
-          "range_start": 13200,
-          "range_end": 13500,
-          "count": 0
-        },
-        {
-          "range_start": 13500,
-          "range_end": 13800,
-          "count": 1
-        },
-        {
-          "range_start": 13800,
-          "range_end": 14100,
-          "count": 0
-        },
-        {
-          "range_start": 14100,
-          "range_end": 14400,
-          "count": 0
-        },
-        {
-          "range_start": 14400,
-          "range_end": 14700,
           "count": 0
         }
       ]
@@ -354,522 +274,722 @@
     "statistics": {
       "Overall": {
         "winner": {
-          "sec": 5308,
-          "hhmmss": "01:28:28"
+          "sec": 1474,
+          "hhmmss": "00:24:34"
         },
         "podium": {
-          "sec": 5490,
-          "hhmmss": "01:31:30"
+          "sec": 1508,
+          "hhmmss": "00:25:08"
         },
         "percentile_10": {
-          "sec": 6934,
-          "hhmmss": "01:55:34"
+          "sec": 2088,
+          "hhmmss": "00:34:48"
         },
         "percentile_25": {
-          "sec": 7772,
-          "hhmmss": "02:09:32"
+          "sec": 2350,
+          "hhmmss": "00:39:10"
         },
         "median": {
-          "sec": 8668,
-          "hhmmss": "02:24:28"
+          "sec": 2636,
+          "hhmmss": "00:43:56"
         },
         "average": {
-          "sec": 8708,
-          "hhmmss": "02:25:08"
+          "sec": 2663,
+          "hhmmss": "00:44:23"
         },
-        "count": 823
+        "count": 317
       },
       "20": {
         "winner": {
-          "sec": 5308,
-          "hhmmss": "01:28:28"
+          "sec": 1487,
+          "hhmmss": "00:24:47"
         },
         "podium": {
-          "sec": 5490,
-          "hhmmss": "01:31:30"
+          "sec": 1963,
+          "hhmmss": "00:32:43"
         },
         "percentile_10": {
-          "sec": 6379,
-          "hhmmss": "01:46:19"
+          "sec": 1996,
+          "hhmmss": "00:33:16"
         },
         "percentile_25": {
-          "sec": 7171,
-          "hhmmss": "01:59:31"
+          "sec": 2180,
+          "hhmmss": "00:36:20"
         },
         "median": {
-          "sec": 8307,
-          "hhmmss": "02:18:27"
+          "sec": 2365,
+          "hhmmss": "00:39:25"
         },
         "average": {
-          "sec": 8388,
-          "hhmmss": "02:19:48"
+          "sec": 2475,
+          "hhmmss": "00:41:15"
         },
-        "count": 118
+        "count": 26
       },
       "30": {
         "winner": {
-          "sec": 6126,
-          "hhmmss": "01:42:06"
+          "sec": 1840,
+          "hhmmss": "00:30:40"
         },
         "podium": {
-          "sec": 6413,
-          "hhmmss": "01:46:53"
+          "sec": 2066,
+          "hhmmss": "00:34:26"
         },
         "percentile_10": {
-          "sec": 6909,
-          "hhmmss": "01:55:09"
+          "sec": 2105,
+          "hhmmss": "00:35:05"
         },
         "percentile_25": {
-          "sec": 7400,
-          "hhmmss": "02:03:20"
+          "sec": 2258,
+          "hhmmss": "00:37:38"
         },
         "median": {
-          "sec": 8458,
-          "hhmmss": "02:20:58"
+          "sec": 2553,
+          "hhmmss": "00:42:33"
         },
         "average": {
-          "sec": 8506,
-          "hhmmss": "02:21:46"
+          "sec": 2584,
+          "hhmmss": "00:43:04"
         },
-        "count": 99
+        "count": 26
       },
       "35": {
         "winner": {
-          "sec": 5864,
-          "hhmmss": "01:37:44"
+          "sec": 1474,
+          "hhmmss": "00:24:34"
         },
         "podium": {
-          "sec": 6162,
-          "hhmmss": "01:42:42"
+          "sec": 2002,
+          "hhmmss": "00:33:22"
         },
         "percentile_10": {
-          "sec": 6643,
-          "hhmmss": "01:50:43"
+          "sec": 2018,
+          "hhmmss": "00:33:38"
         },
         "percentile_25": {
-          "sec": 7327,
-          "hhmmss": "02:02:07"
+          "sec": 2295,
+          "hhmmss": "00:38:15"
         },
         "median": {
-          "sec": 8316,
-          "hhmmss": "02:18:36"
+          "sec": 2608,
+          "hhmmss": "00:43:28"
         },
         "average": {
-          "sec": 8415,
-          "hhmmss": "02:20:15"
+          "sec": 2615,
+          "hhmmss": "00:43:35"
         },
-        "count": 97
+        "count": 25
       },
       "40": {
         "winner": {
-          "sec": 5920,
-          "hhmmss": "01:38:40"
+          "sec": 1508,
+          "hhmmss": "00:25:08"
         },
         "podium": {
-          "sec": 6292,
-          "hhmmss": "01:44:52"
+          "sec": 2099,
+          "hhmmss": "00:34:59"
         },
         "percentile_10": {
-          "sec": 7104,
-          "hhmmss": "01:58:24"
+          "sec": 2185,
+          "hhmmss": "00:36:25"
         },
         "percentile_25": {
-          "sec": 7548,
-          "hhmmss": "02:05:48"
+          "sec": 2357,
+          "hhmmss": "00:39:17"
         },
         "median": {
-          "sec": 8252,
-          "hhmmss": "02:17:32"
+          "sec": 2872,
+          "hhmmss": "00:47:52"
         },
         "average": {
-          "sec": 8415,
-          "hhmmss": "02:20:15"
+          "sec": 2738,
+          "hhmmss": "00:45:38"
         },
-        "count": 107
+        "count": 35
       },
       "45": {
         "winner": {
-          "sec": 5981,
-          "hhmmss": "01:39:41"
+          "sec": 1657,
+          "hhmmss": "00:27:37"
         },
         "podium": {
-          "sec": 6204,
-          "hhmmss": "01:43:24"
+          "sec": 1854,
+          "hhmmss": "00:30:54"
         },
         "percentile_10": {
-          "sec": 6925,
-          "hhmmss": "01:55:25"
+          "sec": 2018,
+          "hhmmss": "00:33:38"
         },
         "percentile_25": {
-          "sec": 7669,
-          "hhmmss": "02:07:49"
+          "sec": 2165,
+          "hhmmss": "00:36:05"
         },
         "median": {
-          "sec": 8712,
-          "hhmmss": "02:25:12"
+          "sec": 2341,
+          "hhmmss": "00:39:01"
         },
         "average": {
-          "sec": 8527,
-          "hhmmss": "02:22:07"
-        },
-        "count": 100
-      },
-      "50": {
-        "winner": {
-          "sec": 6544,
-          "hhmmss": "01:49:04"
-        },
-        "podium": {
-          "sec": 6770,
-          "hhmmss": "01:52:50"
-        },
-        "percentile_10": {
-          "sec": 7456,
-          "hhmmss": "02:04:16"
-        },
-        "percentile_25": {
-          "sec": 8029,
-          "hhmmss": "02:13:49"
-        },
-        "median": {
-          "sec": 8713,
-          "hhmmss": "02:25:13"
-        },
-        "average": {
-          "sec": 8908,
-          "hhmmss": "02:28:28"
-        },
-        "count": 102
-      },
-      "55": {
-        "winner": {
-          "sec": 6676,
-          "hhmmss": "01:51:16"
-        },
-        "podium": {
-          "sec": 7121,
-          "hhmmss": "01:58:41"
-        },
-        "percentile_10": {
-          "sec": 7681,
-          "hhmmss": "02:08:01"
-        },
-        "percentile_25": {
-          "sec": 8341,
-          "hhmmss": "02:19:01"
-        },
-        "median": {
-          "sec": 9004,
-          "hhmmss": "02:30:04"
-        },
-        "average": {
-          "sec": 9117,
-          "hhmmss": "02:31:57"
-        },
-        "count": 93
-      },
-      "60": {
-        "winner": {
-          "sec": 7412,
-          "hhmmss": "02:03:32"
-        },
-        "podium": {
-          "sec": 7474,
-          "hhmmss": "02:04:34"
-        },
-        "percentile_10": {
-          "sec": 7888,
-          "hhmmss": "02:11:28"
-        },
-        "percentile_25": {
-          "sec": 8486,
-          "hhmmss": "02:21:26"
-        },
-        "median": {
-          "sec": 9149,
-          "hhmmss": "02:32:29"
-        },
-        "average": {
-          "sec": 9305,
-          "hhmmss": "02:35:05"
-        },
-        "count": 62
-      },
-      "65": {
-        "winner": {
-          "sec": 7381,
-          "hhmmss": "02:03:01"
-        },
-        "podium": {
-          "sec": 8118,
-          "hhmmss": "02:15:18"
-        },
-        "percentile_10": {
-          "sec": 8201,
-          "hhmmss": "02:16:41"
-        },
-        "percentile_25": {
-          "sec": 8889,
-          "hhmmss": "02:28:09"
-        },
-        "median": {
-          "sec": 9660,
-          "hhmmss": "02:41:00"
-        },
-        "average": {
-          "sec": 9713,
-          "hhmmss": "02:41:53"
+          "sec": 2368,
+          "hhmmss": "00:39:28"
         },
         "count": 28
       },
-      "70": {
+      "50": {
         "winner": {
-          "sec": 8937,
-          "hhmmss": "02:28:57"
+          "sec": 1833,
+          "hhmmss": "00:30:33"
         },
         "podium": {
-          "sec": 10049,
-          "hhmmss": "02:47:29"
+          "sec": 2160,
+          "hhmmss": "00:36:00"
         },
         "percentile_10": {
-          "sec": 9142,
-          "hhmmss": "02:32:22"
+          "sec": 2327,
+          "hhmmss": "00:38:47"
         },
         "percentile_25": {
-          "sec": 9523,
-          "hhmmss": "02:38:43"
+          "sec": 2519,
+          "hhmmss": "00:41:59"
         },
         "median": {
-          "sec": 10278,
-          "hhmmss": "02:51:18"
+          "sec": 2728,
+          "hhmmss": "00:45:28"
         },
         "average": {
-          "sec": 10287,
-          "hhmmss": "02:51:27"
+          "sec": 2709,
+          "hhmmss": "00:45:09"
         },
-        "count": 6
+        "count": 33
+      },
+      "55": {
+        "winner": {
+          "sec": 2086,
+          "hhmmss": "00:34:46"
+        },
+        "podium": {
+          "sec": 2406,
+          "hhmmss": "00:40:06"
+        },
+        "percentile_10": {
+          "sec": 2428,
+          "hhmmss": "00:40:28"
+        },
+        "percentile_25": {
+          "sec": 2555,
+          "hhmmss": "00:42:35"
+        },
+        "median": {
+          "sec": 2691,
+          "hhmmss": "00:44:51"
+        },
+        "average": {
+          "sec": 2761,
+          "hhmmss": "00:46:01"
+        },
+        "count": 42
+      },
+      "60": {
+        "winner": {
+          "sec": 1914,
+          "hhmmss": "00:31:54"
+        },
+        "podium": {
+          "sec": 2232,
+          "hhmmss": "00:37:12"
+        },
+        "percentile_10": {
+          "sec": 2266,
+          "hhmmss": "00:37:46"
+        },
+        "percentile_25": {
+          "sec": 2430,
+          "hhmmss": "00:40:30"
+        },
+        "median": {
+          "sec": 2770,
+          "hhmmss": "00:46:10"
+        },
+        "average": {
+          "sec": 2764,
+          "hhmmss": "00:46:04"
+        },
+        "count": 34
+      },
+      "65": {
+        "winner": {
+          "sec": 2406,
+          "hhmmss": "00:40:06"
+        },
+        "podium": {
+          "sec": 2593,
+          "hhmmss": "00:43:13"
+        },
+        "percentile_10": {
+          "sec": 2577,
+          "hhmmss": "00:42:57"
+        },
+        "percentile_25": {
+          "sec": 2616,
+          "hhmmss": "00:43:36"
+        },
+        "median": {
+          "sec": 2849,
+          "hhmmss": "00:47:29"
+        },
+        "average": {
+          "sec": 2927,
+          "hhmmss": "00:48:47"
+        },
+        "count": 17
+      },
+      "70": {
+        "winner": {
+          "sec": 2351,
+          "hhmmss": "00:39:11"
+        },
+        "podium": {
+          "sec": 2529,
+          "hhmmss": "00:42:09"
+        },
+        "percentile_10": {
+          "sec": 2507,
+          "hhmmss": "00:41:47"
+        },
+        "percentile_25": {
+          "sec": 2650,
+          "hhmmss": "00:44:10"
+        },
+        "median": {
+          "sec": 2876,
+          "hhmmss": "00:47:56"
+        },
+        "average": {
+          "sec": 2929,
+          "hhmmss": "00:48:49"
+        },
+        "count": 14
+      },
+      "75": {
+        "winner": {
+          "sec": 3801,
+          "hhmmss": "01:03:21"
+        },
+        "podium": {
+          "sec": 3988,
+          "hhmmss": "01:06:28"
+        },
+        "percentile_10": {
+          "sec": 3820,
+          "hhmmss": "01:03:40"
+        },
+        "percentile_25": {
+          "sec": 3848,
+          "hhmmss": "01:04:08"
+        },
+        "median": {
+          "sec": 3894,
+          "hhmmss": "01:04:54"
+        },
+        "average": {
+          "sec": 3894,
+          "hhmmss": "01:04:54"
+        },
+        "count": 2
       },
       "80": {
         "winner": {
-          "sec": 12429,
-          "hhmmss": "03:27:09"
+          "sec": 3199,
+          "hhmmss": "00:53:19"
         },
         "podium": {
-          "sec": 12429,
-          "hhmmss": "03:27:09"
+          "sec": 4960,
+          "hhmmss": "01:22:40"
         },
         "percentile_10": {
-          "sec": 12429,
-          "hhmmss": "03:27:09"
+          "sec": 3375,
+          "hhmmss": "00:56:15"
         },
         "percentile_25": {
-          "sec": 12429,
-          "hhmmss": "03:27:09"
+          "sec": 3639,
+          "hhmmss": "01:00:39"
         },
         "median": {
-          "sec": 12429,
-          "hhmmss": "03:27:09"
+          "sec": 4079,
+          "hhmmss": "01:07:59"
         },
         "average": {
-          "sec": 12429,
-          "hhmmss": "03:27:09"
+          "sec": 4079,
+          "hhmmss": "01:07:59"
         },
-        "count": 1
+        "count": 2
       },
-      "JA": {
+      "J U14": {
         "winner": {
-          "sec": 6433,
-          "hhmmss": "01:47:13"
+          "sec": 1807,
+          "hhmmss": "00:30:07"
         },
         "podium": {
-          "sec": 6934,
-          "hhmmss": "01:55:34"
+          "sec": 2307,
+          "hhmmss": "00:38:27"
         },
         "percentile_10": {
-          "sec": 6796,
-          "hhmmss": "01:53:16"
+          "sec": 2051,
+          "hhmmss": "00:34:11"
         },
         "percentile_25": {
-          "sec": 7100,
-          "hhmmss": "01:58:20"
+          "sec": 2269,
+          "hhmmss": "00:37:49"
         },
         "median": {
-          "sec": 8790,
-          "hhmmss": "02:26:30"
+          "sec": 2576,
+          "hhmmss": "00:42:56"
         },
         "average": {
-          "sec": 8592,
-          "hhmmss": "02:23:12"
+          "sec": 2520,
+          "hhmmss": "00:42:00"
         },
-        "count": 10
+        "count": 8
+      },
+      "J U15": {
+        "winner": {
+          "sec": 2055,
+          "hhmmss": "00:34:15"
+        },
+        "podium": {
+          "sec": 2461,
+          "hhmmss": "00:41:01"
+        },
+        "percentile_10": {
+          "sec": 2141,
+          "hhmmss": "00:35:41"
+        },
+        "percentile_25": {
+          "sec": 2286,
+          "hhmmss": "00:38:06"
+        },
+        "median": {
+          "sec": 2476,
+          "hhmmss": "00:41:16"
+        },
+        "average": {
+          "sec": 2689,
+          "hhmmss": "00:44:49"
+        },
+        "count": 6
+      },
+      "J U16": {
+        "winner": {
+          "sec": 1700,
+          "hhmmss": "00:28:20"
+        },
+        "podium": {
+          "sec": 2600,
+          "hhmmss": "00:43:20"
+        },
+        "percentile_10": {
+          "sec": 1920,
+          "hhmmss": "00:32:00"
+        },
+        "percentile_25": {
+          "sec": 2250,
+          "hhmmss": "00:37:30"
+        },
+        "median": {
+          "sec": 2517,
+          "hhmmss": "00:41:57"
+        },
+        "average": {
+          "sec": 2401,
+          "hhmmss": "00:40:01"
+        },
+        "count": 4
+      },
+      "J U18": {
+        "winner": {
+          "sec": 1590,
+          "hhmmss": "00:26:30"
+        },
+        "podium": {
+          "sec": 1949,
+          "hhmmss": "00:32:29"
+        },
+        "percentile_10": {
+          "sec": 1855,
+          "hhmmss": "00:30:55"
+        },
+        "percentile_25": {
+          "sec": 1954,
+          "hhmmss": "00:32:34"
+        },
+        "median": {
+          "sec": 1963,
+          "hhmmss": "00:32:43"
+        },
+        "average": {
+          "sec": 2225,
+          "hhmmss": "00:37:05"
+        },
+        "count": 11
+      },
+      "J U20": {
+        "winner": {
+          "sec": 1652,
+          "hhmmss": "00:27:32"
+        },
+        "podium": {
+          "sec": 2251,
+          "hhmmss": "00:37:31"
+        },
+        "percentile_10": {
+          "sec": 1702,
+          "hhmmss": "00:28:22"
+        },
+        "percentile_25": {
+          "sec": 1776,
+          "hhmmss": "00:29:36"
+        },
+        "median": {
+          "sec": 2034,
+          "hhmmss": "00:33:54"
+        },
+        "average": {
+          "sec": 2157,
+          "hhmmss": "00:35:57"
+        },
+        "count": 4
       }
     }
   },
   "W": {
     "Top10": [
       {
-        "pos_overall": "10",
+        "pos_overall": "14",
         "pos_gender": 1,
         "pos_ag": "1",
-        "bib": "6102",
-        "first_name": "Julia",
-        "last_name": "Kümpers",
-        "club": "LAC Kronshagen",
+        "bib": "5485",
+        "first_name": "Zoey",
+        "last_name": "Niemann",
+        "club": "Tri-Sport Lübeck",
+        "age_group": "J U16",
+        "splits": [
+          {
+            "time": "0:30:25",
+            "sec": 1825
+          }
+        ]
+      },
+      {
+        "pos_overall": "19",
+        "pos_gender": 2,
+        "pos_ag": "1",
+        "bib": "5840",
+        "first_name": "Carina",
+        "last_name": "Nienhaus",
+        "club": "Tri-Sport Lübeck",
+        "age_group": "35",
+        "splits": [
+          {
+            "time": "0:31:26",
+            "sec": 1886
+          }
+        ]
+      },
+      {
+        "pos_overall": "20",
+        "pos_gender": 3,
+        "pos_ag": "1",
+        "bib": "5904",
+        "first_name": "Nele",
+        "last_name": "Brügge",
+        "club": "Tri-Sport Lübeck",
+        "age_group": "20",
+        "splits": [
+          {
+            "time": "0:31:54",
+            "sec": 1914
+          }
+        ]
+      },
+      {
+        "pos_overall": "22",
+        "pos_gender": 4,
+        "pos_ag": "1",
+        "bib": "6053",
+        "first_name": "Lena",
+        "last_name": "Franz",
+        "club": "Ratzeburger Ruderclub",
         "age_group": "30",
         "splits": [
           {
-            "time": "1:39:57",
-            "sec": 5997
+            "time": "0:32:07",
+            "sec": 1927
           }
         ]
       },
       {
-        "pos_overall": "21",
-        "pos_gender": 2,
+        "pos_overall": "28",
+        "pos_gender": 5,
         "pos_ag": "1",
-        "bib": "6104",
-        "first_name": "Fenna",
-        "last_name": "Froehlich",
-        "club": "LAC Lübeck",
-        "age_group": "20",
+        "bib": "6637",
+        "first_name": "Stefanie",
+        "last_name": "Möller",
+        "club": "DLRG Groß Sarau",
+        "age_group": "40",
         "splits": [
           {
-            "time": "1:43:15",
-            "sec": 6195
-          }
-        ]
-      },
-      {
-        "pos_overall": "24",
-        "pos_gender": 3,
-        "pos_ag": "2",
-        "bib": "6103",
-        "first_name": "Svea",
-        "last_name": "Timm",
-        "club": "LAC Kronshagen",
-        "age_group": "20",
-        "splits": [
-          {
-            "time": "1:43:34",
-            "sec": 6214
+            "time": "0:33:13",
+            "sec": 1993
           }
         ]
       },
       {
         "pos_overall": "29",
-        "pos_gender": 4,
-        "pos_ag": "3",
-        "bib": "6316",
-        "first_name": "Susanne",
-        "last_name": "Siedhoff",
-        "club": "SC Victoria Hockey",
-        "age_group": "20",
+        "pos_gender": 6,
+        "pos_ag": "1",
+        "bib": "5846",
+        "first_name": "Jette",
+        "last_name": "Heer",
+        "club": "(Ratzeburg)",
+        "age_group": "J U20",
         "splits": [
           {
-            "time": "1:45:03",
-            "sec": 6303
+            "time": "0:33:17",
+            "sec": 1997
           }
         ]
       },
       {
-        "pos_overall": "50",
-        "pos_gender": 5,
+        "pos_overall": "31",
+        "pos_gender": 7,
+        "pos_ag": "2",
+        "bib": "7091",
+        "first_name": "Jennifer",
+        "last_name": "Liddell",
+        "club": "Hamburg Running",
+        "age_group": "35",
+        "splits": [
+          {
+            "time": "0:33:33",
+            "sec": 2013
+          }
+        ]
+      },
+      {
+        "pos_overall": "34",
+        "pos_gender": 8,
         "pos_ag": "1",
-        "bib": "5477",
-        "first_name": "Michaela",
-        "last_name": "Sarman-Lein",
-        "club": "(Hamburg)",
+        "bib": "5176",
+        "first_name": "Kirsten",
+        "last_name": "Noordink",
+        "club": "NTSV Strand 08",
+        "age_group": "45",
+        "splits": [
+          {
+            "time": "0:33:52",
+            "sec": 2032
+          }
+        ]
+      },
+      {
+        "pos_overall": "35",
+        "pos_gender": 9,
+        "pos_ag": "1",
+        "bib": "5677",
+        "first_name": "Claudia",
+        "last_name": "Radßuweit",
+        "club": "Lübecker Marathon e.V",
         "age_group": "50",
         "splits": [
           {
-            "time": "1:50:12",
-            "sec": 6612
+            "time": "0:33:58",
+            "sec": 2038
           }
         ]
       },
       {
-        "pos_overall": "55",
-        "pos_gender": 6,
-        "pos_ag": "2",
-        "bib": "6494",
-        "first_name": "Lisa",
-        "last_name": "Femerling",
-        "club": "Triathlon Team Hamburg",
-        "age_group": "30",
-        "splits": [
-          {
-            "time": "1:50:39",
-            "sec": 6639
-          }
-        ]
-      },
-      {
-        "pos_overall": "56",
-        "pos_gender": 7,
-        "pos_ag": "3",
-        "bib": "5442",
-        "first_name": "Maya",
-        "last_name": "Rehberg",
-        "club": "SC Rönnau 74",
-        "age_group": "30",
-        "splits": [
-          {
-            "time": "1:50:40",
-            "sec": 6640
-          }
-        ]
-      },
-      {
-        "pos_overall": "81",
-        "pos_gender": 8,
-        "pos_ag": "4",
-        "bib": "6403",
-        "first_name": "Lisa",
-        "last_name": "Kucziensky",
-        "club": "SV Großhansdorf",
-        "age_group": "30",
-        "splits": [
-          {
-            "time": "1:54:27",
-            "sec": 6867
-          }
-        ]
-      },
-      {
-        "pos_overall": "97",
-        "pos_gender": 9,
-        "pos_ag": "4",
-        "bib": "5099",
-        "first_name": "Hannah",
-        "last_name": "Dehne",
-        "club": "(München)",
-        "age_group": "20",
-        "splits": [
-          {
-            "time": "1:56:25",
-            "sec": 6985
-          }
-        ]
-      },
-      {
-        "pos_overall": "104",
+        "pos_overall": "41",
         "pos_gender": 10,
-        "pos_ag": "5",
-        "bib": "6012",
+        "pos_ag": "2",
+        "bib": "5111",
         "first_name": "Julia",
-        "last_name": "Ruge",
-        "club": "Hamburg Running",
-        "age_group": "30",
+        "last_name": "Ganßmann",
+        "club": "Lübecker Marathon e. V.",
+        "age_group": "40",
         "splits": [
           {
-            "time": "1:57:11",
-            "sec": 7031
+            "time": "0:34:43",
+            "sec": 2083
           }
         ]
       }
     ],
     "histogram": {
       "buckets": [
+        {
+          "range_start": 900,
+          "range_end": 1200,
+          "count": 0
+        },
+        {
+          "range_start": 1200,
+          "range_end": 1500,
+          "count": 0
+        },
+        {
+          "range_start": 1500,
+          "range_end": 1800,
+          "count": 0
+        },
+        {
+          "range_start": 1800,
+          "range_end": 2100,
+          "count": 10
+        },
+        {
+          "range_start": 2100,
+          "range_end": 2400,
+          "count": 16
+        },
+        {
+          "range_start": 2400,
+          "range_end": 2700,
+          "count": 60
+        },
+        {
+          "range_start": 2700,
+          "range_end": 3000,
+          "count": 107
+        },
+        {
+          "range_start": 3000,
+          "range_end": 3300,
+          "count": 87
+        },
+        {
+          "range_start": 3300,
+          "range_end": 3600,
+          "count": 46
+        },
+        {
+          "range_start": 3600,
+          "range_end": 3900,
+          "count": 21
+        },
+        {
+          "range_start": 3900,
+          "range_end": 4200,
+          "count": 2
+        },
+        {
+          "range_start": 4200,
+          "range_end": 4500,
+          "count": 2
+        },
+        {
+          "range_start": 4500,
+          "range_end": 4800,
+          "count": 1
+        },
         {
           "range_start": 4800,
           "range_end": 5100,
@@ -884,493 +1004,441 @@
           "range_start": 5400,
           "range_end": 5700,
           "count": 0
-        },
-        {
-          "range_start": 5700,
-          "range_end": 6000,
-          "count": 1
-        },
-        {
-          "range_start": 6000,
-          "range_end": 6300,
-          "count": 2
-        },
-        {
-          "range_start": 6300,
-          "range_end": 6600,
-          "count": 1
-        },
-        {
-          "range_start": 6600,
-          "range_end": 6900,
-          "count": 4
-        },
-        {
-          "range_start": 6900,
-          "range_end": 7200,
-          "count": 5
-        },
-        {
-          "range_start": 7200,
-          "range_end": 7500,
-          "count": 3
-        },
-        {
-          "range_start": 7500,
-          "range_end": 7800,
-          "count": 10
-        },
-        {
-          "range_start": 7800,
-          "range_end": 8100,
-          "count": 19
-        },
-        {
-          "range_start": 8100,
-          "range_end": 8400,
-          "count": 16
-        },
-        {
-          "range_start": 8400,
-          "range_end": 8700,
-          "count": 32
-        },
-        {
-          "range_start": 8700,
-          "range_end": 9000,
-          "count": 35
-        },
-        {
-          "range_start": 9000,
-          "range_end": 9300,
-          "count": 29
-        },
-        {
-          "range_start": 9300,
-          "range_end": 9600,
-          "count": 40
-        },
-        {
-          "range_start": 9600,
-          "range_end": 9900,
-          "count": 22
-        },
-        {
-          "range_start": 9900,
-          "range_end": 10200,
-          "count": 31
-        },
-        {
-          "range_start": 10200,
-          "range_end": 10500,
-          "count": 36
-        },
-        {
-          "range_start": 10500,
-          "range_end": 10800,
-          "count": 17
-        },
-        {
-          "range_start": 10800,
-          "range_end": 11100,
-          "count": 15
-        },
-        {
-          "range_start": 11100,
-          "range_end": 11400,
-          "count": 7
-        },
-        {
-          "range_start": 11400,
-          "range_end": 11700,
-          "count": 13
-        },
-        {
-          "range_start": 11700,
-          "range_end": 12000,
-          "count": 1
-        },
-        {
-          "range_start": 12000,
-          "range_end": 12300,
-          "count": 4
-        },
-        {
-          "range_start": 12300,
-          "range_end": 12600,
-          "count": 6
-        },
-        {
-          "range_start": 12600,
-          "range_end": 12900,
-          "count": 0
-        },
-        {
-          "range_start": 12900,
-          "range_end": 13200,
-          "count": 0
-        },
-        {
-          "range_start": 13200,
-          "range_end": 13500,
-          "count": 0
-        },
-        {
-          "range_start": 13500,
-          "range_end": 13800,
-          "count": 0
-        },
-        {
-          "range_start": 13800,
-          "range_end": 14100,
-          "count": 0
-        },
-        {
-          "range_start": 14100,
-          "range_end": 14400,
-          "count": 1
-        },
-        {
-          "range_start": 14400,
-          "range_end": 14700,
-          "count": 0
-        },
-        {
-          "range_start": 14700,
-          "range_end": 15000,
-          "count": 0
-        },
-        {
-          "range_start": 15000,
-          "range_end": 15300,
-          "count": 0
         }
       ]
     },
     "statistics": {
       "Overall": {
         "winner": {
-          "sec": 5997,
-          "hhmmss": "01:39:57"
+          "sec": 1825,
+          "hhmmss": "00:30:25"
         },
         "podium": {
-          "sec": 6214,
-          "hhmmss": "01:43:34"
+          "sec": 1914,
+          "hhmmss": "00:31:54"
         },
         "percentile_10": {
-          "sec": 7943,
-          "hhmmss": "02:12:23"
+          "sec": 2501,
+          "hhmmss": "00:41:41"
         },
         "percentile_25": {
-          "sec": 8654,
-          "hhmmss": "02:24:14"
+          "sec": 2704,
+          "hhmmss": "00:45:04"
         },
         "median": {
-          "sec": 9388,
-          "hhmmss": "02:36:28"
+          "sec": 2956,
+          "hhmmss": "00:49:16"
         },
         "average": {
-          "sec": 9473,
-          "hhmmss": "02:37:53"
+          "sec": 2975,
+          "hhmmss": "00:49:35"
         },
-        "count": 350
+        "count": 352
       },
       "20": {
         "winner": {
-          "sec": 6195,
-          "hhmmss": "01:43:15"
+          "sec": 1914,
+          "hhmmss": "00:31:54"
         },
         "podium": {
-          "sec": 6303,
-          "hhmmss": "01:45:03"
+          "sec": 2309,
+          "hhmmss": "00:38:29"
         },
         "percentile_10": {
-          "sec": 7740,
-          "hhmmss": "02:09:00"
+          "sec": 2398,
+          "hhmmss": "00:39:58"
         },
         "percentile_25": {
-          "sec": 8459,
-          "hhmmss": "02:20:59"
+          "sec": 2608,
+          "hhmmss": "00:43:28"
         },
         "median": {
-          "sec": 9147,
-          "hhmmss": "02:32:27"
+          "sec": 2862,
+          "hhmmss": "00:47:42"
         },
         "average": {
-          "sec": 9317,
-          "hhmmss": "02:35:17"
+          "sec": 2884,
+          "hhmmss": "00:48:04"
         },
-        "count": 89
+        "count": 52
       },
       "30": {
         "winner": {
-          "sec": 5997,
-          "hhmmss": "01:39:57"
+          "sec": 1927,
+          "hhmmss": "00:32:07"
         },
         "podium": {
-          "sec": 6640,
-          "hhmmss": "01:50:40"
+          "sec": 2400,
+          "hhmmss": "00:40:00"
         },
         "percentile_10": {
-          "sec": 6965,
-          "hhmmss": "01:56:05"
+          "sec": 2502,
+          "hhmmss": "00:41:42"
         },
         "percentile_25": {
-          "sec": 8588,
-          "hhmmss": "02:23:08"
+          "sec": 2713,
+          "hhmmss": "00:45:13"
         },
         "median": {
-          "sec": 9316,
-          "hhmmss": "02:35:16"
+          "sec": 2976,
+          "hhmmss": "00:49:36"
         },
         "average": {
-          "sec": 9038,
-          "hhmmss": "02:30:38"
-        },
-        "count": 37
-      },
-      "35": {
-        "winner": {
-          "sec": 7282,
-          "hhmmss": "02:01:22"
-        },
-        "podium": {
-          "sec": 8034,
-          "hhmmss": "02:13:54"
-        },
-        "percentile_10": {
-          "sec": 8231,
-          "hhmmss": "02:17:11"
-        },
-        "percentile_25": {
-          "sec": 8701,
-          "hhmmss": "02:25:01"
-        },
-        "median": {
-          "sec": 9280,
-          "hhmmss": "02:34:40"
-        },
-        "average": {
-          "sec": 9417,
-          "hhmmss": "02:36:57"
-        },
-        "count": 40
-      },
-      "40": {
-        "winner": {
-          "sec": 7193,
-          "hhmmss": "01:59:53"
-        },
-        "podium": {
-          "sec": 7471,
-          "hhmmss": "02:04:31"
-        },
-        "percentile_10": {
-          "sec": 7996,
-          "hhmmss": "02:13:16"
-        },
-        "percentile_25": {
-          "sec": 8731,
-          "hhmmss": "02:25:31"
-        },
-        "median": {
-          "sec": 9509,
-          "hhmmss": "02:38:29"
-        },
-        "average": {
-          "sec": 9593,
-          "hhmmss": "02:39:53"
-        },
-        "count": 56
-      },
-      "45": {
-        "winner": {
-          "sec": 7740,
-          "hhmmss": "02:09:00"
-        },
-        "podium": {
-          "sec": 7885,
-          "hhmmss": "02:11:25"
-        },
-        "percentile_10": {
-          "sec": 8042,
-          "hhmmss": "02:14:02"
-        },
-        "percentile_25": {
-          "sec": 8772,
-          "hhmmss": "02:26:12"
-        },
-        "median": {
-          "sec": 9628,
-          "hhmmss": "02:40:28"
-        },
-        "average": {
-          "sec": 9614,
-          "hhmmss": "02:40:14"
-        },
-        "count": 44
-      },
-      "50": {
-        "winner": {
-          "sec": 6612,
-          "hhmmss": "01:50:12"
-        },
-        "podium": {
-          "sec": 7864,
-          "hhmmss": "02:11:04"
-        },
-        "percentile_10": {
-          "sec": 8380,
-          "hhmmss": "02:19:40"
-        },
-        "percentile_25": {
-          "sec": 8832,
-          "hhmmss": "02:27:12"
-        },
-        "median": {
-          "sec": 9482,
-          "hhmmss": "02:38:02"
-        },
-        "average": {
-          "sec": 9548,
-          "hhmmss": "02:39:08"
+          "sec": 2935,
+          "hhmmss": "00:48:55"
         },
         "count": 30
       },
-      "55": {
+      "35": {
         "winner": {
-          "sec": 7567,
-          "hhmmss": "02:06:07"
+          "sec": 1886,
+          "hhmmss": "00:31:26"
         },
         "podium": {
-          "sec": 8529,
-          "hhmmss": "02:22:09"
+          "sec": 2317,
+          "hhmmss": "00:38:37"
         },
         "percentile_10": {
-          "sec": 8806,
-          "hhmmss": "02:26:46"
+          "sec": 2490,
+          "hhmmss": "00:41:30"
         },
         "percentile_25": {
-          "sec": 9267,
-          "hhmmss": "02:34:27"
+          "sec": 2655,
+          "hhmmss": "00:44:15"
         },
         "median": {
-          "sec": 9742,
-          "hhmmss": "02:42:22"
+          "sec": 2960,
+          "hhmmss": "00:49:20"
         },
         "average": {
-          "sec": 9716,
-          "hhmmss": "02:41:56"
+          "sec": 2941,
+          "hhmmss": "00:49:01"
         },
-        "count": 29
+        "count": 38
+      },
+      "40": {
+        "winner": {
+          "sec": 1993,
+          "hhmmss": "00:33:13"
+        },
+        "podium": {
+          "sec": 2226,
+          "hhmmss": "00:37:06"
+        },
+        "percentile_10": {
+          "sec": 2458,
+          "hhmmss": "00:40:58"
+        },
+        "percentile_25": {
+          "sec": 2658,
+          "hhmmss": "00:44:18"
+        },
+        "median": {
+          "sec": 2900,
+          "hhmmss": "00:48:20"
+        },
+        "average": {
+          "sec": 2996,
+          "hhmmss": "00:49:56"
+        },
+        "count": 47
+      },
+      "45": {
+        "winner": {
+          "sec": 2032,
+          "hhmmss": "00:33:52"
+        },
+        "podium": {
+          "sec": 2412,
+          "hhmmss": "00:40:12"
+        },
+        "percentile_10": {
+          "sec": 2562,
+          "hhmmss": "00:42:42"
+        },
+        "percentile_25": {
+          "sec": 2714,
+          "hhmmss": "00:45:14"
+        },
+        "median": {
+          "sec": 2952,
+          "hhmmss": "00:49:12"
+        },
+        "average": {
+          "sec": 3029,
+          "hhmmss": "00:50:29"
+        },
+        "count": 47
+      },
+      "50": {
+        "winner": {
+          "sec": 2038,
+          "hhmmss": "00:33:58"
+        },
+        "podium": {
+          "sec": 2504,
+          "hhmmss": "00:41:44"
+        },
+        "percentile_10": {
+          "sec": 2577,
+          "hhmmss": "00:42:57"
+        },
+        "percentile_25": {
+          "sec": 2751,
+          "hhmmss": "00:45:51"
+        },
+        "median": {
+          "sec": 3068,
+          "hhmmss": "00:51:08"
+        },
+        "average": {
+          "sec": 3018,
+          "hhmmss": "00:50:18"
+        },
+        "count": 38
+      },
+      "55": {
+        "winner": {
+          "sec": 2508,
+          "hhmmss": "00:41:48"
+        },
+        "podium": {
+          "sec": 2738,
+          "hhmmss": "00:45:38"
+        },
+        "percentile_10": {
+          "sec": 2769,
+          "hhmmss": "00:46:09"
+        },
+        "percentile_25": {
+          "sec": 2849,
+          "hhmmss": "00:47:29"
+        },
+        "median": {
+          "sec": 3087,
+          "hhmmss": "00:51:27"
+        },
+        "average": {
+          "sec": 3077,
+          "hhmmss": "00:51:17"
+        },
+        "count": 34
       },
       "60": {
         "winner": {
-          "sec": 7800,
-          "hhmmss": "02:10:00"
+          "sec": 2273,
+          "hhmmss": "00:37:53"
         },
         "podium": {
-          "sec": 9182,
-          "hhmmss": "02:33:02"
+          "sec": 2736,
+          "hhmmss": "00:45:36"
         },
         "percentile_10": {
-          "sec": 8805,
-          "hhmmss": "02:26:45"
+          "sec": 2704,
+          "hhmmss": "00:45:04"
         },
         "percentile_25": {
-          "sec": 9433,
-          "hhmmss": "02:37:13"
+          "sec": 2916,
+          "hhmmss": "00:48:36"
         },
         "median": {
-          "sec": 10071,
-          "hhmmss": "02:47:51"
+          "sec": 3022,
+          "hhmmss": "00:50:22"
         },
         "average": {
-          "sec": 10204,
-          "hhmmss": "02:50:04"
+          "sec": 3066,
+          "hhmmss": "00:51:06"
         },
-        "count": 14
+        "count": 17
       },
       "65": {
         "winner": {
-          "sec": 8374,
-          "hhmmss": "02:19:34"
+          "sec": 2664,
+          "hhmmss": "00:44:24"
         },
         "podium": {
-          "sec": 10046,
-          "hhmmss": "02:47:26"
+          "sec": 2780,
+          "hhmmss": "00:46:20"
         },
         "percentile_10": {
-          "sec": 8651,
-          "hhmmss": "02:24:11"
+          "sec": 2677,
+          "hhmmss": "00:44:37"
         },
         "percentile_25": {
-          "sec": 9067,
-          "hhmmss": "02:31:07"
+          "sec": 2697,
+          "hhmmss": "00:44:57"
         },
         "median": {
-          "sec": 9672,
-          "hhmmss": "02:41:12"
+          "sec": 2780,
+          "hhmmss": "00:46:20"
         },
         "average": {
-          "sec": 9548,
-          "hhmmss": "02:39:08"
+          "sec": 2802,
+          "hhmmss": "00:46:42"
         },
-        "count": 4
+        "count": 5
       },
       "70": {
         "winner": {
-          "sec": 8506,
-          "hhmmss": "02:21:46"
+          "sec": 2601,
+          "hhmmss": "00:43:21"
         },
         "podium": {
-          "sec": 9485,
-          "hhmmss": "02:38:05"
+          "sec": 4748,
+          "hhmmss": "01:19:08"
         },
         "percentile_10": {
-          "sec": 8604,
-          "hhmmss": "02:23:24"
+          "sec": 2816,
+          "hhmmss": "00:46:56"
         },
         "percentile_25": {
-          "sec": 8751,
-          "hhmmss": "02:25:51"
+          "sec": 3138,
+          "hhmmss": "00:52:18"
         },
         "median": {
-          "sec": 8995,
-          "hhmmss": "02:29:55"
+          "sec": 3674,
+          "hhmmss": "01:01:14"
         },
         "average": {
-          "sec": 8995,
-          "hhmmss": "02:29:55"
+          "sec": 3674,
+          "hhmmss": "01:01:14"
         },
         "count": 2
       },
-      "JA": {
+      "J U14": {
         "winner": {
-          "sec": 8190,
-          "hhmmss": "02:16:30"
+          "sec": 2528,
+          "hhmmss": "00:42:08"
         },
         "podium": {
-          "sec": 10047,
-          "hhmmss": "02:47:27"
+          "sec": 2804,
+          "hhmmss": "00:46:44"
         },
         "percentile_10": {
-          "sec": 8323,
-          "hhmmss": "02:18:43"
+          "sec": 2732,
+          "hhmmss": "00:45:32"
         },
         "percentile_25": {
-          "sec": 8522,
-          "hhmmss": "02:22:02"
+          "sec": 2880,
+          "hhmmss": "00:48:00"
         },
         "median": {
-          "sec": 10047,
-          "hhmmss": "02:47:27"
+          "sec": 3134,
+          "hhmmss": "00:52:14"
         },
         "average": {
-          "sec": 9558,
-          "hhmmss": "02:39:18"
+          "sec": 3074,
+          "hhmmss": "00:51:14"
         },
-        "count": 5
+        "count": 11
+      },
+      "J U15": {
+        "winner": {
+          "sec": 2577,
+          "hhmmss": "00:42:57"
+        },
+        "podium": {
+          "sec": 2577,
+          "hhmmss": "00:42:57"
+        },
+        "percentile_10": {
+          "sec": 2577,
+          "hhmmss": "00:42:57"
+        },
+        "percentile_25": {
+          "sec": 2577,
+          "hhmmss": "00:42:57"
+        },
+        "median": {
+          "sec": 2821,
+          "hhmmss": "00:47:01"
+        },
+        "average": {
+          "sec": 2873,
+          "hhmmss": "00:47:53"
+        },
+        "count": 7
+      },
+      "J U16": {
+        "winner": {
+          "sec": 1825,
+          "hhmmss": "00:30:25"
+        },
+        "podium": {
+          "sec": 2612,
+          "hhmmss": "00:43:32"
+        },
+        "percentile_10": {
+          "sec": 1931,
+          "hhmmss": "00:32:11"
+        },
+        "percentile_25": {
+          "sec": 2090,
+          "hhmmss": "00:34:50"
+        },
+        "median": {
+          "sec": 2395,
+          "hhmmss": "00:39:55"
+        },
+        "average": {
+          "sec": 2312,
+          "hhmmss": "00:38:32"
+        },
+        "count": 4
+      },
+      "J U18": {
+        "winner": {
+          "sec": 2395,
+          "hhmmss": "00:39:55"
+        },
+        "podium": {
+          "sec": 2468,
+          "hhmmss": "00:41:08"
+        },
+        "percentile_10": {
+          "sec": 2446,
+          "hhmmss": "00:40:46"
+        },
+        "percentile_25": {
+          "sec": 2495,
+          "hhmmss": "00:41:35"
+        },
+        "median": {
+          "sec": 2943,
+          "hhmmss": "00:49:03"
+        },
+        "average": {
+          "sec": 2841,
+          "hhmmss": "00:47:21"
+        },
+        "count": 12
+      },
+      "J U20": {
+        "winner": {
+          "sec": 1997,
+          "hhmmss": "00:33:17"
+        },
+        "podium": {
+          "sec": 2307,
+          "hhmmss": "00:38:27"
+        },
+        "percentile_10": {
+          "sec": 2181,
+          "hhmmss": "00:36:21"
+        },
+        "percentile_25": {
+          "sec": 2295,
+          "hhmmss": "00:38:15"
+        },
+        "median": {
+          "sec": 2838,
+          "hhmmss": "00:47:18"
+        },
+        "average": {
+          "sec": 3048,
+          "hhmmss": "00:50:48"
+        },
+        "count": 8
       }
     }
   }
