@@ -81,14 +81,13 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
             maintainAspectRatio: false,
             cutout: "60%", // same as gender donut
 
-            rotation: -90 * (Math.PI / 180),  // START AT TOP → same as gender donut
-
             animation: {
-                animateRotate: true,
+                animateRotate: false,   // IMPORTANT → stops weird arc animation
                 animateScale: true,
-                duration: 900,
-                easing: "easeOutQuart"
+                duration: 800,
+                easing: "easeOutQuad"
             },
+            rotation: -90 * (Math.PI / 180),   // start at 12 o'clock like gender donut
 
             plugins: {
                 legend: {
