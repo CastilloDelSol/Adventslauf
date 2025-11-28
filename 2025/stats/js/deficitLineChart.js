@@ -65,7 +65,7 @@ function renderOne(canvasSelector, key, runners, splits) {
     // Convert absolute times → deficits
     // ---------------------------------------------------------
     const datasets = runners.map((r, idx) => {
-        const deficits = absTimes[idx].map((t, i) => t - bestTimes[i]);
+        const deficits = absTimes[idx].map((t, i) => bestTimes[i] - t);
 
         return {
             label: `${r.first_name} ${r.last_name}`,
