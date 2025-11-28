@@ -458,6 +458,15 @@
 
 	console.log("Calling loadTop6 from module…");
 	loadTop6("hauptlauf");
+    
+  import { renderRaceHistograms } from "./js/raceHistogram.js";
+  const histSelect = document.getElementById("histSelect");
+  histSelect.addEventListener("change", () => {
+    renderRaceHistograms(histSelect.value);
+  });
+
+  // initial
+  renderRaceHistograms("hauptlauf");
 </script>
 
 <h1>🎄 Adventslauf – Statistik 2025 🎄</h1>
@@ -657,12 +666,36 @@
 </div>
 
   
-  <!-- TAB 7: ZEITEN HISTOGRAMME -->
-  <div class="tab-content content7">
-    <div class="dummy-box">
-    	<p>--- Zeiten Histogramme ---</p>
+<!-- TAB 7: ZEITEN HISTOGRAMME -->
+<div class="tab-content content7">
+
+  <!-- Strecke Auswahl -->
+  <div class="race-select-box">
+    <label for="histSelect">Strecke:</label>
+    <select id="histSelect" class="race-select">
+      <option value="hauptlauf">Ratzeburger See – 26km</option>
+      <option value="kurzstrecke">Küchensee – 7,5km</option>
+    </select>
+  </div>
+
+  <!-- Männer Block -->
+  <div class="card">
+    <h2>Männer – Histogramm</h2>
+    <div class="chart-box">
+      <canvas id="histM"></canvas>
     </div>
   </div>
+
+  <!-- Frauen Block -->
+  <div class="card">
+    <h2>Frauen – Histogramm</h2>
+    <div class="chart-box">
+      <canvas id="histW"></canvas>
+    </div>
+  </div>
+
+</div>
+
   
    <!-- TAB 8: ALTERSKLASSEN -->
   <div class="tab-content content8">
