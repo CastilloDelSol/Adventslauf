@@ -2,118 +2,112 @@
 
 import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
-// wir merken uns Charts, damit wir sie beim Streckenwechsel zerstören können
-const DEFICIT_CHARTS = {
-    M: null,
-    W: null
-};
+const DEFICIT_CHARTS = { M: null, W: null };
 
 // ============================================================
-//  Render M + W deficit charts
-//  raceName: "hauptlauf" / "kurzstrecke"
-//  numResults: wie viele aus Top10 (Default 6)
+// Render Men/Women deficit charts
 // ============================================================
 export async function renderDeficitCharts(raceName, numResults = 6) {
     await loadRaceStats(raceName);
     const race = getRaceStats(raceName);
 
-    if (!race || !race.M || !race.W) {
-        console.warn("No race data found for", raceName);
+    if (!race || !race.splits) {
+        console.warn("Race has no split definitions.");
         return;
     }
 
-    const M_top = (race.M.Top10 || []).slice(0, numResults);
-    const W_top = (race.W.Top10 || []).slice(0, numResults);
+    const splits = race.splits; // e.g. [ {name:"Rothenhusen", distance_km:12.5}, {name:"Ziel", distance_km:26} ]
 
-    renderOne("#deficitChartM", "M", M_top);
-    renderOne("#deficitChartW", "W", W_top);
+    const M = (race.M.Top10 || []).slice(0, numResults);
+    const W = (race.W.Top10 || []).slice(0, numResults);
+
+    renderOne("#deficitChartM", "M", M, splits);
+    renderOne("#deficitChartW", "W", W, splits);
 }
 
 // ============================================================
-//  INTERNAL: Render one chart (one gender)
+// Render one chart
 // ============================================================
-function renderOne(canvasSelector, key, runners) {
+function renderOne(canvasSelector, key, runners, splits) {
     const canvas = document.querySelector(canvasSelector);
-    if (!canvas) {
-        console.warn("Canvas not found:", canvasSelector);
-        return;
-    }
+    if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
 
-    if (!runners || !Array.isArray(runners) || runners.length === 0) {
+    if (!runners || runners.length === 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         return;
     }
 
-    // Nur Athleten mit mindestens einem Split
-    const filtered = runners.filter(r => Array.isArray(r.splits) && r.splits.length > 0);
-    if (filtered.length === 0) {
-        console.warn("No split data for", canvasSelector);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        return;
-    }
-    runners = filtered;
+    // ---------------------------------------------------------
+    // X-AXIS = km → always start with 0 km at 0 sec
+    // ---------------------------------------------------------
+    const kmLabels = [0, ...splits.map(s => s.distance_km)];
 
-    // Labels aus den Splits des ersten Athleten (alle haben gleiche Struktur)
-    const labels = runners[0].splits.map(s => s.name);
-
-    // Zeiten pro Split einsammeln
-    const splitTimes = labels.map((_, splitIdx) =>
-        runners.map(r => {
-            const s = r.splits[splitIdx];
-            return s && typeof s.sec === "number" ? s.sec : null;
-        })
-    );
-
-    // Bestzeit je Split
-    const bestPerSplit = splitTimes.map(times => {
-        const valid = times.filter(t => t !== null);
-        return valid.length ? Math.min(...valid) : null;
+    // ---------------------------------------------------------
+    // Build absolute times per athlete
+    // Format: [0, split1_sec, split2_sec, ...]
+    // ---------------------------------------------------------
+    const absTimes = runners.map(r => {
+        const arr = [0]; // time at start
+        r.splits.forEach(s => arr.push(s.sec));
+        return arr;
     });
 
-    // Dataset pro Athlet: Defizite = eigene Zeit - Bestzeit
-    const datasets = runners.map(runner => {
-        const deficits = runner.splits.map((s, splitIdx) => {
-            if (!s || bestPerSplit[splitIdx] == null) return null;
-            return s.sec - bestPerSplit[splitIdx];
-        });
+    // ---------------------------------------------------------
+    // Compute best (minimum) time at each km point
+    // ---------------------------------------------------------
+    const bestTimes = kmLabels.map((_, i) =>
+        Math.min(...absTimes.map(row => row[i]))
+    );
+
+    // ---------------------------------------------------------
+    // Convert absolute times → deficits
+    // ---------------------------------------------------------
+    const datasets = runners.map((r, idx) => {
+        const deficits = absTimes[idx].map((t, i) => t - bestTimes[i]);
 
         return {
-            label: `${runner.first_name} ${runner.last_name}`,
+            label: `${r.first_name} ${r.last_name}`,
             data: deficits,
             borderWidth: 3,
             tension: 0.35,
-            spanGaps: true,
-            fill: false
+            fill: false,
+            spanGaps: true
         };
     });
 
-    // alten Chart zerstören, falls vorhanden
-    if (DEFICIT_CHARTS[key]) {
-        DEFICIT_CHARTS[key].destroy();
-    }
+    // Destroy old chart
+    if (DEFICIT_CHARTS[key]) DEFICIT_CHARTS[key].destroy();
 
+    // ---------------------------------------------------------
+    // Create new chart
+    // ---------------------------------------------------------
     DEFICIT_CHARTS[key] = new Chart(ctx, {
         type: "line",
         data: {
-            labels: labels,
+            labels: kmLabels,
             datasets: datasets
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            interaction: { mode: "nearest", intersect: false },
             scales: {
+                x: {
+                    title: { display: true, text: "Distanz (km)" }
+                },
                 y: {
-                    title: { display: true, text: "Defizit (Sekunden)" },
-                    beginAtZero: true
+                    beginAtZero: true,
+                    title: { display: true, text: "Defizit (Sekunden)" }
                 }
             },
             plugins: {
                 legend: { position: "bottom" },
                 tooltip: {
                     callbacks: {
-                        label: ctx => `${ctx.dataset.label}: ${ctx.raw?.toFixed(1) ?? "0"} s`
+                        title: ctx => ctx[0].label + " km",
+                        label: ctx =>
+                            `${ctx.dataset.label}: ${ctx.raw.toFixed(1)} s`
                     }
                 }
             }
