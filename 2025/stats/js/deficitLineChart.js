@@ -1,95 +1,99 @@
 // deficitLineChart.js
+
 import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
+// wir merken uns Charts, damit wir sie beim Streckenwechsel zerstören können
+const DEFICIT_CHARTS = {
+    M: null,
+    W: null
+};
+
 // ============================================================
-// PUBLIC: Render M + W deficit charts
+//  Render M + W deficit charts
+//  raceName: "hauptlauf" / "kurzstrecke"
+//  numResults: wie viele aus Top10 (Default 6)
 // ============================================================
 export async function renderDeficitCharts(raceName, numResults = 6) {
-
     await loadRaceStats(raceName);
     const race = getRaceStats(raceName);
 
     if (!race || !race.M || !race.W) {
-        console.warn("No race data for:", raceName);
+        console.warn("No race data found for", raceName);
         return;
     }
 
     const M_top = (race.M.Top10 || []).slice(0, numResults);
     const W_top = (race.W.Top10 || []).slice(0, numResults);
 
-    renderOne("#deficitChartM", M_top);
-    renderOne("#deficitChartW", W_top);
+    renderOne("#deficitChartM", "M", M_top);
+    renderOne("#deficitChartW", "W", W_top);
 }
 
 // ============================================================
-// INTERNAL: Render a single deficit chart
+//  INTERNAL: Render one chart (one gender)
 // ============================================================
-function renderOne(canvasId, runners) {
+function renderOne(canvasSelector, key, runners) {
+    const canvas = document.querySelector(canvasSelector);
+    if (!canvas) {
+        console.warn("Canvas not found:", canvasSelector);
+        return;
+    }
+    const ctx = canvas.getContext("2d");
 
-    if (!Array.isArray(runners) || runners.length === 0) {
-        console.warn("No runners for", canvasId);
+    if (!runners || !Array.isArray(runners) || runners.length === 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         return;
     }
 
-    // Filter athletes that have "splits" and at least 1 split
+    // Nur Athleten mit mindestens einem Split
     const filtered = runners.filter(r => Array.isArray(r.splits) && r.splits.length > 0);
-
     if (filtered.length === 0) {
-        console.warn("No split data for", canvasId);
+        console.warn("No split data for", canvasSelector);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         return;
     }
-
     runners = filtered;
 
-    // ---------------------------------------------------------
-    // Labels = split names  (your JSON always has EXACTLY 1 split)
-    // ---------------------------------------------------------
+    // Labels aus den Splits des ersten Athleten (alle haben gleiche Struktur)
     const labels = runners[0].splits.map(s => s.name);
 
-    // ---------------------------------------------------------
-    // Build split-time matrix:
-    // timesPerSplit[i] = [runner1_sec, runner2_sec, ...]
-    // ---------------------------------------------------------
-    const timesPerSplit = labels.map((_, splitIndex) =>
-        runners.map(r => r.splits[splitIndex]?.sec ?? null)
+    // Zeiten pro Split einsammeln
+    const splitTimes = labels.map((_, splitIdx) =>
+        runners.map(r => {
+            const s = r.splits[splitIdx];
+            return s && typeof s.sec === "number" ? s.sec : null;
+        })
     );
 
-    // ---------------------------------------------------------
-    // Best time per split = minimum non-null
-    // ---------------------------------------------------------
-    const best = timesPerSplit.map(times =>
-        Math.min(...times.filter(t => t !== null))
-    );
+    // Bestzeit je Split
+    const bestPerSplit = splitTimes.map(times => {
+        const valid = times.filter(t => t !== null);
+        return valid.length ? Math.min(...valid) : null;
+    });
 
-    // ---------------------------------------------------------
-    // Build Chart.js datasets
-    // ---------------------------------------------------------
-    const datasets = runners.map((r, rIndex) => {
-
-        const deficits = r.splits.map((s, splitIndex) => {
-            if (!s || s.sec == null) return null;
-            return s.sec - best[splitIndex];
+    // Dataset pro Athlet: Defizite = eigene Zeit - Bestzeit
+    const datasets = runners.map(runner => {
+        const deficits = runner.splits.map((s, splitIdx) => {
+            if (!s || bestPerSplit[splitIdx] == null) return null;
+            return s.sec - bestPerSplit[splitIdx];
         });
 
         return {
-            label: r.first_name + " " + r.last_name,
+            label: `${runner.first_name} ${runner.last_name}`,
             data: deficits,
             borderWidth: 3,
-            tension: 0.33,     // light smoothing
+            tension: 0.35,
+            spanGaps: true,
             fill: false
         };
     });
 
-    // ---------------------------------------------------------
-    // Render chart
-    // ---------------------------------------------------------
-    const canvas = document.querySelector(canvasId);
-    if (!canvas) {
-        console.error("Canvas not found:", canvasId);
-        return;
+    // alten Chart zerstören, falls vorhanden
+    if (DEFICIT_CHARTS[key]) {
+        DEFICIT_CHARTS[key].destroy();
     }
 
-    new Chart(canvas, {
+    DEFICIT_CHARTS[key] = new Chart(ctx, {
         type: "line",
         data: {
             labels: labels,
@@ -98,26 +102,18 @@ function renderOne(canvasId, runners) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-
+            interaction: { mode: "nearest", intersect: false },
             scales: {
                 y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: "Defizit (Sekunden)"
-                    }
+                    title: { display: true, text: "Defizit (Sekunden)" },
+                    beginAtZero: true
                 }
             },
-
             plugins: {
                 legend: { position: "bottom" },
                 tooltip: {
                     callbacks: {
-                        label: (ctx) => {
-                            const v = ctx.raw;
-                            if (v == null) return "Keine Daten";
-                            return `${ctx.dataset.label}: ${v.toFixed(1)} s`;
-                        }
+                        label: ctx => `${ctx.dataset.label}: ${ctx.raw?.toFixed(1) ?? "0"} s`
                     }
                 }
             }
