@@ -2,54 +2,100 @@
 
 import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
+// Emoji medals (WhatsApp style)
+function medalEmoji(rank) {
+    if (rank === 1) return "🥇";
+    if (rank === 2) return "🥈";
+    if (rank === 3) return "🥉";
+    return rank; // 4,5,6 → plain number
+}
+
 // ======================================================================
 // RENDER TABLES (M/W)
 // ======================================================================
-export function renderTop6Table(containerId, runners, splits) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
+export async function renderTop6Tables(raceName) {
+    await loadRaceStats(raceName);
+    const race = getRaceStats(raceName);
 
-    const split1 = splits[0].distance_km;
-    const split2 = splits[splits.length - 1].distance_km;
+    renderOne("top6TableM", race.M.Top10.slice(0, 6), race.splits);
+    renderOne("top6TableW", race.W.Top10.slice(0, 6), race.splits);
+}
 
+// ======================================================================
+// INTERNAL RENDER FUNCTION
+// ======================================================================
+function renderOne(containerId, top6, splitMeta) {
+    const box = document.getElementById(containerId);
+    if (!box) return;
+
+    if (!top6 || top6.length === 0) {
+        box.innerHTML = "<p>Keine Daten verfügbar.</p>";
+        return;
+    }
+
+    // Uppercase with ß → ẞ fix
+    const toUppercaseName = (str) =>
+        str.replace(/ß/g, "ẞ").toUpperCase();
+
+    // Split headers reduced: e.g. "12.5 km"
+    const splitLabels = splitMeta.map(s =>
+        `${s.distance_km} km`
+    );
+
+    // --------------------------------------------------------
+    // BUILD TABLE
+    // --------------------------------------------------------
     let html = `
-    <table class="top6-table">
-      <thead>
-        <tr>
-          <th class="col-center">🏆</th>
-          <th class="col-center">BIB</th>
-          <th class="col-center">AK-🏆</th>
-          <th class="col-right">AK</th>
-          <th class="col-left">Name</th>
-          <th class="col-left">Verein</th>
-          <th class="col-right">${split1} km</th>
-          <th class="col-right">${split2} km</th>
-        </tr>
-      </thead>
-      <tbody>
+        <table class="top6-table">
+            <thead>
+                <tr>
+                    <th class="col-center">🏆</th>
+                    <th class="col-center">AK-🏆</th>
+                    <th class="col-right">AK</th>
+                    <th class="col-center">BIB</th>
+                    <th class="col-left">Name</th>
+                    <th class="col-left">Verein</th>
     `;
 
-    runners.forEach(r => {
-        const fullName =
-            `<span class="top6-lastname">${r.last_name}</span>` +
-            `<span class="top6-firstname"> ${r.first_name}</span>`;
+    splitLabels.forEach(label => {
+        html += `<th class="col-right">${label}</th>`;
+    });
+
+    html += `
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    top6.forEach(r => {
+        const ln = toUppercaseName(r.last_name || "");
+        const fn = r.first_name || "";
 
         html += `
-        <tr>
-          <td class="col-center">${medalEmoji(r.rank)}</td>
-          <td class="col-center">${r.bib}</td>
-          <td class="col-center">${medalEmoji(r.rank_ak)}</td>
-          <td class="col-right">${r.ak}</td>
+            <tr>
+                <td class="col-center">${medalEmoji(r.pos_gender)}</td>
+                <td class="col-center">${medalEmoji(r.pos_ag)}</td>
+                <td class="col-right">${r.age_group}</td>
+                <td class="col-center">${r.bib}</td>
+                
+                <td class="col-left">
+                    <span class="top6-lastname">${ln}</span>
+                    <span class="top6-firstname">${fn}</span>
+                </td>
 
-          <td class="col-left">${fullName}</td>
-          <td class="col-left">${r.club || ""}</td>
-
-          <td class="col-right">${r.splits[0].time}</td>
-          <td class="col-right">${r.splits[r.splits.length-1].time}</td>
-        </tr>
+                <td class="col-left">${r.club ?? ""}</td>
         `;
+
+        // SPLITS (times)
+        splitMeta.forEach((_, idx) => {
+            const s = r.splits[idx];
+            html += `<td class="col-right">${s ? s.time : "-"}</td>`;
+        });
+
+        html += "</tr>";
     });
 
     html += "</tbody></table>";
-    container.innerHTML = html;
+
+    box.innerHTML = html;
 }
