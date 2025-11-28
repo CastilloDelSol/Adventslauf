@@ -46,9 +46,9 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
         plugins: [centerText],  // genau wie beim Gender-Donut
 
         data: {
-            labels: ["Finisher", "DNS", "DNF", "DSQ"],
+            labels: ["Finisher", "DNS"],
             datasets: [{
-                data: [fin, dns, dnf, dsq],
+                data: [fin, dns],
                 backgroundColor: [
                     "#52C47A", // Finisher – grün
                     "#EFA93F", // DNS – orange
