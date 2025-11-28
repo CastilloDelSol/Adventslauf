@@ -1,5 +1,8 @@
+// finishStatusDonut.js
 import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
+// exakt gleiches Plugin-Muster wie beim Gender-Donut,
+// nur mit zweizeiligem Text (Zahl + "Finisher")
 const centerText = {
     id: "centerText",
     afterDraw(chart, args, options) {
@@ -15,25 +18,17 @@ const centerText = {
         const x = (left + right) / 2;
         const y = (top + bottom) / 2;
 
+        // Zeile 1: Zahl
         ctx.fillText(options.value, x, y);
-        ctx.fillText("Finisher", x, y + 28);
+        // Zeile 2: "Finisher"
+        ctx.font = "normal 14px Arial";
+        ctx.fillText("Finisher", x, y + 20);
+
         ctx.restore();
     }
 };
 
-const stableDonut = {
-    id: "stableDonut",
-    beforeDatasetUpdate(chart) {
-        chart.getDatasetMeta(0).data.forEach(arc => {
-            arc.circumference = arc.circumference;
-            arc.startAngle = arc.startAngle;
-            arc.endAngle = arc.endAngle;
-        });
-    }
-};
-
 export async function renderFinishStatusDonut(raceName, canvasId) {
-
     await loadRaceStats(raceName);
     const race = getRaceStats(raceName);
     if (!race) return;
@@ -43,42 +38,36 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
     const dnf = race.dnf ?? 0;
     const dsq = race.dsq ?? 0;
 
-    const total = fin + dns + dnf + dsq;
-    const ctx = document.getElementById(canvasId);
-    if (!ctx) return;
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
 
-    new Chart(ctx, {
+    new Chart(canvas, {
         type: "doughnut",
-        plugins: [centerText, stableDonut],
+        plugins: [centerText],  // genau wie beim Gender-Donut
 
         data: {
             labels: ["Finisher", "DNS", "DNF", "DSQ"],
             datasets: [{
                 data: [fin, dns, dnf, dsq],
                 backgroundColor: [
-                    "#52C47A",
-                    "#EFA93F",
-                    "#D9574A",
-                    "#9063CD"
-                ],
-                borderWidth: 1
+                    "#52C47A", // Finisher – grün
+                    "#EFA93F", // DNS – orange
+                    "#D9574A", // DNF – rot
+                    "#9063CD"  // DSQ – violett
+                ]
             }]
         },
 
+        // WICHTIG: exakt gleiche Struktur wie donutGender.js
         options: {
+            responsive: true,
             maintainAspectRatio: false,
             cutout: "60%",
-            rotation: -90 * (Math.PI / 180),
-
-            animation: {
-                animateRotate: false,
-                animateScale: true,
-                duration: 500
-            },
-
             plugins: {
                 centerText: { value: fin }
-                // NO LEGEND CONFIG → IDENTICAL TO GENDER DONUT
+                // KEIN legend-Block → gleiche Default-Legende wie genderDonut
+                // KEIN animation-Block → gleiche Standard-Animation (Drehung)
+                // KEIN rotation, KEIN extra Plugin
             }
         }
     });
