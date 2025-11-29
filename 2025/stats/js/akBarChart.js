@@ -116,7 +116,7 @@ function renderOne(canvasId, stats, dataKey, gender) {
                     beginAtZero: true,
                     min: yMin,
                     //max: yMax,
-                    title: { display: true, text: "Zeit (Sekunden)" },
+                    title: { display: true, text: "Zielzeit (hh:mm:ss)" },
                     ticks: {
                         callback: secToHMS
                     }
