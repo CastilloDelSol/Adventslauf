@@ -1,15 +1,5 @@
 // top6Table.js
-
 import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
-
-// Emoji medals (WhatsApp style)
-function medalEmoji(rank) {
-    const n = Number(rank);
-    if (n === 1) return "🥇";
-    if (n === 2) return "🥈";
-    if (n === 3) return "🥉";
-    return n; // else show regular number
-}
 
 // ======================================================================
 // RENDER TABLES (M/W)
@@ -34,17 +24,17 @@ function renderOne(containerId, top6, splitMeta) {
         return;
     }
 
-    // ↑ Convert names to uppercase (ẞ fix)
+    // Name uppercase + ß → ẞ
     const toUppercaseName = (str) =>
         str.replace(/ß/g, "ẞ").toUpperCase();
 
+    // M20 / W20 prefix in AK column
     const genderPrefix = containerId.endsWith("M") ? "M" : "W";
 
-    // Label for splits (e.g. "12.5km")
+    // Only distances (e.g. "12.5km")
     const splitLabels = splitMeta.map(s => `${s.distance_km}km`);
 
-    // 👉 only add dummy if NO intermediate splits exist
-    const needsDummy = splitMeta.length < 2;
+    const lastSplitIndex = splitMeta.length - 1;
 
     // --------------------------------------------------------
     // BUILD TABLE
@@ -53,21 +43,21 @@ function renderOne(containerId, top6, splitMeta) {
         <table class="top6-table">
             <thead>
                 <tr>
-                    <th class="col-left">#</th>
-                    <th class="col-left">BIB</th>
-                    <th class="col-left">AK</th>
-                    <th class="col-left">Name</th>
-                    <th class="col-left">Verein</th>
+                    <th class="col-left col-rank">#</th>
+                    <th class="col-left col-bib">BIB</th>
+                    <th class="col-left col-ak">AK</th>
+                    <th class="col-left col-name">Name</th>
+                    <th class="col-left col-club">Verein</th>
     `;
 
-    splitLabels.forEach(label => {
-        html += `<th class="col-right">${label}</th>`;
-    });
+    splitLabels.forEach((label, idx) => {
+        const extraClass =
+            idx === lastSplitIndex
+                ? "split-finish"
+                : "split-mid";
 
-    // 👉 add dummy th only when needed
-    if (needsDummy) {
-        html += `<th style="width:0;padding:0;border:none"></th>`;
-    }
+        html += `<th class="col-right ${extraClass}">${label}</th>`;
+    });
 
     html += `
                 </tr>
@@ -81,32 +71,31 @@ function renderOne(containerId, top6, splitMeta) {
 
         html += `
             <tr>
-                <td class="col-left">${r.pos_gender}.</td>
-                <td class="col-left">${r.bib}</td>
-                <td class="col-left">${r.pos_ag}. ${genderPrefix}${r.age_group}</td>
+                <td class="col-left col-rank">${r.pos_gender}.</td>
+                <td class="col-left col-bib">${r.bib}</td>
+                <td class="col-left col-ak">${r.pos_ag}. ${genderPrefix}${r.age_group}</td>
 
-                <td class="col-left">
+                <td class="col-left col-name">
                     <span class="top6-lastname">${ln}</span>
                     <span class="top6-firstname">${fn}</span>
                 </td>
 
-                <td class="col-left">${r.club ?? ""}</td>
+                <td class="col-left col-club">${r.club ?? ""}</td>
         `;
 
-        // add times
         splitMeta.forEach((_, idx) => {
             const s = r.splits[idx];
-            html += `<td class="col-right">${s ? s.time : "-"}</td>`;
+            const extraClass =
+                idx === lastSplitIndex
+                    ? "split-finish"
+                    : "split-mid";
+
+            html += `<td class="col-right ${extraClass}">${s ? s.time : "-"}</td>`;
         });
 
-        // 👉 row-level dummy td when needed
-        if (needsDummy) {
-            html += `<td style="width:0;padding:0;border:none"></td>`;
-        }
-
-        html += `</tr>`;
+        html += "</tr>";
     });
 
-    html += `</tbody></table>`;
+    html += "</tbody></table>";
     box.innerHTML = html;
 }
