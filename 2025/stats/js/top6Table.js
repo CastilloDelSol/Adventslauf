@@ -4,11 +4,11 @@ import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
 // Emoji medals (WhatsApp style)
 function medalEmoji(rank) {
-    const n = Number(rank);  // <<< important fix!
+    const n = Number(rank);
     if (n === 1) return "🥇";
     if (n === 2) return "🥈";
     if (n === 3) return "🥉";
-    return n; // 4–6 : show number
+    return n; // else show regular number
 }
 
 // ======================================================================
@@ -53,7 +53,7 @@ function renderOne(containerId, top6, splitMeta) {
         <table class="top6-table">
             <thead>
                 <tr>
-                    <th class="col-left">#M/W</th>
+                    <th class="col-left">#</th>
                     <th class="col-left">BIB</th>
                     <th class="col-left">AK</th>
                     <th class="col-left">Name</th>
