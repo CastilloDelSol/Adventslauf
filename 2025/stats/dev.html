@@ -423,6 +423,46 @@
 	}
 
 
+	.ak-select-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;     /* stacked on narrow screens */
+    margin-bottom: 25px;
+	}
+	
+	.ak-select-box {
+	    display: flex;
+	    flex-direction: column;
+	}
+	
+	.ak-select-box label {
+	    font-weight: 600;
+	    margin-bottom: 5px;
+	}
+	
+	.ak-select {
+	    width: 240px;               /* equal width for both dropdowns */
+	    padding: 8px 12px;
+	    font-size: 15px;
+	    border-radius: 6px;
+	    border: 1px solid #ccc;
+	    background: white;
+	    cursor: pointer;
+	}
+	
+	.ak-select:hover {
+	    border-color: #888;
+	}
+	
+	.ak-select:focus {
+	    outline: none;
+	    border-color: #007bff;
+	    box-shadow: 0 0 4px rgba(0,123,255,0.4);
+	}
+
+
+
   .footer {
     text-align: center;
     font-size: 10px;
@@ -790,46 +830,52 @@
 </div>
 
   
-   <!-- TAB 8: ALTERSKLASSEN -->
-  <div class="tab-content content8">
-    <!-- Strecke Auswahl -->
-	<div class="race-select-container">
-	    <div class="race-select-box">
-	      <label for="akSelect">Strecke:</label>
-	      <select id="akSelect" class="race-select">
-	        <option value="hauptlauf">Ratzeburger See – 26km</option>
-	        <option value="kurzstrecke">Küchensee – 7,5km</option>
-	      </select>
-	
-	      <label for="resultDataType">Typ:</label>
-	      <select id="resultDataType" class="race-select">
-	        <option value="winner">Sieger</option>
-	        <option value="podium">Podium</option>
-	        <option value="percentile_10">10. Perzentil</option>
-	        <option value="percentile_25">1. Quartil</option>
-	        <option value="median">Median</option>
-	        <option value="average">Mittelwert</option>
-	      </select>
-	    </div>
-	</div>
+<!-- TAB 8: ALTERSKLASSEN -->
+<div class="tab-content content8">
+
+    <!-- Dropdown Row -->
+    <div class="ak-select-row">
+
+        <div class="ak-select-box">
+            <label for="akSelect">Strecke:</label>
+            <select id="akSelect" class="ak-select">
+                <option value="hauptlauf">Ratzeburger See – 26km</option>
+                <option value="kurzstrecke">Küchensee – 7,5km</option>
+            </select>
+        </div>
+
+        <div class="ak-select-box">
+            <label for="resultDataType">Kennzahl:</label>
+            <select id="resultDataType" class="ak-select">
+                <option value="winner">Sieger</option>
+                <option value="podium">Podium</option>
+                <option value="percentile_10">10. Perzentil</option>
+                <option value="percentile_25">1. Quartil</option>
+                <option value="median">Median</option>
+                <option value="average">Mittelwert</option>
+            </select>
+        </div>
+
+    </div>
 
     <!-- Männer Block -->
     <div class="card">
-      <h2>Männer – Barchart</h2>
-      <div class="chart-box">
-        <canvas id="akBarsM"></canvas>
-      </div>
+        <h2>Männer – Barchart</h2>
+        <div class="chart-box">
+            <canvas id="akBarsM"></canvas>
+        </div>
     </div>
 
     <!-- Frauen Block -->
     <div class="card">
-      <h2>Frauen – Barchart</h2>
-      <div class="chart-box">
-        <canvas id="akBarsW"></canvas>
-      </div>
+        <h2>Frauen – Barchart</h2>
+        <div class="chart-box">
+            <canvas id="akBarsW"></canvas>
+        </div>
     </div>
 
-  </div>
+</div>
+
   
 
 </div>
