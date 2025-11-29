@@ -61,8 +61,8 @@ function renderOneHistogram(canvasId, buckets, gender) {
             ? "rgba(54,162,235,0.75)"
             : "rgba(255,99,132,0.75)";
 
-    // KDE color (neutral dark grey)
-    const kdeColor = "#555";
+    // KDE color (dark blue tint)
+    const kdeColor = "#2a3f5f";
 
     // Destroy old chart
     if (ctx._chart) ctx._chart.destroy();
