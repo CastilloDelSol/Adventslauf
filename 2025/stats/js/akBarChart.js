@@ -79,7 +79,7 @@ function renderOne(canvasId, stats, dataKey, gender) {
     // Compute y-axis range
     // ------------------------------
     const maxSec = Math.max(...values);
-    const yMax = roundUpToNext30min(maxSec);
+    //const yMax = roundUpToNext30min(maxSec);
     const yMin = 0;
 
     const barColor = gender === "M"
@@ -115,7 +115,7 @@ function renderOne(canvasId, stats, dataKey, gender) {
                 y: {
                     beginAtZero: true,
                     min: yMin,
-                    max: yMax,
+                    //max: yMax,
                     title: { display: true, text: "Zeit (Sekunden)" },
                     ticks: {
                         callback: secToHMS
