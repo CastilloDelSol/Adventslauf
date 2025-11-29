@@ -780,7 +780,7 @@
 
 	<!-- Männer Block -->
 	<div class="card">
-	  <h2>Männer Top 6: Abstände zum Führenden je Split</h2>
+	  <h2>Männer Top 6: Splitrückstände</h2>
 	  <div class="chart-box">
 	    <canvas id="deficitChartM"></canvas>
 	  </div>
@@ -789,7 +789,7 @@
 	
 	<!-- Frauen Block -->
 	<div class="card">
-	  <h2>Frauen Top 6: Abstände zur Führenden je Split</h2>
+	  <h2>Frauen Top 6: Splitrückstände</h2>
 	  <div class="chart-box">
 	    <canvas id="deficitChartW"></canvas>
 	  </div>
@@ -837,28 +837,30 @@
 <div class="tab-content content8">
 
     <!-- Dropdown Row -->
-	<div class="ak-select-row">
-	
-	    <div class="ak-select-box">
-	        <label for="akSelect">Strecke:</label>
-	        <select id="akSelect" class="ak-select">
-	            <option value="hauptlauf">Ratzeburger See – 26km</option>
-	            <option value="kurzstrecke">Küchensee – 7,5km</option>
-	        </select>
-	    </div>
-	
-	    <div class="ak-select-box">
-	        <label for="resultDataType">Kennzahl:</label>
-	        <select id="resultDataType" class="ak-select">
-	            <option value="winner">Sieger</option>
-	            <option value="podium">Podium</option>
-	            <option value="percentile_10">10. Perzentil</option>
-	            <option value="percentile_25">1. Quartil</option>
-	            <option value="median">Median</option>
-	            <option value="average">Mittelwert</option>
-	        </select>
-	    </div>
-	
+	<div class="race-select-container">
+		<div class="ak-select-row">
+		
+		    <div class="ak-select-box">
+		        <label for="akSelect">Strecke:</label>
+		        <select id="akSelect" class="ak-select">
+		            <option value="hauptlauf">Ratzeburger See – 26km</option>
+		            <option value="kurzstrecke">Küchensee – 7,5km</option>
+		        </select>
+		    </div>
+		
+		    <div class="ak-select-box">
+		        <label for="resultDataType">Kennzahl:</label>
+		        <select id="resultDataType" class="ak-select">
+		            <option value="winner">Sieger</option>
+		            <option value="podium">Podium</option>
+		            <option value="percentile_10">10. Perzentil</option>
+		            <option value="percentile_25">1. Quartil</option>
+		            <option value="median">Median</option>
+		            <option value="average">Mittelwert</option>
+		        </select>
+		    </div>
+		
+		</div>
 	</div>
 
 
