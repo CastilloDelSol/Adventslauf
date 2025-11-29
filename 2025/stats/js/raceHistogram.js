@@ -68,7 +68,7 @@ function renderOneHistogram(canvasId, buckets) {
                     data: scaled,
                     borderColor: "rgba(255,99,132,1.0)",
                     borderWidth: 3,
-                    tension: 0.3,
+                    tension: 0.25,
                     pointRadius: 0
                 }
             ]
