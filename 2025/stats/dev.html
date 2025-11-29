@@ -509,7 +509,48 @@
     padding:8px 12px;
     cursor:pointer;
   }
-  
+
+/* dirty add */
+	/* --- ALIGN LABEL + SELECT IN ONE ROW FOR TABS 6 + 7 + 8 --- */
+.race-select-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Make label width fixed so both align nicely */
+.race-select-box label {
+    width: 90px;   /* perfect alignment with "Strecke:" + "Kennzahl:" */
+    text-align: right;
+}
+
+/* Ensure select is same width everywhere */
+.race-select,
+.ak-select {
+    width: 260px;
+}
+
+/* Responsive: stack label + select under narrow width */
+@media (max-width: 600px) {
+    .race-select-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .race-select-box label {
+        width: auto;
+        text-align: left;
+    }
+
+    .race-select,
+    .ak-select {
+        width: 100%;
+    }
+}
+
+	
 </style>
 
 </head>
