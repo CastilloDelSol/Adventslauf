@@ -34,17 +34,17 @@ function renderOne(containerId, top6, splitMeta) {
         return;
     }
 
-    // Name uppercase + ß → ẞ
+    // ↑ Convert names to uppercase (ẞ fix)
     const toUppercaseName = (str) =>
         str.replace(/ß/g, "ẞ").toUpperCase();
 
-    // Only distances (e.g. "12.5 km")
-    const splitLabels = splitMeta.map(s =>
-        `${s.distance_km}km`
-    );
-
-    // Get agegroup gender prefix for better recognition
     const genderPrefix = containerId.endsWith("M") ? "M" : "W";
+
+    // Label for splits (e.g. "12.5km")
+    const splitLabels = splitMeta.map(s => `${s.distance_km}km`);
+
+    // 👉 only add dummy if NO intermediate splits exist
+    const needsDummy = splitMeta.length < 2;
 
     // --------------------------------------------------------
     // BUILD TABLE
@@ -63,6 +63,11 @@ function renderOne(containerId, top6, splitMeta) {
     splitLabels.forEach(label => {
         html += `<th class="col-right">${label}</th>`;
     });
+
+    // 👉 add dummy th only when needed
+    if (needsDummy) {
+        html += `<th style="width:0;padding:0;border:none"></th>`;
+    }
 
     html += `
                 </tr>
@@ -88,14 +93,20 @@ function renderOne(containerId, top6, splitMeta) {
                 <td class="col-left">${r.club ?? ""}</td>
         `;
 
+        // add times
         splitMeta.forEach((_, idx) => {
             const s = r.splits[idx];
             html += `<td class="col-right">${s ? s.time : "-"}</td>`;
         });
 
-        html += "</tr>";
+        // 👉 row-level dummy td when needed
+        if (needsDummy) {
+            html += `<td style="width:0;padding:0;border:none"></td>`;
+        }
+
+        html += `</tr>`;
     });
 
-    html += "</tbody></table>";
+    html += `</tbody></table>`;
     box.innerHTML = html;
 }
