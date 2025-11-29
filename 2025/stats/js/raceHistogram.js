@@ -102,7 +102,11 @@ function renderOneHistogram(canvasId, buckets, gender) {
                     title: {
                         display: true,
                         text: "Zielzeit (hh:mm)"
-                    }
+                    },
+                   ticks: {
+                       minRotation: 45,
+                       maxRotation: 90
+                   }
                 },
                 y: {
                     beginAtZero: true,
