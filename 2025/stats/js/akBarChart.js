@@ -17,13 +17,21 @@ function secToHMS(sec) {
 }
 
 // ------------------------------------------------------------
-// Build a sorted AG list; identical to your Python sorting
+// Round a time upward to next full 30-minute block
+// e.g. 1:18 → 1:30  /  2:01 → 2:30
+// ------------------------------------------------------------
+function roundUpToNext30min(sec) {
+    const block = 30 * 60; // 1800 sec
+    return Math.ceil(sec / block) * block;
+}
+
+// ------------------------------------------------------------
+// Build a sorted AG list
 // ------------------------------------------------------------
 function sortAgeGroups(statsObj) {
     const keys = Object.keys(statsObj);
 
     return keys.sort((a, b) => {
-
         const isAoverall = a === "Overall";
         const isBoverall = b === "Overall";
         if (isAoverall && !isBoverall) return -1;
@@ -33,12 +41,10 @@ function sortAgeGroups(statsObj) {
         const isBju = b.startsWith("JU");
         if (isAju && !isBju) return -1;
         if (!isAju && isBju) return 1;
-
         if (isAju && isBju) return parseInt(a.slice(2)) - parseInt(b.slice(2));
 
         const na = parseInt(a);
         const nb = parseInt(b);
-
         if (!isNaN(na) && !isNaN(nb)) return na - nb;
 
         return a.localeCompare(b);
@@ -50,20 +56,15 @@ function sortAgeGroups(statsObj) {
 // ------------------------------------------------------------
 function renderOne(canvasId, stats, dataKey, gender) {
     const ctx = document.getElementById(canvasId);
-
     if (!ctx) return;
 
-    // Determine chart reference
     let chartRef = (gender === "M" ? chartM : chartW);
     if (chartRef) chartRef.destroy();
 
-    // Sort Age Groups
     const groups = sortAgeGroups(stats);
 
-    // Build chart data
     const labels = [];
     const values = [];
-    const hmsLabels = [];
 
     groups.forEach(ag => {
         const row = stats[ag];
@@ -71,14 +72,19 @@ function renderOne(canvasId, stats, dataKey, gender) {
         if (sec !== null) {
             labels.push(ag);
             values.push(sec);
-            hmsLabels.push(secToHMS(sec));
         }
     });
 
-    // Colors for bars
+    // ------------------------------
+    // Compute y-axis range
+    // ------------------------------
+    const maxSec = Math.max(...values);
+    const yMax = roundUpToNext30min(maxSec);
+    const yMin = 0;
+
     const barColor = gender === "M"
-        ? "rgba(54, 162, 235, 0.75)"   // blue
-        : "rgba(255, 99, 132, 0.75)";  // red
+        ? "rgba(54, 162, 235, 0.75)"
+        : "rgba(255, 99, 132, 0.75)";
 
     const borderColor = gender === "M"
         ? "rgba(54, 162, 235, 1.0)"
@@ -107,7 +113,9 @@ function renderOne(canvasId, stats, dataKey, gender) {
                     ticks: { maxRotation: 90, minRotation: 45 }
                 },
                 y: {
-                    beginAtZero: false,
+                    beginAtZero: true,
+                    min: yMin,
+                    max: yMax,
                     title: { display: true, text: "Zeit (Sekunden)" },
                     ticks: {
                         callback: secToHMS
@@ -118,10 +126,7 @@ function renderOne(canvasId, stats, dataKey, gender) {
             plugins: {
                 tooltip: {
                     callbacks: {
-                        label: (ctx) => {
-                            const sec = ctx.raw;
-                            return secToHMS(sec);
-                        }
+                        label: (ctx) => secToHMS(ctx.raw)
                     }
                 },
                 legend: { display: false }
@@ -134,7 +139,7 @@ function renderOne(canvasId, stats, dataKey, gender) {
 }
 
 // ------------------------------------------------------------
-// Exported main function
+// Main export
 // ------------------------------------------------------------
 export async function renderAKCharts(raceName, typeKey) {
 
