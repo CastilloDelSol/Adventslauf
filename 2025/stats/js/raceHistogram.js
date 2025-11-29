@@ -62,7 +62,11 @@ function renderOneHistogram(canvasId, buckets, gender) {
             : "rgba(255,99,132,0.75)";
 
     // KDE color (dark blue tint)
-    const kdeColor = "#2a3f5f";
+   const kdeColor =
+       gender === "M"
+           ? "rgba(54,162,235,1.0)"     // strong blue
+           : "rgba(255,99,132,1.0)";     // strong magenta
+   
 
     // Destroy old chart
     if (ctx._chart) ctx._chart.destroy();
@@ -81,7 +85,7 @@ function renderOneHistogram(canvasId, buckets, gender) {
                 },
                 {
                     type: "line",
-                    label: "Glättung",
+                    label: "KDE",
                     data: scaled,
                     borderColor: kdeColor,
                     borderWidth: 3,
@@ -97,7 +101,7 @@ function renderOneHistogram(canvasId, buckets, gender) {
                 x: {
                     title: {
                         display: true,
-                        text: "Zeitbereich (Minuten)"
+                        text: "Zielzeit (hh:mm)"
                     }
                 },
                 y: {
