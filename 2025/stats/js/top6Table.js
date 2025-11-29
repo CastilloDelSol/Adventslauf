@@ -43,6 +43,9 @@ function renderOne(containerId, top6, splitMeta) {
         `${s.distance_km}km`
     );
 
+    // Get agegroup gender prefix for better recognition
+    const genderPrefix = containerId.endsWith("M") ? "M" : "W";
+
     // --------------------------------------------------------
     // BUILD TABLE
     // --------------------------------------------------------
@@ -78,7 +81,7 @@ function renderOne(containerId, top6, splitMeta) {
                 <td class="col-center">${r.pos_overall}</td>
                 <td class="col-center">${r.pos_gender}</td>
                 <td class="col-center">${r.pos_ag}</td>
-                <td class="col-right">${r.age_group}</td>
+                <td class="col-right">${genderPrefix}${r.age_group}</td>
                 <td class="col-right">${r.bib}</td>
 
                 <td class="col-left">
