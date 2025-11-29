@@ -424,11 +424,11 @@
 
 
 	.ak-select-row {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;     /* stacked on narrow screens */
-    margin-bottom: 25px;
+	    display: flex;
+	    justify-content: center;
+	    gap: 25px;
+	    flex-wrap: wrap;
+	    margin-bottom: 25px;
 	}
 	
 	.ak-select-box {
@@ -438,11 +438,11 @@
 	
 	.ak-select-box label {
 	    font-weight: 600;
-	    margin-bottom: 5px;
+	    margin-bottom: 6px;
 	}
 	
 	.ak-select {
-	    width: 240px;               /* equal width for both dropdowns */
+	    width: 240px;
 	    padding: 8px 12px;
 	    font-size: 15px;
 	    border-radius: 6px;
@@ -450,6 +450,7 @@
 	    background: white;
 	    cursor: pointer;
 	}
+
 	
 	.ak-select:hover {
 	    border-color: #888;
@@ -834,29 +835,30 @@
 <div class="tab-content content8">
 
     <!-- Dropdown Row -->
-    <div class="ak-select-row">
+	<div class="ak-select-row">
+	
+	    <div class="ak-select-box">
+	        <label for="akSelect">Strecke:</label>
+	        <select id="akSelect" class="ak-select">
+	            <option value="hauptlauf">Ratzeburger See – 26km</option>
+	            <option value="kurzstrecke">Küchensee – 7,5km</option>
+	        </select>
+	    </div>
+	
+	    <div class="ak-select-box">
+	        <label for="resultDataType">Kennzahl:</label>
+	        <select id="resultDataType" class="ak-select">
+	            <option value="winner">Sieger</option>
+	            <option value="podium">Podium</option>
+	            <option value="percentile_10">10. Perzentil</option>
+	            <option value="percentile_25">1. Quartil</option>
+	            <option value="median">Median</option>
+	            <option value="average">Mittelwert</option>
+	        </select>
+	    </div>
+	
+	</div>
 
-        <div class="ak-select-box">
-            <label for="akSelect">Strecke:</label>
-            <select id="akSelect" class="ak-select">
-                <option value="hauptlauf">Ratzeburger See – 26km</option>
-                <option value="kurzstrecke">Küchensee – 7,5km</option>
-            </select>
-        </div>
-
-        <div class="ak-select-box">
-            <label for="resultDataType">Kennzahl:</label>
-            <select id="resultDataType" class="ak-select">
-                <option value="winner">Sieger</option>
-                <option value="podium">Podium</option>
-                <option value="percentile_10">10. Perzentil</option>
-                <option value="percentile_25">1. Quartil</option>
-                <option value="median">Median</option>
-                <option value="average">Mittelwert</option>
-            </select>
-        </div>
-
-    </div>
 
     <!-- Männer Block -->
     <div class="card">
