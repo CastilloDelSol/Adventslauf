@@ -75,7 +75,7 @@ function renderOne(canvasSelector, key, runners, splits) {
                     },
 
                     ticks: {
-                        callback: (value) => value.toFixed(1) + " km"
+                        callback: (value) => value.toFixed(1)
                     },
 
                     min: 0,
