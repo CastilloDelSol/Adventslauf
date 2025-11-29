@@ -53,11 +53,9 @@ function renderOne(containerId, top6, splitMeta) {
         <table class="top6-table">
             <thead>
                 <tr>
-                    <th class="col-center">#</th>
                     <th class="col-center">#M/W</th>
-                    <th class="col-center">#AK</th>
-                    <th class="col-right">AK</th>
                     <th class="col-right">BIB</th>
+                    <th class="col-right">AK</th>
                     <th class="col-left">Name</th>
                     <th class="col-left">Verein</th>
     `;
@@ -78,11 +76,9 @@ function renderOne(containerId, top6, splitMeta) {
 
         html += `
             <tr>
-                <td class="col-center">${r.pos_overall}</td>
                 <td class="col-center">${r.pos_gender}</td>
-                <td class="col-center">${r.pos_ag}</td>
-                <td class="col-right">${genderPrefix}${r.age_group}</td>
                 <td class="col-right">${r.bib}</td>
+                <td class="col-center">${r.pos_ag}. ${genderPrefix}${r.age_group}</td>
 
                 <td class="col-left">
                     <span class="top6-lastname">${ln}</span>
