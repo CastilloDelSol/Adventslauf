@@ -2,7 +2,7 @@
 import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 
 /* -------------------------------------------------------
-   Gaussian kernel (wie distanceHistogram)
+   Gaussian kernel
 ------------------------------------------------------- */
 function gaussianKernel(x) {
     return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
@@ -21,15 +21,29 @@ function computeKDE(buckets, bandwidth = 30) {
         return sum;
     });
 
-    return { xs, kdeValues };
+    return kdeValues;
 }
 
 /* -------------------------------------------------------
-   RENDER FOR M OR W
+   Determine gender by canvasId ("histM" / "histW")
+------------------------------------------------------- */
+function getGenderColor(canvasId) {
+    if (canvasId.toLowerCase().includes("m")) {
+        return "#4EA5E9"; // MEN BLUE
+    }
+    return "#FF6384"; // WOMEN PINK
+}
+
+/* -------------------------------------------------------
+   RENDER ONE HISTOGRAM (M or W)
 ------------------------------------------------------- */
 function renderOneHistogram(canvasId, buckets) {
+
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
+
+    // Detect gender color
+    const barColor = getGenderColor(canvasId);
 
     const labels = buckets.map(b => {
         const m = Math.round(b.range_start / 60);
@@ -39,56 +53,61 @@ function renderOneHistogram(canvasId, buckets) {
 
     const counts = buckets.map(b => b.count);
 
-    // KDE smoothing
-    const { kdeValues } = computeKDE(buckets, 45);
+    // KDE
+    const kdeValues = computeKDE(buckets, 45);
 
-    // Scale KDE visually
+    // Scale KDE visually to bar height
     const maxCount = Math.max(...counts);
     const maxKde = Math.max(...kdeValues);
     const scaled = kdeValues.map(v => v * maxCount / maxKde);
 
-    // Destroy old chart if exists
+    // Destroy existing chart
     if (ctx._chart) ctx._chart.destroy();
 
+    /* -------------------------------------------------------
+       Chart.js
+       KDE FIRST → BEHIND BARS
+    ------------------------------------------------------- */
     ctx._chart = new Chart(ctx, {
         type: "bar",
         data: {
             labels,
             datasets: [
-                {
-                    type: "bar",
-                    label: "Anzahl",
-                    data: counts,
-                    backgroundColor: "rgba(54,162,235,0.75)",
-                    borderWidth: 0
-                },
+                // KDE first (background)
                 {
                     type: "line",
                     label: "Glättung",
                     data: scaled,
-                    borderColor: "rgba(255,99,132,1.0)",
+                    borderColor: "#999999",  // light grey
+                    backgroundColor: "transparent",
                     borderWidth: 3,
                     tension: 0.25,
-                    pointRadius: 0
+                    pointRadius: 0,
+                    order: 1   // draw first
+                },
+
+                // Gender-colored bars
+                {
+                    type: "bar",
+                    label: "Anzahl",
+                    data: counts,
+                    backgroundColor: barColor + "CC", // 80% opacity
+                    borderWidth: 0,
+                    order: 2   // draw above KDE
                 }
             ]
         },
+
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
                 x: {
-                    title: {
-                        display: true,
-                        text: "Zeitbereich (Minuten)"
-                    }
+                    title: { display: true, text: "Zeitbereich (Minuten)" }
                 },
                 y: {
                     beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: "Teilnehmer"
-                    }
+                    title: { display: true, text: "Teilnehmer" }
                 }
             }
         }
