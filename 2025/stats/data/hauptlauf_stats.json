@@ -1,18 +1,9 @@
 {
-  "splits": [
-    {
-      "name": "Rothenhusen",
-      "distance_km": 12.5
-    },
-    {
-      "name": "Ziel",
-      "distance_km": 26.0
-    }
-  ],
+  "splits": [],
   "finisher": 1173,
-  "dns": 231,
-  "dnf": 21,
-  "dsq": 2,
+  "dns": 0,
+  "dnf": 0,
+  "dsq": 0,
   "M": {
     "Top10": [
       {
@@ -24,16 +15,7 @@
         "last_name": "Müller",
         "club": "Tri-Sport Lübeck",
         "age_group": "20",
-        "splits": [
-          {
-            "time": "0:42:03",
-            "sec": 2523
-          },
-          {
-            "time": "1:28:28",
-            "sec": 5308
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "2",
@@ -44,16 +26,7 @@
         "last_name": "Schröder",
         "club": "(Hamburg)",
         "age_group": "20",
-        "splits": [
-          {
-            "time": "0:41:52",
-            "sec": 2512
-          },
-          {
-            "time": "1:28:54",
-            "sec": 5334
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "3",
@@ -64,16 +37,7 @@
         "last_name": "Weller",
         "club": "Ratzeburger SV - Triathlon",
         "age_group": "20",
-        "splits": [
-          {
-            "time": "0:42:30",
-            "sec": 2550
-          },
-          {
-            "time": "1:31:30",
-            "sec": 5490
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "4",
@@ -84,16 +48,7 @@
         "last_name": "Allers",
         "club": "(Hamburg)",
         "age_group": "20",
-        "splits": [
-          {
-            "time": "0:44:40",
-            "sec": 2680
-          },
-          {
-            "time": "1:36:49",
-            "sec": 5809
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "5",
@@ -104,16 +59,7 @@
         "last_name": "Jeßen",
         "club": "LT Haspa Marathon Hamburg",
         "age_group": "35",
-        "splits": [
-          {
-            "time": "0:46:56",
-            "sec": 2816
-          },
-          {
-            "time": "1:37:44",
-            "sec": 5864
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "6",
@@ -124,16 +70,7 @@
         "last_name": "Würsch",
         "club": "SV Werder Bremen",
         "age_group": "20",
-        "splits": [
-          {
-            "time": "0:46:21",
-            "sec": 2781
-          },
-          {
-            "time": "1:38:17",
-            "sec": 5897
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "7",
@@ -144,16 +81,7 @@
         "last_name": "Babusci",
         "club": "BSG Siemens",
         "age_group": "40",
-        "splits": [
-          {
-            "time": "0:46:29",
-            "sec": 2789
-          },
-          {
-            "time": "1:38:40",
-            "sec": 5920
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "8",
@@ -164,16 +92,7 @@
         "last_name": "Reichert",
         "club": "(Salzhausen)",
         "age_group": "45",
-        "splits": [
-          {
-            "time": "0:47:56",
-            "sec": 2876
-          },
-          {
-            "time": "1:39:41",
-            "sec": 5981
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "9",
@@ -184,16 +103,7 @@
         "last_name": "Hoffmann",
         "club": "Adidas Runners Hamburg",
         "age_group": "20",
-        "splits": [
-          {
-            "time": "0:47:05",
-            "sec": 2825
-          },
-          {
-            "time": "1:39:52",
-            "sec": 5992
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "11",
@@ -204,193 +114,94 @@
         "last_name": "Noren",
         "club": "(Hamburg)",
         "age_group": "20",
-        "splits": [
-          {
-            "time": "0:48:19",
-            "sec": 2899
-          },
-          {
-            "time": "1:40:11",
-            "sec": 6011
-          }
-        ]
+        "splits": []
       }
     ],
     "histogram": {
       "buckets": [
         {
           "range_start": 4200,
-          "range_end": 4500,
-          "count": 0
-        },
-        {
-          "range_start": 4500,
           "range_end": 4800,
           "count": 0
         },
         {
           "range_start": 4800,
-          "range_end": 5100,
-          "count": 0
-        },
-        {
-          "range_start": 5100,
           "range_end": 5400,
           "count": 2
         },
         {
           "range_start": 5400,
-          "range_end": 5700,
-          "count": 1
-        },
-        {
-          "range_start": 5700,
           "range_end": 6000,
-          "count": 6
+          "count": 7
         },
         {
           "range_start": 6000,
-          "range_end": 6300,
-          "count": 16
-        },
-        {
-          "range_start": 6300,
           "range_end": 6600,
-          "count": 19
+          "count": 35
         },
         {
           "range_start": 6600,
-          "range_end": 6900,
-          "count": 32
-        },
-        {
-          "range_start": 6900,
           "range_end": 7200,
-          "count": 41
-        },
-        {
-          "range_start": 7200,
-          "range_end": 7500,
-          "count": 45
-        },
-        {
-          "range_start": 7500,
-          "range_end": 7800,
-          "count": 54
-        },
-        {
-          "range_start": 7800,
-          "range_end": 8100,
-          "count": 61
-        },
-        {
-          "range_start": 8100,
-          "range_end": 8400,
-          "count": 71
-        },
-        {
-          "range_start": 8400,
-          "range_end": 8700,
           "count": 73
         },
         {
-          "range_start": 8700,
+          "range_start": 7200,
+          "range_end": 7800,
+          "count": 99
+        },
+        {
+          "range_start": 7800,
+          "range_end": 8400,
+          "count": 132
+        },
+        {
+          "range_start": 8400,
           "range_end": 9000,
-          "count": 79
+          "count": 152
         },
         {
           "range_start": 9000,
-          "range_end": 9300,
-          "count": 58
-        },
-        {
-          "range_start": 9300,
           "range_end": 9600,
-          "count": 63
+          "count": 121
         },
         {
           "range_start": 9600,
-          "range_end": 9900,
-          "count": 45
-        },
-        {
-          "range_start": 9900,
           "range_end": 10200,
-          "count": 41
+          "count": 86
         },
         {
           "range_start": 10200,
-          "range_end": 10500,
-          "count": 29
-        },
-        {
-          "range_start": 10500,
           "range_end": 10800,
-          "count": 29
+          "count": 58
         },
         {
           "range_start": 10800,
-          "range_end": 11100,
-          "count": 15
-        },
-        {
-          "range_start": 11100,
           "range_end": 11400,
-          "count": 14
+          "count": 29
         },
         {
           "range_start": 11400,
-          "range_end": 11700,
-          "count": 9
-        },
-        {
-          "range_start": 11700,
           "range_end": 12000,
-          "count": 7
+          "count": 16
         },
         {
           "range_start": 12000,
-          "range_end": 12300,
-          "count": 7
-        },
-        {
-          "range_start": 12300,
           "range_end": 12600,
-          "count": 4
+          "count": 11
         },
         {
           "range_start": 12600,
-          "range_end": 12900,
-          "count": 0
-        },
-        {
-          "range_start": 12900,
           "range_end": 13200,
           "count": 1
         },
         {
           "range_start": 13200,
-          "range_end": 13500,
-          "count": 0
-        },
-        {
-          "range_start": 13500,
           "range_end": 13800,
           "count": 1
         },
         {
           "range_start": 13800,
-          "range_end": 14100,
-          "count": 0
-        },
-        {
-          "range_start": 14100,
           "range_end": 14400,
-          "count": 0
-        },
-        {
-          "range_start": 14400,
-          "range_end": 14700,
           "count": 0
         }
       ]
@@ -760,16 +571,7 @@
         "last_name": "Kümpers",
         "club": "LAC Kronshagen",
         "age_group": "30",
-        "splits": [
-          {
-            "time": "0:47:41",
-            "sec": 2861
-          },
-          {
-            "time": "1:39:57",
-            "sec": 5997
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "21",
@@ -780,16 +582,7 @@
         "last_name": "Froehlich",
         "club": "LAC Lübeck",
         "age_group": "20",
-        "splits": [
-          {
-            "time": "0:48:15",
-            "sec": 2895
-          },
-          {
-            "time": "1:43:15",
-            "sec": 6195
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "24",
@@ -800,16 +593,7 @@
         "last_name": "Timm",
         "club": "LAC Kronshagen",
         "age_group": "20",
-        "splits": [
-          {
-            "time": "0:49:23",
-            "sec": 2963
-          },
-          {
-            "time": "1:43:34",
-            "sec": 6214
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "29",
@@ -820,16 +604,7 @@
         "last_name": "Siedhoff",
         "club": "SC Victoria Hockey",
         "age_group": "20",
-        "splits": [
-          {
-            "time": "0:49:46",
-            "sec": 2986
-          },
-          {
-            "time": "1:45:03",
-            "sec": 6303
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "50",
@@ -840,16 +615,7 @@
         "last_name": "Sarman-Lein",
         "club": "(Hamburg)",
         "age_group": "50",
-        "splits": [
-          {
-            "time": "0:51:29",
-            "sec": 3089
-          },
-          {
-            "time": "1:50:12",
-            "sec": 6612
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "55",
@@ -860,16 +626,7 @@
         "last_name": "Femerling",
         "club": "Triathlon Team Hamburg",
         "age_group": "30",
-        "splits": [
-          {
-            "time": "0:53:11",
-            "sec": 3191
-          },
-          {
-            "time": "1:50:39",
-            "sec": 6639
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "56",
@@ -880,16 +637,7 @@
         "last_name": "Rehberg",
         "club": "SC Rönnau 74",
         "age_group": "30",
-        "splits": [
-          {
-            "time": "0:53:26",
-            "sec": 3206
-          },
-          {
-            "time": "1:50:40",
-            "sec": 6640
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "81",
@@ -900,16 +648,7 @@
         "last_name": "Kucziensky",
         "club": "SV Großhansdorf",
         "age_group": "30",
-        "splits": [
-          {
-            "time": "0:54:35",
-            "sec": 3275
-          },
-          {
-            "time": "1:54:27",
-            "sec": 6867
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "97",
@@ -920,16 +659,7 @@
         "last_name": "Dehne",
         "club": "(München)",
         "age_group": "20",
-        "splits": [
-          {
-            "time": "0:54:47",
-            "sec": 3287
-          },
-          {
-            "time": "1:56:25",
-            "sec": 6985
-          }
-        ]
+        "splits": []
       },
       {
         "pos_overall": "104",
@@ -940,194 +670,95 @@
         "last_name": "Ruge",
         "club": "Hamburg Running",
         "age_group": "30",
-        "splits": [
-          {
-            "time": "0:56:38",
-            "sec": 3398
-          },
-          {
-            "time": "1:57:11",
-            "sec": 7031
-          }
-        ]
+        "splits": []
       }
     ],
     "histogram": {
       "buckets": [
         {
-          "range_start": 4800,
-          "range_end": 5100,
+          "range_start": 4200,
+          "range_end": 4800,
           "count": 0
         },
         {
-          "range_start": 5100,
+          "range_start": 4800,
           "range_end": 5400,
           "count": 0
         },
         {
           "range_start": 5400,
-          "range_end": 5700,
-          "count": 0
-        },
-        {
-          "range_start": 5700,
           "range_end": 6000,
           "count": 1
         },
         {
           "range_start": 6000,
-          "range_end": 6300,
-          "count": 2
-        },
-        {
-          "range_start": 6300,
           "range_end": 6600,
-          "count": 1
-        },
-        {
-          "range_start": 6600,
-          "range_end": 6900,
-          "count": 4
-        },
-        {
-          "range_start": 6900,
-          "range_end": 7200,
-          "count": 5
-        },
-        {
-          "range_start": 7200,
-          "range_end": 7500,
           "count": 3
         },
         {
-          "range_start": 7500,
+          "range_start": 6600,
+          "range_end": 7200,
+          "count": 9
+        },
+        {
+          "range_start": 7200,
           "range_end": 7800,
-          "count": 10
-        },
-        {
-          "range_start": 7800,
-          "range_end": 8100,
-          "count": 19
-        },
-        {
-          "range_start": 8100,
-          "range_end": 8400,
-          "count": 16
-        },
-        {
-          "range_start": 8400,
-          "range_end": 8700,
-          "count": 32
-        },
-        {
-          "range_start": 8700,
-          "range_end": 9000,
-          "count": 35
-        },
-        {
-          "range_start": 9000,
-          "range_end": 9300,
-          "count": 29
-        },
-        {
-          "range_start": 9300,
-          "range_end": 9600,
-          "count": 40
-        },
-        {
-          "range_start": 9600,
-          "range_end": 9900,
-          "count": 22
-        },
-        {
-          "range_start": 9900,
-          "range_end": 10200,
-          "count": 31
-        },
-        {
-          "range_start": 10200,
-          "range_end": 10500,
-          "count": 36
-        },
-        {
-          "range_start": 10500,
-          "range_end": 10800,
-          "count": 17
-        },
-        {
-          "range_start": 10800,
-          "range_end": 11100,
-          "count": 15
-        },
-        {
-          "range_start": 11100,
-          "range_end": 11400,
-          "count": 7
-        },
-        {
-          "range_start": 11400,
-          "range_end": 11700,
           "count": 13
         },
         {
-          "range_start": 11700,
+          "range_start": 7800,
+          "range_end": 8400,
+          "count": 35
+        },
+        {
+          "range_start": 8400,
+          "range_end": 9000,
+          "count": 67
+        },
+        {
+          "range_start": 9000,
+          "range_end": 9600,
+          "count": 69
+        },
+        {
+          "range_start": 9600,
+          "range_end": 10200,
+          "count": 53
+        },
+        {
+          "range_start": 10200,
+          "range_end": 10800,
+          "count": 53
+        },
+        {
+          "range_start": 10800,
+          "range_end": 11400,
+          "count": 22
+        },
+        {
+          "range_start": 11400,
           "range_end": 12000,
-          "count": 1
+          "count": 14
         },
         {
           "range_start": 12000,
-          "range_end": 12300,
-          "count": 4
-        },
-        {
-          "range_start": 12300,
           "range_end": 12600,
-          "count": 6
+          "count": 10
         },
         {
           "range_start": 12600,
-          "range_end": 12900,
-          "count": 0
-        },
-        {
-          "range_start": 12900,
           "range_end": 13200,
           "count": 0
         },
         {
           "range_start": 13200,
-          "range_end": 13500,
-          "count": 0
-        },
-        {
-          "range_start": 13500,
           "range_end": 13800,
           "count": 0
         },
         {
           "range_start": 13800,
-          "range_end": 14100,
-          "count": 0
-        },
-        {
-          "range_start": 14100,
           "range_end": 14400,
           "count": 1
-        },
-        {
-          "range_start": 14400,
-          "range_end": 14700,
-          "count": 0
-        },
-        {
-          "range_start": 14700,
-          "range_end": 15000,
-          "count": 0
-        },
-        {
-          "range_start": 15000,
-          "range_end": 15300,
-          "count": 0
         }
       ]
     },
@@ -1459,4 +1090,3 @@
     }
   }
 }
-
