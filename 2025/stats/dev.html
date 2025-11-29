@@ -394,6 +394,44 @@
     text-overflow: ellipsis;
 }
 
+	/* -------------------------------
+   RESPONSIVE TOP6 TABLE BEHAVIOR
+-------------------------------- */
+
+	/* Normal view: show everything */
+	
+	/* -----------------------------------
+	   BELOW 1100px → hide "Verein"
+	----------------------------------- */
+	@media (max-width: 1100px) {
+	    .top6-table th:nth-child(5),
+	    .top6-table td:nth-child(5) {
+	        display: none;
+	    }
+	}
+	
+	/* -----------------------------------
+	   BELOW 950px → hide intermediate split
+	   (12.5 km → column 6)
+	----------------------------------- */
+	@media (max-width: 950px) {
+	    .top6-table th:nth-child(6),
+	    .top6-table td:nth-child(6) {
+	        display: none;
+	    }
+	}
+	
+	/* -----------------------------------
+	   BELOW 800px → hide AK column
+	----------------------------------- */
+	@media (max-width: 800px) {
+	    .top6-table th:nth-child(3),
+	    .top6-table td:nth-child(3) {
+	        display: none;
+	    }
+	}
+
+
 
   .footer {
     text-align: center;
