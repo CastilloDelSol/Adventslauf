@@ -120,8 +120,8 @@
         "pos_gender": 6,
         "pos_ag": "5",
         "bib": "1952",
-        "first_name": "SCHMELING Finn",
-        "last_name": "Von",
+        "first_name": "Finn",
+        "last_name": "Von Schmeling",
         "club": "TriMichels Hamburg",
         "age_group": "20",
         "splits": [
@@ -1414,5 +1414,6 @@
     }
   }
 }
+
 
 
