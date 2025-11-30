@@ -1303,6 +1303,60 @@
         },
         "count": 1
       },
+      "75": {
+        "winner": {
+          "sec": 0,
+          "hhmmss": "00:00:00"
+        },
+        "podium": {
+          "sec": 0,
+          "hhmmss": "00:00:00"
+        },
+        "percentile_10": {
+          "sec": 0,
+          "hhmmss": "00:00:00"
+        },
+        "percentile_25": {
+          "sec": 0,
+          "hhmmss": "00:00:00"
+        },
+        "median": {
+          "sec": 0,
+          "hhmmss": "00:00:00"
+        },
+        "average": {
+          "sec": 0,
+          "hhmmss": "00:00:00"
+        },
+        "count": 0
+      },
+      "80": {
+        "winner": {
+          "sec": 0,
+          "hhmmss": "00:00:00"
+        },
+        "podium": {
+          "sec": 0,
+          "hhmmss": "00:00:00"
+        },
+        "percentile_10": {
+          "sec": 0,
+          "hhmmss": "00:00:00"
+        },
+        "percentile_25": {
+          "sec": 0,
+          "hhmmss": "00:00:00"
+        },
+        "median": {
+          "sec": 0,
+          "hhmmss": "00:00:00"
+        },
+        "average": {
+          "sec": 0,
+          "hhmmss": "00:00:00"
+        },
+        "count": 0
+      },
       "J U18": {
         "winner": {
           "sec": 10609,
@@ -1360,4 +1414,5 @@
     }
   }
 }
+
 
