@@ -62,7 +62,23 @@ export async function renderFinishStatusDonut(raceName, canvasId) {
             responsive: true,
             maintainAspectRatio: false,
             cutout: "60%",
-            plugins: { centerText: { value: fin } }
+        
+            plugins: {
+                centerText: { value: fin },
+        
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const value = context.raw;
+                            const data = context.dataset.data;
+                            const total = data.reduce((a, b) => a + b, 0);
+                            const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+        
+                            return `${context.label}: ${value} (${pct}%)`;
+                        }
+                    }
+                }
+            }
         }
     });
 }
