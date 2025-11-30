@@ -58,7 +58,23 @@ export async function renderGenderDonut(sectionName, canvasId)
             responsive: true,
             maintainAspectRatio: false,
             cutout: "60%",
-            plugins: { centerText: { value: totalM + totalW } }
+        
+            plugins: {
+                centerText: { value: totalM + totalW },
+        
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const value = context.raw;                 // M oder W Wert
+                            const data = context.dataset.data;         // [totalM, totalW]
+                            const total = data.reduce((a, b) => a + b, 0);
+                            const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+        
+                            return `${context.label}: ${value} (${pct}%)`;
+                        }
+                    }
+                }
+            }
         }
     });
 }
