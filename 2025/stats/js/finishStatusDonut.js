@@ -5,7 +5,7 @@ import { loadRaceStats, getRaceStats } from "./raceStatsLoader.js";
 // nur mit zweizeiligem Text (Zahl + "Finisher")
 const centerText = {
     id: "centerText",
-    afterDraw(chart, args, options) {
+    beforeDraw(chart, args, options) {
         const ctx = chart.ctx;
         const { top, bottom, left, right } = chart.chartArea;
 
