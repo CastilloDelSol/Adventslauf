@@ -4,7 +4,7 @@ import { loadAgeData } from "./dataLoader.js";
 
 const centerText = {
     id: "centerText",
-    afterDraw(chart, args, options)
+    beforeDraw(chart, args, options)
     {
         const ctx = chart.ctx;
         const { top, bottom, left, right } = chart.chartArea;
