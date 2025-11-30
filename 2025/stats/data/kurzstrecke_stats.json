@@ -248,16 +248,6 @@
           "range_start": 5100,
           "range_end": 5400,
           "count": 0
-        },
-        {
-          "range_start": 5400,
-          "range_end": 5700,
-          "count": 0
-        },
-        {
-          "range_start": 5700,
-          "range_end": 6000,
-          "count": 0
         }
       ]
     },
@@ -988,16 +978,6 @@
         {
           "range_start": 5100,
           "range_end": 5400,
-          "count": 0
-        },
-        {
-          "range_start": 5400,
-          "range_end": 5700,
-          "count": 0
-        },
-        {
-          "range_start": 5700,
-          "range_end": 6000,
           "count": 0
         }
       ]
