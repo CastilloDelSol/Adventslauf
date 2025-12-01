@@ -989,7 +989,8 @@
 	}
 
 	/* PARENT IFRAME SCRIPT */
-	// Send height to parent
+	let lastHeight = 0;
+	
 	function postHeight() {
 	    const h = Math.max(
 	        document.documentElement.scrollHeight,
@@ -997,27 +998,28 @@
 	        document.documentElement.offsetHeight,
 	        document.body.offsetHeight
 	    );
-	    parent.postMessage({frameHeight: h}, "*");
+	
+	    // Verhindert endloses Wachsen:
+	    // Nur senden, wenn Höhe sich wirklich geändert hat
+	    if (Math.abs(h - lastHeight) > 2) {
+	        lastHeight = h;
+	        parent.postMessage({ frameHeight: h }, "*");
+	    }
 	}
 	
-	// 1. Recalculate when window resizes
+	window.addEventListener("load", postHeight);
 	window.addEventListener("resize", postHeight);
 	
-	// 2. Recalculate when fonts finish loading
 	if (document.fonts) {
 	    document.fonts.ready.then(postHeight);
 	}
 	
-	// 3. Recalculate when DOM changes (Charts, Tabs, Async content)
-	const mo = new MutationObserver(() => postHeight());
+	const mo = new MutationObserver(postHeight);
 	mo.observe(document.body, {
 	    childList: true,
 	    subtree: true,
 	    attributes: true
 	});
-	
-	// 4. Initial height
-	window.addEventListener("load", postHeight);
 	
 </script>
 
