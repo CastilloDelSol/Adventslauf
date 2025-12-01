@@ -992,15 +992,14 @@
 	let lastHeight = 0;
 	
 	function postHeight() {
-	    const h = Math.max(
-	        document.documentElement.scrollHeight,
-	        document.body.scrollHeight,
-	        document.documentElement.offsetHeight,
-	        document.body.offsetHeight
-	    );
+	    const root = document.getElementById("tabs");
+	    if (!root) return;
 	
-	    // Verhindert endloses Wachsen:
-	    // Nur senden, wenn Höhe sich wirklich geändert hat
+	    // Höhe des eigentlichen Inhalts
+	    const rect = root.getBoundingClientRect();
+	    const h = rect.height;
+	
+	    // Nur senden, wenn sich die Höhe wirklich geändert hat
 	    if (Math.abs(h - lastHeight) > 2) {
 	        lastHeight = h;
 	        parent.postMessage({ frameHeight: h }, "*");
@@ -1010,16 +1009,19 @@
 	window.addEventListener("load", postHeight);
 	window.addEventListener("resize", postHeight);
 	
+	// Optional, falls Charts / Tabs / DOM-Änderungen:
+	const mo = new MutationObserver(() => {
+	    // leichte Verzögerung, damit Layout sich setzen kann
+	    requestAnimationFrame(postHeight);
+	});
+	mo.observe(document.getElementById("tabs"), {
+	    childList: true,
+	    subtree: true
+	});
+	
 	if (document.fonts) {
 	    document.fonts.ready.then(postHeight);
 	}
-	
-	const mo = new MutationObserver(postHeight);
-	mo.observe(document.body, {
-	    childList: true,
-	    subtree: true,
-	    attributes: true
-	});
 	
 </script>
 
