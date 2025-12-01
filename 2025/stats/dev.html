@@ -989,23 +989,36 @@
 	}
 
 	/* PARENT IFRAME SCRIPT */
-	function sendHeight() {
+	// Send height to parent
+	function postHeight() {
 	    const h = Math.max(
 	        document.documentElement.scrollHeight,
 	        document.body.scrollHeight,
 	        document.documentElement.offsetHeight,
 	        document.body.offsetHeight
 	    );
-	
-	    parent.postMessage({ frameHeight: h }, "*");
+	    parent.postMessage({frameHeight: h}, "*");
 	}
-
 	
-	window.addEventListener("load", sendHeight);
-	window.addEventListener("resize", sendHeight);
+	// 1. Recalculate when window resizes
+	window.addEventListener("resize", postHeight);
 	
-	// Optional – falls Charts dynamisch nachladen
-	setInterval(sendHeight, 500);
+	// 2. Recalculate when fonts finish loading
+	if (document.fonts) {
+	    document.fonts.ready.then(postHeight);
+	}
+	
+	// 3. Recalculate when DOM changes (Charts, Tabs, Async content)
+	const mo = new MutationObserver(() => postHeight());
+	mo.observe(document.body, {
+	    childList: true,
+	    subtree: true,
+	    attributes: true
+	});
+	
+	// 4. Initial height
+	window.addEventListener("load", postHeight);
+	
 </script>
 
 </body>
