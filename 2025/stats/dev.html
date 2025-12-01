@@ -989,39 +989,35 @@
 	}
 
 	/* PARENT IFRAME SCRIPT */
-	let lastHeight = 0;
-	
+	// Send height to parent
 	function postHeight() {
-	    const root = document.getElementById("tabs");
-	    if (!root) return;
-	
-	    // Höhe des eigentlichen Inhalts
-	    const rect = root.getBoundingClientRect();
-	    const h = rect.height;
-	
-	    // Nur senden, wenn sich die Höhe wirklich geändert hat
-	    if (Math.abs(h - lastHeight) > 2) {
-	        lastHeight = h;
-	        parent.postMessage({ frameHeight: h }, "*");
-	    }
+	    const h = Math.max(
+	        document.documentElement.scrollHeight,
+	        document.body.scrollHeight,
+	        document.documentElement.offsetHeight,
+	        document.body.offsetHeight
+	    );
+	    parent.postMessage({frameHeight: h}, "*");
 	}
 	
-	window.addEventListener("load", postHeight);
+	// 1. Recalculate when window resizes
 	window.addEventListener("resize", postHeight);
 	
-	// Optional, falls Charts / Tabs / DOM-Änderungen:
-	const mo = new MutationObserver(() => {
-	    // leichte Verzögerung, damit Layout sich setzen kann
-	    requestAnimationFrame(postHeight);
-	});
-	mo.observe(document.getElementById("tabs"), {
-	    childList: true,
-	    subtree: true
-	});
-	
+	// 2. Recalculate when fonts finish loading
 	if (document.fonts) {
 	    document.fonts.ready.then(postHeight);
 	}
+	
+	// 3. Recalculate when DOM changes (Charts, Tabs, Async content)
+	const mo = new MutationObserver(() => postHeight());
+	mo.observe(document.body, {
+	    childList: true,
+	    subtree: true,
+	    attributes: true
+	});
+	
+	// 4. Initial height
+	window.addEventListener("load", postHeight);
 	
 </script>
 
