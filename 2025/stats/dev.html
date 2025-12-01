@@ -990,9 +990,16 @@
 
 	/* PARENT IFRAME SCRIPT */
 	function sendHeight() {
-	    const height = document.body.scrollHeight;
-	    parent.postMessage({frameHeight: height}, "*");
+	    const h = Math.max(
+	        document.documentElement.scrollHeight,
+	        document.body.scrollHeight,
+	        document.documentElement.offsetHeight,
+	        document.body.offsetHeight
+	    );
+	
+	    parent.postMessage({ frameHeight: h }, "*");
 	}
+
 	
 	window.addEventListener("load", sendHeight);
 	window.addEventListener("resize", sendHeight);
