@@ -987,6 +987,18 @@
 	function closePrivacy() {
 	    document.getElementById("privacyBox").style.display = "none";
 	}
+
+	/* PARENT IFRAME SCRIPT */
+	function sendHeight() {
+	    const height = document.body.scrollHeight;
+	    parent.postMessage({frameHeight: height}, "*");
+	}
+	
+	window.addEventListener("load", sendHeight);
+	window.addEventListener("resize", sendHeight);
+	
+	// Optional – falls Charts dynamisch nachladen
+	setInterval(sendHeight, 500);
 </script>
 
 </body>
