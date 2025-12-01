@@ -2,37 +2,20 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-
-<title>Iframe Parent – komplett kommentierter Code</title>
-
+<title>Iframe Parent Test</title>
 <style>
-    /* 
-       Der Body bekommt ein bisschen Abstand für Testzwecke.
-       Auf Strato ist das nicht notwendig, aber unschädlich.
-    */
     body {
         font-family: Arial, sans-serif;
         margin: 40px;
         background: #f5f5f5;
     }
 
-    /*
-        Das eingebettete iframe selbst:
-        - width: 100%    → passt sich an den verfügbaren Platz an
-        - max-width: 900px → aber niemals breiter als 900 Pixel
-        - margin: 0 auto → horizontale Zentrierung
-        - display: block → notwendig, damit margin:auto funktioniert
-        - overflow: hidden → verhindert unschöne Scrollbalken im iframe-Rand
-        - border-radius: 6px → leichte optische Abrundung
-    */
     #statsFrame {
-        width: 100%;
-        max-width: 900px;
+        width: 900px;          /* → deine gewünschte fixe Breite */
         border: none;
         display: block;
         margin: 0 auto;
         overflow: hidden;
-        border-radius: 6px;
     }
 </style>
 </head>
@@ -41,11 +24,6 @@
 <h1>Parent-Seite (Strato-Simulation)</h1>
 <p>Unten ist dein iframe, das dynamisch seine Höhe übermittelt:</p>
 
-<!--
-    Das eigentliche iframe.
-    src → Der Link zu deiner Statistik-Seite.
-    id  → Wird benötigt, damit das Script die Höhe anpassen kann.
--->
 <iframe
     id="statsFrame"
     src="dev.html"
@@ -54,14 +32,8 @@
 <script>
 window.addEventListener("message", function(event) {
     if (event.data.frameHeight) {
-        const iframe = document.getElementById("statsFrame");
-        const newHeight = event.data.frameHeight + 10; // 10px Puffer reicht meist
-        const current = parseInt(iframe.style.height || "0", 10);
-
-        // Nur setzen, wenn sich wirklich was ändert
-        if (Math.abs(newHeight - current) > 2) {
-            iframe.style.height = newHeight + "px";
-        }
+        document.getElementById("statsFrame").style.height =
+            event.data.frameHeight + "px";
     }
 });
 </script>
