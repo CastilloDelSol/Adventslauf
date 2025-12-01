@@ -52,11 +52,16 @@
 ></iframe>
 
 <script>
-window.addEventListener("message", function(event)
-{
-    if (event.data.frameHeight)
-    {
-        document.getElementById("statsFrame").style.height = (event.data.frameHeight + 20) + "px";
+window.addEventListener("message", function(event) {
+    if (event.data.frameHeight) {
+        const iframe = document.getElementById("statsFrame");
+        const newHeight = event.data.frameHeight + 10; // 10px Puffer reicht meist
+        const current = parseInt(iframe.style.height || "0", 10);
+
+        // Nur setzen, wenn sich wirklich was ändert
+        if (Math.abs(newHeight - current) > 2) {
+            iframe.style.height = newHeight + "px";
+        }
     }
 });
 </script>
