@@ -80,13 +80,10 @@
 
 <script>
 iFrameResize({
-    log: false,
-    checkOrigin: false,              // wichtig für Strato
-    heightCalculationMethod: 'bodyScroll',
-    onInit: function() {
-        // weiches Einblenden, wenn das iframe startklar ist
-        document.getElementById("statsFrame").style.opacity = 1;
-    }
+    log: true,
+    checkOrigin: false,              // ⭐ WICHTIG für GitHub Pages
+    resizeFrom: 'child',
+    heightCalculationMethod: 'max'   // ⭐ GitHub Pages kompatibel
 }, "#statsFrame");
 </script>
 
