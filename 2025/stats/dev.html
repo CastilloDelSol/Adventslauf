@@ -988,11 +988,12 @@
 </div>
 
 <script>
-/* --------------------------------------------------
-   IFRAME RESIZE SYSTEM – CLEAN ENTERPRISE VERSION
----------------------------------------------------- */
+<!-- --------------------------------------------------
+     IFRAME RESIZE SYSTEM – FINAL STABLE VERSION
+---------------------------------------------------- -->
 
-// Debounce-Funktion, damit nicht 100 Events pro Sekunde gesendet werden
+<script>
+// Debounce schützt vor Flut von Events (Tabs, Charts, etc.)
 function debounce(fn, delay = 50) {
     let timer;
     return (...args) => {
@@ -1003,29 +1004,62 @@ function debounce(fn, delay = 50) {
 
 // Höhe an Parent senden
 function sendHeight() {
-    const height = document.documentElement.scrollHeight;
+    const height = Math.max(
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight,
+        document.documentElement.offsetHeight,
+        document.body.offsetHeight
+    );
+
     parent.postMessage(
         { type: "iframe:resize", height },
-        "*"   // → wenn du willst, auf Origin einschränken
+        "*"
     );
 }
 
-const sendHeightDebounced = debounce(sendHeight, 30);
+const sendHeightDebounced = debounce(sendHeight, 40);
 
-// ResizeObserver beobachtet DOM-Größenänderungen
-const resizeObserver = new ResizeObserver(sendHeightDebounced);
+
+// -----------------------------
+// 1) ResizeObserver
+// -----------------------------
+const resizeObserver = new ResizeObserver(() => {
+    sendHeightDebounced();
+});
+
 resizeObserver.observe(document.body);
 
-// Initiale Höhe senden
-window.addEventListener("load", sendHeight);
 
-// Falls Fonts laden
+// -----------------------------
+// 2) Initial Measurements
+//    (Das ist der Fix für deinen Scrollbalken!)
+// -----------------------------
+document.addEventListener("DOMContentLoaded", () => {
+    sendHeight();      // sofort
+    setTimeout(sendHeight, 50);   // Layout settling
+    setTimeout(sendHeight, 150);  // Fonts, Tabs initialisiert
+    setTimeout(sendHeight, 350);  // Charts vollständig gerendert
+});
+
+
+// -----------------------------
+// 3) Re-render on window resize
+// -----------------------------
+window.addEventListener("resize", sendHeightDebounced);
+
+
+// -----------------------------
+// 4) Fonts finish loading
+// -----------------------------
 if (document.fonts) {
-    document.fonts.ready.then(sendHeight);
+    document.fonts.ready.then(() => {
+        sendHeight();
+    });
 }
 
-// Optional: Für Änderungen durch externe JS (Charts)
-setTimeout(sendHeight, 200);
+// -----------------------------
+// 5) Extra failsafe timers
+// -----------------------------
 setTimeout(sendHeight, 800);
 setTimeout(sendHeight, 1500);
 
