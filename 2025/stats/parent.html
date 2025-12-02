@@ -66,30 +66,24 @@
 <h1 class="zdf-title">ZDF – Zahlen, Daten, Fakten …</h1>
 
 <!-- Iframe -->
-<div class="iframe-wrapper">
-    <iframe
-        id="statsFrame"
-        src="dev.html"
-        loading="lazy"
-        style="width:100%;border:none;overflow:hidden;border-radius:6px;min-height:500px;"
-    ></iframe>
-</div>
+<script src="https://cdn.jsdelivr.net/npm/iframe-resizer/js/iframeResizer.min.js"></script>
+
+<iframe
+    id="statsFrame"
+    src="dev.html"
+    style="width:100%;border:none;border-radius:6px;overflow:hidden;"
+></iframe>
+
+<script>
+iFrameResize({
+    log: false,
+    checkOrigin: false,   // wichtig, weil Strato andere Domain ist
+    heightCalculationMethod: 'bodyScroll',
+}, "#statsFrame");
+</script>
     
 <!-- Footer Hinweis -->
 <footer>Eingebettete Statistik – automatisch an Inhaltshöhe angepasst.</footer>
-
-<!-- Resize Listener -->
-<script>
-const frame = document.getElementById("statsFrame");
-
-window.addEventListener("message", (event) => {
-    if (!event.data || event.data.type !== "iframe:resize") return;
-
-    const frame = document.getElementById("statsFrame");
-    const h = parseInt(event.data.height, 10);
-    if (!isNaN(h)) frame.style.height = h + "px";
-});
-</script>
 
 </body>
 </html>
