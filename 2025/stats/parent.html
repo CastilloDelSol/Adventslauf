@@ -90,16 +90,27 @@
 
 <!-- Resize Listener -->
 <script>
-const frame = document.getElementById("statsFrame");
+const iframe = document.getElementById("statsFrame");
+
+let firstUpdate = true;
 
 window.addEventListener("message", (event) => {
     if (!event.data || event.data.type !== "iframe:resize") return;
 
-    const frame = document.getElementById("statsFrame");
-    const h = parseInt(event.data.height, 10);
-    if (!isNaN(h)) frame.style.height = h + "px";
+    const newHeight = parseInt(event.data.height, 10);
+    if (isNaN(newHeight)) return;
+
+    // Beim ersten echten Height-Update: min-height entfernen
+    if (firstUpdate) {
+        firstUpdate = false;
+        iframe.style.minHeight = "0px";   // WICHTIG
+    }
+
+    // Danach ganz normal und dynamisch setzen
+    iframe.style.height = newHeight + "px";
 });
 </script>
+
 
 </body>
 </html>
