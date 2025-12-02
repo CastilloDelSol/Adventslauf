@@ -980,45 +980,60 @@
 </div>
 
 <script>
-	function openPrivacy() {
-	    document.getElementById("privacyBox").style.display = "block";
-	}
-	
-	function closePrivacy() {
-	    document.getElementById("privacyBox").style.display = "none";
-	}
+/* --------------------------------------------------
+   IFRAME RESIZE SYSTEM – CLEAN ENTERPRISE VERSION
+---------------------------------------------------- */
 
-	/* PARENT IFRAME SCRIPT */
-	// Send height to parent
-	function postHeight() {
-	    const h = Math.max(
-	        document.documentElement.scrollHeight,
-	        document.body.scrollHeight,
-	        document.documentElement.offsetHeight,
-	        document.body.offsetHeight
-	    );
-	    parent.postMessage({frameHeight: h}, "*");
-	}
-	
-	// 1. Recalculate when window resizes
-	window.addEventListener("resize", postHeight);
-	
-	// 2. Recalculate when fonts finish loading
-	if (document.fonts) {
-	    document.fonts.ready.then(postHeight);
-	}
-	
-	// 3. Recalculate when DOM changes (Charts, Tabs, Async content)
-	const mo = new MutationObserver(() => postHeight());
-	mo.observe(document.body, {
-	    childList: true,
-	    subtree: true,
-	    attributes: true
-	});
-	
-	// 4. Initial height
-	window.addEventListener("load", postHeight);
-	
+// Debounce-Funktion, damit nicht 100 Events pro Sekunde gesendet werden
+function debounce(fn, delay = 50) {
+    let timer;
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+    };
+}
+
+// Höhe an Parent senden
+function sendHeight() {
+    const height = document.documentElement.scrollHeight;
+    parent.postMessage(
+        { type: "iframe:resize", height },
+        "*"   // → wenn du willst, auf Origin einschränken
+    );
+}
+
+const sendHeightDebounced = debounce(sendHeight, 30);
+
+// ResizeObserver beobachtet DOM-Größenänderungen
+const resizeObserver = new ResizeObserver(sendHeightDebounced);
+resizeObserver.observe(document.body);
+
+// Initiale Höhe senden
+window.addEventListener("load", sendHeight);
+
+// Falls Fonts laden
+if (document.fonts) {
+    document.fonts.ready.then(sendHeight);
+}
+
+// Optional: Für Änderungen durch externe JS (Charts)
+setTimeout(sendHeight, 200);
+setTimeout(sendHeight, 800);
+setTimeout(sendHeight, 1500);
+
+/* --------------------------------------------------
+   Datenschutz Popups / UI
+---------------------------------------------------- */
+
+function openPrivacy() {
+    document.getElementById("privacyBox").style.display = "block";
+    sendHeightDebounced();
+}
+
+function closePrivacy() {
+    document.getElementById("privacyBox").style.display = "none";
+    sendHeightDebounced();
+}
 </script>
 
 </body>
