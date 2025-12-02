@@ -2,7 +2,8 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Iframe Parent Test</title>
+<title>Iframe Parent – Clean Version</title>
+
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -10,30 +11,46 @@
         background: #f5f5f5;
     }
 
+    /* Das Wrapper-Div sorgt dafür, dass 900px zentriert bleiben */
+    .iframe-wrapper {
+        max-width: 900px;     /* maximale Breite */
+        margin: 0 auto;       /* zentriert */
+    }
+
     #statsFrame {
-        width: 900px;          /* → deine gewünschte fixe Breite */
+        width: 100%;          /* passt sich der wrapper-Breite an */
+        height: 0;            /* wird dynamisch gefüllt */
         border: none;
         display: block;
-        margin: 0 auto;
         overflow: hidden;
+        border-radius: 6px;
     }
 </style>
+
 </head>
 <body>
 
-<h1>Parent-Seite (Strato-Simulation)</h1>
-<p>Unten ist dein iframe, das dynamisch seine Höhe übermittelt:</p>
+<h1>Parent-Seite (Strato)</h1>
+<p>Unten ist dein eingebettetes Statistik-Tool.</p>
 
-<iframe
-    id="statsFrame"
-    src="dev.html"
-></iframe>
+<div class="iframe-wrapper">
+    <iframe
+        id="statsFrame"
+        src="dev.html"
+        loading="lazy"
+    ></iframe>
+</div>
 
 <script>
-window.addEventListener("message", function(event) {
-    if (event.data.frameHeight) {
-        document.getElementById("statsFrame").style.height =
-            event.data.frameHeight + "px";
+const frame = document.getElementById("statsFrame");
+
+// Sicherer Event-Listener
+window.addEventListener("message", (event) => {
+    if (!event.data || event.data.type !== "iframe:resize") return;
+
+    const newHeight = parseInt(event.data.height, 10);
+    if (!isNaN(newHeight)) {
+        frame.style.height = newHeight + "px";
     }
 });
 </script>
