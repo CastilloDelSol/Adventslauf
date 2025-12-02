@@ -989,80 +989,6 @@
 </div>
 
 <script>
-// Debounce schützt vor Flut von Events (Tabs, Charts, etc.)
-function debounce(fn, delay = 50) {
-    let timer;
-    return (...args) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => fn(...args), delay);
-    };
-}
-
-// Höhe an Parent senden
-function sendHeight() {
-    const height = Math.max(
-        document.documentElement.scrollHeight,
-        document.body.scrollHeight,
-        document.documentElement.offsetHeight,
-        document.body.offsetHeight
-    );
-
-    parent.postMessage(
-        { type: "iframe:resize", height },
-        "*"
-    );
-}
-
-const sendHeightDebounced = debounce(sendHeight, 40);
-
-
-// -----------------------------
-// 1) ResizeObserver
-// -----------------------------
-const resizeObserver = new ResizeObserver(() => {
-    sendHeightDebounced();
-});
-
-resizeObserver.observe(document.body);
-
-
-// -----------------------------
-// 2) Initial Measurements
-//    (Das ist der Fix für deinen Scrollbalken!)
-// -----------------------------
-document.addEventListener("DOMContentLoaded", () => {
-    sendHeight();      // sofort
-    setTimeout(sendHeight, 50);   // Layout settling
-    setTimeout(sendHeight, 150);  // Fonts, Tabs initialisiert
-    setTimeout(sendHeight, 350);  // Charts vollständig gerendert
-});
-
-
-// -----------------------------
-// 3) Re-render on window resize
-// -----------------------------
-window.addEventListener("resize", sendHeightDebounced);
-
-
-// -----------------------------
-// 4) Fonts finish loading
-// -----------------------------
-if (document.fonts) {
-    document.fonts.ready.then(() => {
-        sendHeight();
-    });
-}
-
-// -----------------------------
-// 5) Extra failsafe timers
-// -----------------------------
-setTimeout(sendHeight, 800);
-setTimeout(sendHeight, 1500);
-
-/* --------------------------------------------------
-   Datenschutz Popups / UI
----------------------------------------------------- */
-
 function openPrivacy() {
     document.getElementById("privacyBox").style.display = "block";
     sendHeightDebounced();
@@ -1073,7 +999,7 @@ function closePrivacy() {
     sendHeightDebounced();
 }
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/iframe-resizer/js/iframeResizer.contentWindow.min.js"></script>
 </body>
 <footer class="footer">
   © 2025 Ratzeburger Adventslauf | <a onclick="openPrivacy()">Datenschutzhinweis</a> | Visualisierung & Datenaggregation: <a href="mailto:tim.sonnenburg@gmx.de?subject=Ich%20interessiere%20mich%20für%20die%20Visualisierung%20meiner%20Veranstaltung">Tim Sonnenburg</a>
