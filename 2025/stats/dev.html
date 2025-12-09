@@ -662,6 +662,7 @@
 	<input type="radio" id="tab6" name="tab">
 	<input type="radio" id="tab7" name="tab">
 	<input type="radio" id="tab8" name="tab">
+	<input type="radio" id="tab9" name="tab">
 
 	<!-- MENÜ BUTTONS -->
 	<div class="tab-buttons">
@@ -673,6 +674,7 @@
 	  <label for="tab6">Top 6</label>
 	  <label for="tab7">Zeiten-Histogramme</label>
 	  <label for="tab8">Altersklassen</label>
+	  <label for="tab9">Checkpoints</label>
 	</div>
 
   <!-- TAB 1: TEILNEHMER & LÄUFE ÜBERSICHT -->
@@ -928,6 +930,27 @@
         <h2>Frauen – AK Kennzahlen</h2>
         <div class="chart-box">
             <canvas id="akBarsW"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<!-- TAB 9: STARTWELLE / CHECKPOINT -->
+<div class="tab-content content9">
+
+    <!-- Startwelle -->
+    <div class="card">
+        <h2>Startwelle</h2>
+        <div class="chart-box">
+            <canvas id="checkpointStart"></canvas>
+        </div>
+    </div>
+
+    <!-- Checkpoint Rothenhusen -->
+    <div class="card">
+        <h2>Checkpoint Rothenhusen</h2>
+        <div class="chart-box">
+            <canvas id="checkpointRothenhusen"></canvas>
         </div>
     </div>
 
