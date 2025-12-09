@@ -44,9 +44,9 @@ function formatBucketLabel(start, end) {
 }
 
 /* -------------------------------------------------------
-   RENDER stacked histogram for ALL races
+   RENDER stacked histogram for ALL races (filtered)
 ------------------------------------------------------- */
-export async function renderCheckpointHistogram(canvasId, checkpointField) {
+export async function renderCheckpointHistogram(canvasId, checkpointField, displayKde = false) {
     await loadCheckpointData();
     const data = getCheckpointData();
 
@@ -59,79 +59,94 @@ export async function renderCheckpointHistogram(canvasId, checkpointField) {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
 
-    // Determine how many races exist from the JSON
+    // Available race_ids from json
     const raceIds = buckets[0].athlete_counts.map(a => a.race_id);
-    const numRaces = raceIds.length;
 
     // Colors for races
     const raceColors = [
-        "rgba(54,162,235,0.75)",
-        "rgba(255,159,64,0.75)",
-        "rgba(153,102,255,0.75)",
-        "rgba(255,205,86,0.75)",
-        "rgba(75,192,192,0.75)"
+        "rgba(54,162,235,0.75)",   // blue
+        "rgba(255,159,64,0.75)",   // orange
+        "rgba(153,102,255,0.75)",  // purple
+        "rgba(255,205,86,0.75)",   // yellow
+        "rgba(75,192,192,0.75)"    // teal
     ];
 
-    const raceColorsSolid = raceColors.map(c =>
-        c.replace("0.75", "1.0")
-    );
+    const raceColorsSolid = raceColors.map(c => c.replace("0.75", "1.0"));
 
-    // X positions (center of bucket)
+    // X positions for KDE
     const xs = buckets.map(b => (b.range_start + b.range_end) / 2);
 
-    // stacked race datasets + total counts for KDE
-    const labels = buckets.map(b => formatBucketLabel(b.range_start, b.range_end));
+    // Labels for X-axis (formatted times)
+    const labels = buckets.map(b =>
+        formatBucketLabel(b.range_start, b.range_end)
+    );
 
-    // ---- Build datasets ----
-    const datasets = [];
-    const totalCounts = [];
-
-    for (let ri = 0; ri < numRaces; ri++) {
-        const dsCounts = buckets.map(b => {
+    /* -------------------------------------------------------
+       Build race data → filter out races with total = 0
+    ------------------------------------------------------- */
+    let raceSeries = raceIds.map(ri => {
+        const counts = buckets.map(b => {
             const entry = b.athlete_counts.find(a => a.race_id === ri);
             return entry ? entry.count : 0;
         });
 
+        const total = counts.reduce((a, b) => a + b, 0);
+
+        return { race_id: ri, counts, total };
+    });
+
+    // Only include races with non-zero total
+    raceSeries = raceSeries.filter(r => r.total > 0);
+
+    /* -------------------------------------------------------
+       Create stacked datasets
+    ------------------------------------------------------- */
+    const datasets = [];
+
+    raceSeries.forEach((r, index) => {
         datasets.push({
             type: "bar",
-            label: `Race ${ri}`,
-            data: dsCounts,
-            backgroundColor: raceColors[ri % raceColors.length],
+            label: `Race ${r.race_id}`,
+            data: r.counts,
+            backgroundColor: raceColors[index % raceColors.length],
             stack: "stack1"
+        });
+    });
+
+    /* -------------------------------------------------------
+       Compute total counts for KDE (only if enabled)
+    ------------------------------------------------------- */
+    if (displayKde) {
+        const totalCounts = buckets.map((b, i) =>
+            raceSeries.reduce((sum, r) => sum + r.counts[i], 0)
+        );
+
+        // KDE smoothing
+        const kdeValues = computeKDE(xs, totalCounts, 45);
+
+        // Scale KDE to max bar height
+        const maxCount = Math.max(...totalCounts);
+        const maxKde = Math.max(...kdeValues) || 1;
+        const scaledKde = kdeValues.map(v => v * maxCount / maxKde);
+
+        datasets.push({
+            type: "line",
+            label: "KDE (total)",
+            data: scaledKde,
+            borderColor: raceColorsSolid[0],
+            borderWidth: 3,
+            tension: 0.25,
+            pointRadius: 0
         });
     }
 
-    // total per bucket for KDE
-    for (let i = 0; i < buckets.length; i++) {
-        totalCounts[i] = buckets[i].athlete_counts.reduce((sum, a) => sum + a.count, 0);
-    }
-
-    // Compute KDE on merged total counts
-    const kdeValues = computeKDE(xs, totalCounts, 45);
-
-    // scale KDE to bar height
-    const maxCount = Math.max(...totalCounts);
-    const maxKde = Math.max(...kdeValues) || 1;
-    const scaledKde = kdeValues.map(v => v * maxCount / maxKde);
-
-    datasets.push({
-        type: "line",
-        label: "KDE (total)",
-        data: scaledKde,
-        borderColor: raceColorsSolid[0],
-        borderWidth: 3,
-        tension: 0.25,
-        pointRadius: 0
-    });
-
-    // ---- Render Chart ----
+    /* -------------------------------------------------------
+       Render chart
+    ------------------------------------------------------- */
     if (ctx._chart) ctx._chart.destroy();
 
     ctx._chart = new Chart(ctx, {
-        data: {
-            labels,
-            datasets
-        },
+        data: { labels, datasets },
         options: {
             responsive: true,
             maintainAspectRatio: false,
