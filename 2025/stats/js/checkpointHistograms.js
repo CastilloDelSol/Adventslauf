@@ -44,95 +44,152 @@ function formatBucketLabel(start, end) {
 }
 
 /* -------------------------------------------------------
+   PER-CHECKPOINT CONFIG
+------------------------------------------------------- */
+const CHECKPOINT_CONFIG = {
+    start_histogram_buckets: {
+        label: "Start",
+        tickStep: 10,
+        timeFormat: "clock",
+        showRange: false,
+        kde: false,
+        bandwidth: 45
+    },
+    split_rothenhusen_histogram_buckets: {
+        label: "Rothenhusen",
+        tickStep: 1,
+        timeFormat: "clock",
+        showRange: false,
+        kde: false,
+        bandwidth: 45
+    },
+    registration_histogram_buckets: {
+        label: "Anmeldung",
+        tickStep: 1,
+        timeFormat: "clock",
+        showRange: false,
+        kde: false,
+        bandwidth: 60
+    },
+    finish_histogram_buckets: {
+        label: "Ziel",
+        tickStep: 6,
+        timeFormat: "clock",
+        showRange: false,
+        kde: false,
+        bandwidth: 30
+    }
+};
+
+
+/* -------------------------------------------------------
    RENDER stacked histogram for ALL races (filtered)
 ------------------------------------------------------- */
-export async function renderCheckpointHistogram(canvasId, checkpointField, displayKde = false) {
+export async function renderCheckpointHistogram(
+    canvasId,
+    checkpointField,
+    displayKde = null          // overrides config if not null
+) {
     await loadCheckpointData();
     const data = getCheckpointData();
 
     const buckets = data[checkpointField];
-    if (!buckets || !Array.isArray(buckets)) {
-        console.error(`Unknown checkpoint field: ${checkpointField}`);
+    if (!buckets) {
+        console.error("Unknown checkpoint", checkpointField);
         return;
     }
 
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
 
-    // Available race_ids from json
+    // Specific config for this checkpoint
+    const cfg = CHECKPOINT_CONFIG[checkpointField];
+
+    /* -------------------------------------------
+       TIME FORMATTER
+    ------------------------------------------- */
+    function unixToClock(u) {
+        const d = new Date(u * 1000);
+        const pad = x => x.toString().padStart(2, "0");
+        return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
+    // Only start time
+    const labels = buckets.map(b => unixToClock(b.range_start));
+
+    /* -------------------------------------------
+       RACE FILTERING
+    ------------------------------------------- */
     const raceIds = buckets[0].athlete_counts.map(a => a.race_id);
 
-    // Colors for races
-    const raceColors = [
-        "rgba(54,162,235,0.75)",   // blue
-        "rgba(255,159,64,0.75)",   // orange
-        "rgba(153,102,255,0.75)",  // purple
-        "rgba(255,205,86,0.75)",   // yellow
-        "rgba(75,192,192,0.75)"    // teal
-    ];
-
-    const raceColorsSolid = raceColors.map(c => c.replace("0.75", "1.0"));
-
-    // X positions for KDE
-    const xs = buckets.map(b => (b.range_start + b.range_end) / 2);
-
-    // Labels for X-axis (formatted times)
-    const labels = buckets.map(b =>
-        formatBucketLabel(b.range_start, b.range_end)
-    );
-
-    /* -------------------------------------------------------
-       Build race data → filter out races with total = 0
-    ------------------------------------------------------- */
     let raceSeries = raceIds.map(ri => {
         const counts = buckets.map(b => {
             const entry = b.athlete_counts.find(a => a.race_id === ri);
             return entry ? entry.count : 0;
         });
-
-        const total = counts.reduce((a, b) => a + b, 0);
-
-        return { race_id: ri, counts, total };
+        const sum = counts.reduce((a, b) => a + b, 0);
+        return { race_id: ri, counts, sum };
     });
 
-    // Only include races with non-zero total
-    raceSeries = raceSeries.filter(r => r.total > 0);
+    // Filter out empty races
+    raceSeries = raceSeries.filter(r => r.sum > 0);
 
-    /* -------------------------------------------------------
-       Create stacked datasets
-    ------------------------------------------------------- */
+    /* -------------------------------------------
+       COLORS
+    ------------------------------------------- */
+    const raceColors = [
+        "rgba(54,162,235,0.75)",
+        "rgba(255,159,64,0.75)",
+        "rgba(153,102,255,0.75)",
+        "rgba(255,205,86,0.75)",
+        "rgba(75,192,192,0.75)"
+    ];
+    const raceColorsSolid = raceColors.map(c =>
+        c.replace("0.75", "1.0")
+    );
+
+    /* -------------------------------------------
+       KDE positions (midpoint of buckets)
+    ------------------------------------------- */
+    const xs = buckets.map(
+        b => (b.range_start + b.range_end) / 2
+    );
+
+    /* -------------------------------------------
+       BAR DATASETS
+    ------------------------------------------- */
     const datasets = [];
 
-    raceSeries.forEach((r, index) => {
+    raceSeries.forEach((r, idx) => {
         datasets.push({
             type: "bar",
             label: `Race ${r.race_id}`,
             data: r.counts,
-            backgroundColor: raceColors[index % raceColors.length],
+            backgroundColor: raceColors[idx % raceColors.length],
             stack: "stack1"
         });
     });
 
-    /* -------------------------------------------------------
-       Compute total counts for KDE (only if enabled)
-    ------------------------------------------------------- */
-    if (displayKde) {
+    /* -------------------------------------------
+       KDE (config or override)
+    ------------------------------------------- */
+    const useKde = displayKde !== null ? displayKde : cfg.kde;
+
+    if (useKde) {
         const totalCounts = buckets.map((b, i) =>
             raceSeries.reduce((sum, r) => sum + r.counts[i], 0)
         );
 
-        // KDE smoothing
-        const kdeValues = computeKDE(xs, totalCounts, 45);
-
-        // Scale KDE to max bar height
-        const maxCount = Math.max(...totalCounts);
+        const kdeValues = computeKDE(xs, totalCounts, cfg.bandwidth);
+        const maxBar = Math.max(...totalCounts);
         const maxKde = Math.max(...kdeValues) || 1;
-        const scaledKde = kdeValues.map(v => v * maxCount / maxKde);
+
+        const scaled = kdeValues.map(v => v * maxBar / maxKde);
 
         datasets.push({
             type: "line",
-            label: "KDE (total)",
-            data: scaledKde,
+            label: "KDE",
+            data: scaled,
             borderColor: raceColorsSolid[0],
             borderWidth: 3,
             tension: 0.25,
@@ -140,9 +197,9 @@ export async function renderCheckpointHistogram(canvasId, checkpointField, displ
         });
     }
 
-    /* -------------------------------------------------------
-       Render chart
-    ------------------------------------------------------- */
+    /* -------------------------------------------
+       DRAW CHART
+    ------------------------------------------- */
     if (ctx._chart) ctx._chart.destroy();
 
     ctx._chart = new Chart(ctx, {
@@ -153,8 +210,12 @@ export async function renderCheckpointHistogram(canvasId, checkpointField, displ
             scales: {
                 x: {
                     stacked: true,
-                    title: { display: true, text: "Zeit" },
-                    ticks: { minRotation: 45, maxRotation: 90 }
+                    title: { display: true, text: "Zeit (hh:mm:ss)" },
+                    ticks: {
+                        autoSkip: false,
+                        callback: (value, index) =>
+                            index % cfg.tickStep === 0 ? labels[index] : ""
+                    }
                 },
                 y: {
                     stacked: true,
