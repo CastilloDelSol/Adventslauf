@@ -12,13 +12,16 @@ let NAT_PROMISE = null;
 let GEO_DATA = null;
 let GEO_PROMISE = null;
 
+let CHECKPOINT_DATA = null;
+let CHECKPOINT_PROMISE = null;
+
 // ============================================================
 //  URLS (relative to index.html)
 // ============================================================
 const AGE_URL = "./data/age_buckets_by_distance.json";
 const NAT_URL = "./data/nationality.json";
 const GEO_URL = "./data/geo-stats.json";
-
+const CHECKPOINT_URL = "./data/time_buckets.json";
 
 // ============================================================
 //  AGE DATA
@@ -106,4 +109,34 @@ export async function loadGeoData() {
 export function getGeoData() {
     if (!GEO_DATA) throw new Error("GEO_DATA not loaded yet");
     return GEO_DATA;
+}
+
+
+// ============================================================
+//  CHECKPOINT DATA (histograms)
+// ============================================================
+export async function loadCheckpointData() {
+
+    if (CHECKPOINT_DATA) return CHECKPOINT_DATA;
+    if (CHECKPOINT_PROMISE) return CHECKPOINT_PROMISE;
+
+    console.log("Load Checkpoint JSON (once)…");
+
+    CHECKPOINT_PROMISE = fetch(CHECKPOINT_URL)
+        .then(r => r.json())
+        .then(json => {
+            CHECKPOINT_DATA = json;
+            return CHECKPOINT_DATA;
+        })
+        .catch(err => {
+            console.error("Failed to load CHECKPOINT data", err);
+            throw err;
+        });
+
+    return CHECKPOINT_PROMISE;
+}
+
+export function getCheckpointData() {
+    if (!CHECKPOINT_DATA) throw new Error("CHECKPOINT_DATA not loaded yet");
+    return CHECKPOINT_DATA;
 }
