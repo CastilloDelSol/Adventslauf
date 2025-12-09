@@ -653,8 +653,16 @@
     ----------------------------------------------- */
 	import { renderCheckpointHistogram } from "./js/checkpointHistograms.js";
 	
-	// Render START checkpoint histogram by default
-	renderCheckpointHistogram("checkpointDiagram", "start_histogram_buckets");
+	checkpointSelect.addEventListener("change", () => {
+	    const bucketField = checkpointSelect.value;
+	    renderCheckpointHistogram("checkpointDiagram", bucketField);
+	});
+	
+	// Initial load
+	renderCheckpointHistogram(
+	    "checkpointDiagram",
+	    checkpointSelect.value
+	);
 </script>
 
 <!-- Keine Überschrift für mehr Platz -->
@@ -947,23 +955,23 @@
 <!-- TAB 9: STARTWELLE / CHECKPOINT -->
 <div class="tab-content content9">
 
-  <!-- Checkpoint Auswahl -->
-	<!--
-  <div class="race-select-container">
-      <div class="race-select-box">
-        <label for="checkpointSelect">Checkpoint:</label>
-        <select id="checkpointSelect" class="checkpoint-select">
-          <option value="startHistogram">Start</option>
-		  <option value="rothenhusenHistogram">Rothenhusen</option>
-		  <option value="finishHistogram">Ziel</option>
-          <option value="registrationSaturdayHistogram">Startnummernausgabe Samstag</option>
-		  <option value="registrationSundayHistogram">Startnummernausgabe Sonntag</option>
-        </select>
-      </div>
-  </div>
-	-->
+    <!-- Dropdown for checkpoint selection -->
+    <div class="race-select-container">
+        <div class="ak-select-row">
 
-    <!-- Startwelle -->
+            <div class="ak-select-box">
+                <label for="checkpointSelect">Checkpoint:</label>
+                <select id="checkpointSelect" class="ak-select">
+                    <option value="start_histogram_buckets">Start</option>
+                    <option value="split_rothenhusen_histogram_buckets">Rothenhusen</option>
+                    <option value="registration_histogram_buckets">Anmeldung</option>
+                    <option value="finish_histogram_buckets">Ziel</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
     <div class="card">
         <h2>Checkpoint Histogramm</h2>
         <div class="chart-box">
@@ -972,6 +980,7 @@
     </div>
 
 </div>
+
 
   
 
