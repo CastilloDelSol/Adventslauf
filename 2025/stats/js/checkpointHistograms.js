@@ -30,7 +30,7 @@ function secToHM(sec) {
 }
 
 function isUnixTimestamp(val) {
-    return val > 10_000_000_000;
+    return val > 86400;
 }
 
 function formatBucketLabel(start, end) {
