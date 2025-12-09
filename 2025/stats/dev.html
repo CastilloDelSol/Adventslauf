@@ -648,6 +648,13 @@
 	// Initial load
 	loadAKCharts();
 
+	/* -----------------------------------------------
+     CHECKPOINT HISTOGRAMS (TAB 9)
+    ----------------------------------------------- */
+	import { renderCheckpointHistogram } from "./js/checkpointHistograms.js";
+	
+	// Render START checkpoint histogram by default
+	renderCheckpointHistogram("checkpointDiagram", "start_histogram_buckets");
 </script>
 
 <!-- Keine Überschrift für mehr Platz -->
