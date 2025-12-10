@@ -50,30 +50,34 @@ const CHECKPOINT_CONFIG = {
     start_histogram_buckets: {
         label: "Start",
         tickStep: 10,
-        segmentSec: 15, // NEW: every 15 sec one x-label
-        domainStart: "11:15:00",
-        domainEnd:   "11:18:00",
-        kde: false
+        timeFormat: "clock",
+        showRange: false,
+        kde: false,
+        bandwidth: 45
     },
     split_rothenhusen_histogram_buckets: {
         label: "Rothenhusen",
-        tickStep: 20,
-        segmentSec: 30,
-        domainStart: null,
-        domainEnd: null,
-        kde: true
+        tickStep: 1,
+        timeFormat: "clock",
+        showRange: false,
+        kde: false,
+        bandwidth: 45
     },
     registration_histogram_buckets: {
         label: "Anmeldung",
-        tickStep: 6,
-        segmentSec: 60,
-        kde: false
+        tickStep: 1,
+        timeFormat: "clock",
+        showRange: false,
+        kde: false,
+        bandwidth: 60
     },
     finish_histogram_buckets: {
         label: "Ziel",
-        tickStep: 15,
-        segmentSec: 10,
-        kde: false
+        tickStep: 6,
+        timeFormat: "clock",
+        showRange: false,
+        kde: false,
+        bandwidth: 30
     }
 };
 
@@ -102,44 +106,16 @@ export async function renderCheckpointHistogram(
     const cfg = CHECKPOINT_CONFIG[checkpointField];
 
     /* -------------------------------------------
-       TIME HELPERS (NO TIMEZONE)
+       TIME FORMATTER
     ------------------------------------------- */
-    function hhmmssToSec(t) {
-        if (!t) return null;
-        const [h, m, s] = t.split(":").map(Number);
-        return h * 3600 + m * 60 + s;
-    }
-
-    function secToClock(sec) {
+    function unixToClock(u) {
+        const d = new Date(u * 1000);
         const pad = x => x.toString().padStart(2, "0");
-        let h = Math.floor(sec / 3600);
-        let m = Math.floor((sec % 3600) / 60);
-        let s = sec % 60;
-        return `${pad(h)}:${pad(m)}:${pad(s)}`;
+        return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
     }
 
-    /* -------------------------------------------
-       CREATE LABELS
-       Option A: use defined start/end domain (preferred)
-       Option B: fallback → bucket start times
-    ------------------------------------------- */
-    let labels = [];
-
-    if (cfg.domainStart) {
-        const start = hhmmssToSec(cfg.domainStart);
-        const end = cfg.domainEnd
-            ? hhmmssToSec(cfg.domainEnd)
-            : buckets.at(-1).range_end;
-
-        const step = cfg.segmentSec || 15;
-
-        for (let t = start; t <= end; t += step) {
-            labels.push(secToClock(t));
-        }
-    } else {
-        // fallback: show bucket times
-        labels = buckets.map(b => secToClock(b.range_start));
-    }
+    // Only start time
+    const labels = buckets.map(b => unixToClock(b.range_start));
 
     /* -------------------------------------------
        RACE FILTERING
@@ -173,9 +149,11 @@ export async function renderCheckpointHistogram(
     );
 
     /* -------------------------------------------
-       KDE positions (use bucket midpoint seconds)
+       KDE positions (midpoint of buckets)
     ------------------------------------------- */
-    const xs = buckets.map(b => (b.range_start + b.range_end) / 2);
+    const xs = buckets.map(
+        b => (b.range_start + b.range_end) / 2
+    );
 
     /* -------------------------------------------
        BAR DATASETS
@@ -235,7 +213,7 @@ export async function renderCheckpointHistogram(
                     title: { display: true, text: "Zeit (hh:mm:ss)" },
                     ticks: {
                         autoSkip: false,
-                        callback: (val, index) =>
+                        callback: (value, index) =>
                             index % cfg.tickStep === 0 ? labels[index] : ""
                     }
                 },
@@ -247,4 +225,25 @@ export async function renderCheckpointHistogram(
             }
         }
     });
+}
+
+/* -------------------------------------------------------
+   Render all checkpoints (stacked) with fixed IDs
+------------------------------------------------------- */
+export async function renderAllCheckpointHistograms() {
+    await loadCheckpointData();
+
+    const mapping = {
+        "histStart": "start_histogram_buckets",
+        "histRothenhusen": "split_rothenhusen_histogram_buckets",
+        "histRegistration": "registration_histogram_buckets",
+        "histFinish": "finish_histogram_buckets"
+    };
+
+    for (const [canvasId, bucketField] of Object.entries(mapping)) {
+        const canvas = document.getElementById(canvasId);
+        if (canvas) {
+            renderCheckpointHistogram(canvasId, bucketField);
+        }
+    }
 }
