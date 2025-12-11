@@ -93,13 +93,10 @@ export async function renderStartHistogram(canvasId) {
                     title: { display: true, text: "Uhrzeit (hh:mm:ss)" },
                     ticks: {
                         autoSkip: false,
-                        callback: (value, index) =>
-                            index % 15 === 0 ? labels[index] : ""
-                    },
-                   ticks: {
-                       minRotation: 45,
-                       maxRotation: 90
-                   }
+                        callback: (value, index) => index % 15 === 0 ? labels[index] : "",
+                        minRotation: 45,
+                        maxRotation: 90
+                    }
                 },
                 y: {
                     stacked: true,
