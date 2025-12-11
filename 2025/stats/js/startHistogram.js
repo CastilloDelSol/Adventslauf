@@ -96,8 +96,10 @@ export async function renderStartHistogram(canvasId) {
                         callback: (value, index) =>
                             index % 15 === 0 ? labels[index] : ""
                     },
-                    maxRotation: 90,
-                    minRotation: 45
+                   ticks: {
+                       minRotation: 45,
+                       maxRotation: 90
+                   }
                 },
                 y: {
                     stacked: true,
