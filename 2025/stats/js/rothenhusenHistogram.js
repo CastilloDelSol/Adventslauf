@@ -134,8 +134,10 @@ export async function renderRothenhusenHistogram(canvasId) {
                         callback: (value, index) =>
                             index % 1 === 0 ? labels[index] : "" // Rothenhusen tickStep = 1
                     },
-                    maxRotation: 90,
-                    minRotation: 45
+                   ticks: {
+                       minRotation: 45,
+                       maxRotation: 90
+                   }
                 },
                 y: {
                     stacked: true,
