@@ -2,14 +2,14 @@
 import { loadCheckpointData, getCheckpointData } from "./dataLoader.js";
 import { gaussianKernel, computeKDE } from "./kde.js";
 
-// format seconds-from-midnight → HH:MM:SS
-function secToClock(sec) {
+// format seconds-from-midnight → HH:MM
+function secToHM(sec) {
     const h = Math.floor(sec / 3600);
     const m = Math.floor((sec % 3600) / 60);
-    const s = Math.floor(sec % 60);
     const pad = x => x.toString().padStart(2, "0");
-    return `${pad(h)}:${pad(m)}:${pad(s)}`;
+    return `${pad(h)}:${pad(m)}`;
 }
+
 
 export async function renderRothenhusenHistogram(canvasId) {
     await loadCheckpointData();
@@ -25,9 +25,10 @@ export async function renderRothenhusenHistogram(canvasId) {
     if (!ctx) return;
 
     /* --------------------------------------------------------
-       Labels (seconds → HH:MM:SS)
+       Labels (seconds → HH:MM)
     -------------------------------------------------------- */
-    const labels = buckets.map(b => secToClock(b.range_start));
+    const labels = buckets.map(b => `${secToHM(b.range_start)}–${secToHM(b.range_end)}`);
+
 
     /* --------------------------------------------------------
        Race metadata: race_id → name
@@ -127,7 +128,7 @@ export async function renderRothenhusenHistogram(canvasId) {
             scales: {
                 x: {
                     stacked: true,
-                    title: { display: true, text: "Zeit (hh:mm:ss)" },
+                    title: { display: true, text: "Uhrzeit (hh:mm)" },
                     ticks: {
                         autoSkip: false,
                         callback: (value, index) =>
