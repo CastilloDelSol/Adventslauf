@@ -1,8 +1,9 @@
 // checkpointHistograms.js
 import { gaussianKernel, computeKDE } from "./kde.js";
-//import { loadCheckpointData, getCheckpointData } from "./dataLoader.js";
+import { loadCheckpointData, getCheckpointData } from "./dataLoader.js";
 
 
+/*
 function gaussianKernel(x) {
     return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
 }
@@ -18,7 +19,7 @@ function computeKDE(xs, counts, bandwidth = 45) {
     });
     return kdeValues;
 }
-
+*/
 
 /* -------------------------------------------------------
    Time formatters
