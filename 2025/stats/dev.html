@@ -670,20 +670,19 @@
 	import { renderRothenhusenHistogram } from "./js/rothenhusenHistogram.js";
 
 
-	const checkpointSelect = document.getElementById("checkpointSelect");
-
+	const renderers = {
+	    start: renderStartHistogram,
+	    rothenhusen: renderRothenhusenHistogram
+	    // registration: renderRegistrationHistogram,
+	    // finish: renderFinishHistogram,
+	};
+	
 	checkpointSelect.addEventListener("change", () => {
-    const value = checkpointSelect.value;
+	    const value = checkpointSelect.value;
+	    const renderer = renderers[value];
+	    if (renderer) renderer("checkpointDiagram");
+	});
 
-    if (value === "start")
-	{
-        renderStartHistogram("checkpointDiagram");
-    }
-    else if (value === "rothenhusen")
-	{
-        renderRothenhusenHistogram("checkpointDiagram");
-    }
-});
 
 	//default
 	renderStartHistogram("checkpointDiagram");
@@ -981,19 +980,15 @@
 
     <!-- Dropdown for checkpoint selection -->
     <div class="race-select-container">
-        <div class="ak-select-row">
-
-            <div class="race-select-box">
-                <label for="checkpointSelect">Checkpoint:</label>
-                <select id="checkpointSelect" class="ak-select">
-                    <option value="start">Start</option>
-                    <option value="rothenhusen">Rothenhusen</option>
-                    <option value="registration">Anmeldung</option>
-                    <option value="finish">Ziel</option>
-                </select>
-            </div>
-
-        </div>
+		<div class="race-select-box">
+			<label for="checkpointSelect">Checkpoint:</label>
+			<select id="checkpointSelect" class="ak-select">
+				<option value="start">Start</option>
+				<option value="rothenhusen">Rothenhusen</option>
+				<option value="registration">Anmeldung</option>
+				<option value="finish">Ziel</option>
+			</select>
+		</div>
     </div>
 
     <div class="card">
