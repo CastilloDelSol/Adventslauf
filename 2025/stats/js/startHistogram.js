@@ -1,10 +1,13 @@
 // startHistogram.js
 import { loadCheckpointData, getCheckpointData } from "./dataLoader.js";
 
-function unixToClock(u) {
-    const d = new Date(u * 1000);
+// format seconds-from-midnight → HH:MM:SS
+function secToClock(sec) {
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = Math.floor(sec % 60);
     const pad = x => x.toString().padStart(2, "0");
-    return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    return `${pad(h)}:${pad(m)}:${pad(s)}`;
 }
 
 export async function renderStartHistogram(canvasId = "histStart") {
@@ -20,10 +23,10 @@ export async function renderStartHistogram(canvasId = "histStart") {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
 
-    // Labels = bucket start time
-    const labels = buckets.map(b => unixToClock(b.range_start));
+    // labels based on seconds-from-midnight
+    const labels = buckets.map(b => secToClock(b.range_start));
 
-    // Collect races
+    // collect races
     const raceIds = buckets[0].athlete_counts.map(a => a.race_id);
 
     let raceSeries = raceIds.map(raceId => {
@@ -35,7 +38,6 @@ export async function renderStartHistogram(canvasId = "histStart") {
         return { raceId, counts, sum };
     }).filter(r => r.sum > 0);
 
-    // Colors for races
     const raceColors = [
         "rgba(54,162,235,0.75)",
         "rgba(255,159,64,0.75)",
@@ -44,7 +46,6 @@ export async function renderStartHistogram(canvasId = "histStart") {
         "rgba(75,192,192,0.75)"
     ];
 
-    // Build datasets
     const datasets = raceSeries.map((r, idx) => ({
         type: "bar",
         label: `Race ${r.raceId}`,
@@ -53,7 +54,6 @@ export async function renderStartHistogram(canvasId = "histStart") {
         stack: "stack1"
     }));
 
-    // Draw chart
     if (ctx._chart) ctx._chart.destroy();
 
     ctx._chart = new Chart(ctx, {
