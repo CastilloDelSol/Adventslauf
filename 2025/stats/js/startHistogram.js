@@ -10,7 +10,7 @@ function secToClock(sec) {
     return `${pad(h)}:${pad(m)}:${pad(s)}`;
 }
 
-export async function renderStartHistogram(canvasId = "histStart") {
+export async function renderStartHistogram(canvasId) {
     await loadCheckpointData();
     const data = getCheckpointData();
 
