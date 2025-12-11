@@ -667,6 +667,25 @@
 	*/
 
 	import { renderStartHistogram } from "./js/startHistogram.js";
+	import { renderRothenhusenHistogram } from "./js/rothenhusenHistogram.js";
+
+
+	const checkpointSelect = document.getElementById("checkpointSelect");
+
+	checkpointSelect.addEventListener("change", () => {
+    const value = checkpointSelect.value;
+
+    if (value === "start")
+	{
+        renderStartHistogram("checkpointDiagram");
+    }
+    else if (value === "rothenhusen")
+	{
+        renderRothenhusenHistogram("checkpointDiagram");
+    }
+});
+
+	//default
 	renderStartHistogram("checkpointDiagram");
 </script>
 
@@ -964,13 +983,13 @@
     <div class="race-select-container">
         <div class="ak-select-row">
 
-            <div class="ak-select-box">
+            <div class="race-select-box">
                 <label for="checkpointSelect">Checkpoint:</label>
                 <select id="checkpointSelect" class="ak-select">
-                    <option value="start_histogram_buckets">Start</option>
-                    <option value="split_rothenhusen_histogram_buckets">Rothenhusen</option>
-                    <option value="registration_histogram_buckets">Anmeldung</option>
-                    <option value="finish_histogram_buckets">Ziel</option>
+                    <option value="start">Start</option>
+                    <option value="rothenhusen">Rothenhusen</option>
+                    <option value="registration">Anmeldung</option>
+                    <option value="finish">Ziel</option>
                 </select>
             </div>
 
