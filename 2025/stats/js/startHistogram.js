@@ -23,10 +23,22 @@ export async function renderStartHistogram(canvasId = "histStart") {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
 
-    // labels based on seconds-from-midnight
+    // Labels for X-axis from seconds
     const labels = buckets.map(b => secToClock(b.range_start));
 
-    // collect races
+    /* ----------------------------------------------
+       Race metadata: build map race_id → race.name
+    ---------------------------------------------- */
+    const raceMetaMap = new Map();
+    if (data.metadata?.races) {
+        data.metadata.races.forEach(r =>
+            raceMetaMap.set(r.race_id, r.name)
+        );
+    }
+
+    /* ----------------------------------------------
+       Extract race series
+    ---------------------------------------------- */
     const raceIds = buckets[0].athlete_counts.map(a => a.race_id);
 
     let raceSeries = raceIds.map(raceId => {
@@ -35,9 +47,17 @@ export async function renderStartHistogram(canvasId = "histStart") {
             return entry ? entry.count : 0;
         });
         const sum = counts.reduce((a, b) => a + b, 0);
-        return { raceId, counts, sum };
+        return {
+            raceId,
+            counts,
+            sum,
+            label: raceMetaMap.get(raceId) || `Race ${raceId}`
+        };
     }).filter(r => r.sum > 0);
 
+    /* ----------------------------------------------
+       Colors
+    ---------------------------------------------- */
     const raceColors = [
         "rgba(54,162,235,0.75)",
         "rgba(255,159,64,0.75)",
@@ -46,14 +66,20 @@ export async function renderStartHistogram(canvasId = "histStart") {
         "rgba(75,192,192,0.75)"
     ];
 
+    /* ----------------------------------------------
+       Build datasets
+    ---------------------------------------------- */
     const datasets = raceSeries.map((r, idx) => ({
         type: "bar",
-        label: `Race ${r.raceId}`,
+        label: r.label,             // <-- real race name here
         data: r.counts,
         backgroundColor: raceColors[idx % raceColors.length],
         stack: "stack1"
     }));
 
+    /* ----------------------------------------------
+       Render chart
+    ---------------------------------------------- */
     if (ctx._chart) ctx._chart.destroy();
 
     ctx._chart = new Chart(ctx, {
