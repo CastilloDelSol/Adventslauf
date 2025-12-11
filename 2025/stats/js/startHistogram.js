@@ -90,12 +90,14 @@ export async function renderStartHistogram(canvasId) {
             scales: {
                 x: {
                     stacked: true,
-                    title: { display: true, text: "Zeit (hh:mm:ss)" },
+                    title: { display: true, text: "Uhrzeit (hh:mm:ss)" },
                     ticks: {
                         autoSkip: false,
                         callback: (value, index) =>
                             index % 15 === 0 ? labels[index] : ""
-                    }
+                    },
+                    maxRotation: 90,
+                    minRotation: 45
                 },
                 y: {
                     stacked: true,
