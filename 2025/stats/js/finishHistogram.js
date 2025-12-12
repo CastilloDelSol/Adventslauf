@@ -105,13 +105,26 @@ export async function renderFinishHistogram(canvasId) {
                     // Only show grid at those ticks
                     grid: {
                         drawOnChartArea: true,
-                        color: (ctxGrid) => {
-                            const i = ctxGrid.index;
-                            return i % 15 === 0 ? undefined : "rgba(0,0,0,0)";
+                        color: (context) => {
+                            const tick = context.tick;   // <-- this is where the index really is
+                    
+                            // If tick is undefined (Chart.js internal calls), draw nothing
+                            if (!tick) return "rgba(0,0,0,0)";
+                    
+                            return tick.value % 15 === 0
+                                ? undefined              // ← default Chart.js grid color
+                                : "rgba(0,0,0,0)";       // ← hide all others
                         },
-                        lineWidth: (ctxGrid) =>
-                            ctxGrid.index % 15 === 0 ? undefined : 0
+                        lineWidth: (context) => {
+                            const tick = context.tick;
+                            if (!tick) return 0;
+                    
+                            return tick.value % 15 === 0
+                                ? undefined              // ← default width
+                                : 0;                     // ← hide
+                        }
                     }
+
                 },
                 y: {
                     stacked: true,
