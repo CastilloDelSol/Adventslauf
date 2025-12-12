@@ -99,7 +99,7 @@ export async function renderFinishHistogram(canvasId) {
                     ticks: {
                         autoSkip: false,
                         callback: (value, index) =>
-                            index % 6 === 0 ? labels[index] : ""
+                            index % 15 === 0 ? labels[index] : ""
                     },
 
                     // Only show grid at those ticks
