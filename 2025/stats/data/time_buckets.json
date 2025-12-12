@@ -2763,6 +2763,24 @@
           "count": 0
         }
       ]
+    },
+    {
+      "range_start": 40650,
+      "range_end": 40651,
+      "athlete_counts": [
+        {
+          "race_id": 0,
+          "count": 0
+        },
+        {
+          "race_id": 1,
+          "count": 0
+        },
+        {
+          "race_id": 2,
+          "count": 0
+        }
+      ]
     }
   ],
   "split_rothenhusen_histogram_buckets": [
