@@ -651,30 +651,15 @@
 	/* -----------------------------------------------
      CHECKPOINT HISTOGRAMS (TAB 9)
     ----------------------------------------------- */
-	/*
-	import { renderCheckpointHistogram } from "./js/checkpointHistograms.js";
-	
-	checkpointSelect.addEventListener("change", () => {
-	    const bucketField = checkpointSelect.value;
-	    renderCheckpointHistogram("checkpointDiagram", bucketField);
-	});
-	
-	// Initial load
-	renderCheckpointHistogram(
-	    "checkpointDiagram",
-	    checkpointSelect.value
-	);
-	*/
-
 	import { renderStartHistogram } from "./js/startHistogram.js";
 	import { renderRothenhusenHistogram } from "./js/rothenhusenHistogram.js";
 
 
 	const renderers = {
 	    start: renderStartHistogram,
-	    rothenhusen: renderRothenhusenHistogram
+	    rothenhusen: renderRothenhusenHistogram,
 	    // registration: renderRegistrationHistogram,
-	    // finish: renderFinishHistogram,
+	    finish: renderFinishHistogram
 	};
 	
 	checkpointSelect.addEventListener("change", () => {
