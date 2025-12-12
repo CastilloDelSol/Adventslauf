@@ -4915,7 +4915,43 @@
       }
     ]
   },
-  "finish_histogram_buckets": [
+  "finish_histogram_buckets": [    
+  {
+      "range_start": 39600,
+      "range_end": 39660,
+      "athlete_counts": [
+        {
+          "race_id": 0,
+          "count": 0
+        },
+        {
+          "race_id": 1,
+          "count": 0
+        },
+        {
+          "race_id": 2,
+          "count": 0
+        }
+      ]
+    },    
+	{
+      "range_start": 39660,
+      "range_end": 39720,
+      "athlete_counts": [
+        {
+          "race_id": 0,
+          "count": 0
+        },
+        {
+          "race_id": 1,
+          "count": 0
+        },
+        {
+          "race_id": 2,
+          "count": 0
+        }
+      ]
+    },
     {
       "range_start": 39720,
       "range_end": 39780,
