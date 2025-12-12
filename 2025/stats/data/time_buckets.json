@@ -5366,6 +5366,24 @@
         }
       ]
     },
+	{
+      "range_start": 4100,
+      "range_end": 41160,
+      "athlete_counts": [
+        {
+          "race_id": 0,
+          "count": 0
+        },
+        {
+          "race_id": 1,
+          "count": 0
+        },
+        {
+          "race_id": 2,
+          "count": 0
+        }
+      ]
+    },
     {
       "range_start": 41940,
       "range_end": 42000,
