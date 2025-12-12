@@ -107,12 +107,10 @@ export async function renderFinishHistogram(canvasId) {
                         drawOnChartArea: true,
                         color: (ctxGrid) => {
                             const i = ctxGrid.index;
-                            return i % 6 === 0
-                                ? "rgba(0,0,0,0.25)"
-                                : "rgba(0,0,0,0)";
+                            return i % 15 === 0 ? undefined : "rgba(0,0,0,0)";
                         },
                         lineWidth: (ctxGrid) =>
-                            ctxGrid.index % 6 === 0 ? 1.2 : 0
+                            ctxGrid.index % 15 === 0 ? undefined : 0
                     }
                 },
                 y: {
