@@ -198,7 +198,7 @@ function initMap() {
   map.getPane("tilesLight").style.opacity = "0";
 
 const defaultMapTiles = L.tileLayer(
-  "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+  "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=cb1_4hu8_1_da0697d790ea9a146288d6b8",
   { 
     maxZoom: 19,
     pane: "tilesDefault",
@@ -209,7 +209,7 @@ const defaultMapTiles = L.tileLayer(
 ).addTo(map);
 
 const lightMapTiles = L.tileLayer(
-  "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+  "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=cb1_4hu8_1_da0697d790ea9a146288d6b8",
   { 
     maxZoom: 19,
     pane: "tilesLight",
